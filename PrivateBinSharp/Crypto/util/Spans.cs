@@ -1,7 +1,4 @@
-﻿#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-using System.Runtime.CompilerServices;
-
-#nullable enable
+﻿using System.Runtime.CompilerServices;
 
 namespace PrivateBinSharp.Crypto.util
 {
@@ -14,28 +11,9 @@ namespace PrivateBinSharp.Crypto.util
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Span<T> FromNullable<T>(T[]? array)
-        {
-            return array == null ? Span<T>.Empty : array.AsSpan();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static Span<T> FromNullable<T>(T[]? array, int start)
-        {
-            return array == null ? Span<T>.Empty : array.AsSpan(start);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ReadOnlySpan<T> FromNullableReadOnly<T>(T[]? array)
-        {
-            return array == null ? Span<T>.Empty : array.AsSpan();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ReadOnlySpan<T> FromNullableReadOnly<T>(T[]? array, int start)
         {
             return array == null ? Span<T>.Empty : array.AsSpan(start);
         }
     }
 }
-#endif

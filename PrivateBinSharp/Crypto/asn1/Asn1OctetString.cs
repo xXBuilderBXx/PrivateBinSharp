@@ -22,7 +22,7 @@ namespace PrivateBinSharp.Crypto.asn1
             }
         }
 
-        internal static readonly byte[] EmptyOctets = new byte[0];
+        internal static readonly byte[] EmptyOctets = Array.Empty<byte>();
 
         /**
          * return an Octet string from the given object.

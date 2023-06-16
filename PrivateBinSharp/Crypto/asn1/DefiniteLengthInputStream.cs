@@ -5,7 +5,7 @@ namespace PrivateBinSharp.Crypto.asn1
     internal class DefiniteLengthInputStream
         : LimitedInputStream
     {
-        private static readonly byte[] EmptyBytes = new byte[0];
+        private static readonly byte[] EmptyBytes = Array.Empty<byte>();
 
         private readonly int _originalLength;
         private int _remaining;

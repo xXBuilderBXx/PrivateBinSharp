@@ -126,8 +126,8 @@ namespace PrivateBinSharp.Crypto.math
         private const long IMASK = 0xFFFFFFFFL;
         private const ulong UIMASK = 0xFFFFFFFFUL;
 
-        private static readonly uint[] ZeroMagnitude = new uint[0];
-        private static readonly byte[] ZeroEncoding = new byte[0];
+        private static readonly uint[] ZeroMagnitude = Array.Empty<uint>();
+        private static readonly byte[] ZeroEncoding = Array.Empty<byte>();
 
         private static readonly BigInteger[] SMALL_CONSTANTS = new BigInteger[17];
         public static readonly BigInteger Zero;

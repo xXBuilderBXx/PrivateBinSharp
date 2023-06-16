@@ -6,7 +6,7 @@ namespace PrivateBinSharp.Crypto.asn1
     public class Asn1EncodableVector
         : IEnumerable<Asn1Encodable>
     {
-        internal static readonly Asn1Encodable[] EmptyElements = new Asn1Encodable[0];
+        internal static readonly Asn1Encodable[] EmptyElements = Array.Empty<Asn1Encodable>();
 
         private const int DefaultCapacity = 10;
 

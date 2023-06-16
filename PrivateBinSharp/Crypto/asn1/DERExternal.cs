@@ -224,16 +224,6 @@ namespace PrivateBinSharp.Crypto.asn1
             get { return indirectReference; }
         }
 
-        private static Asn1ObjectDescriptor CheckDataValueDescriptor(Asn1Object dataValueDescriptor)
-        {
-            if (dataValueDescriptor is Asn1ObjectDescriptor)
-                return (Asn1ObjectDescriptor)dataValueDescriptor;
-            if (dataValueDescriptor is DerGraphicString)
-                return new Asn1ObjectDescriptor((DerGraphicString)dataValueDescriptor);
-
-            throw new ArgumentException("incompatible type for data-value-descriptor", "dataValueDescriptor");
-        }
-
         private static int CheckEncoding(int encoding)
         {
             if (encoding < 0 || encoding > 2)

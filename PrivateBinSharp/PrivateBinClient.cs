@@ -124,7 +124,7 @@ namespace PrivateBinSharp
                 paste = text
             });
             byte[] pasteBlob = Encoding.UTF8.GetBytes(pasteDataJson);
-            byte[] _pastePassword = new byte[0];
+            byte[] _pastePassword = Array.Empty<byte>();
             if (!string.IsNullOrEmpty(password))
                 _pastePassword = UTF8Encoding.UTF8.GetBytes(password);
             byte[] urlSecret = new byte[32];

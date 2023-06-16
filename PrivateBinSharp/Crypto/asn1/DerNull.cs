@@ -8,7 +8,7 @@ namespace PrivateBinSharp.Crypto.asn1
     {
         public static readonly DerNull Instance = new DerNull();
 
-        private static readonly byte[] ZeroBytes = new byte[0];
+        private static readonly byte[] ZeroBytes = Array.Empty<byte>();
 
         protected internal DerNull()
         {

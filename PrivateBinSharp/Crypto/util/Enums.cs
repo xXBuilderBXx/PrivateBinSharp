@@ -13,11 +13,7 @@ namespace PrivateBinSharp.Crypto.util
                 s = s.Replace('-', '_');
                 s = s.Replace('/', '_');
 
-#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 return Enum.Parse<TEnum>(s, false);
-#else
-                return (TEnum)Enum.Parse(typeof(TEnum), s, false);
-#endif
             }
 
             throw new ArgumentException();
@@ -26,11 +22,7 @@ namespace PrivateBinSharp.Crypto.util
         internal static TEnum[] GetEnumValues<TEnum>()
             where TEnum : struct, Enum
         {
-#if NET5_0_OR_GREATER
             return Enum.GetValues<TEnum>();
-#else
-            return (TEnum[])Enum.GetValues(typeof(TEnum));
-#endif
         }
 
         internal static TEnum GetArbitraryValue<TEnum>()

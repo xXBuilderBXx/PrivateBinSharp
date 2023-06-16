@@ -10,4 +10,12 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Brandan\Source\Repos\xXBuilderBXx\PrivateBinSharp\PrivateBinSharp\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Brandan\Source\Repos\xXBuilderBXx\PrivateBinSharp\PrivateBinSharp\.editorconfig" />
+  </ItemGroup>
+
 </Project>

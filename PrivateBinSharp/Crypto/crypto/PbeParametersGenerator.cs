@@ -94,7 +94,7 @@ namespace PrivateBinSharp.Crypto.crypto
             char[] password)
         {
             if (password == null)
-                return new byte[0];
+                return Array.Empty<byte>();
 
             return Strings.ToByteArray(password);
         }
@@ -110,7 +110,7 @@ namespace PrivateBinSharp.Crypto.crypto
             char[] password)
         {
             if (password == null)
-                return new byte[0];
+                return Array.Empty<byte>();
 
             return Strings.ToUtf8ByteArray(password);
         }

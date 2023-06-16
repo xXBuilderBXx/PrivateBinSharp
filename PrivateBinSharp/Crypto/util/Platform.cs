@@ -25,49 +25,19 @@ namespace PrivateBinSharp.Crypto.util
             }
         }
 
-        internal static int IndexOf(string source, char value)
-        {
-            return InvariantCompareInfo.IndexOf(source, value, CompareOptions.Ordinal);
-        }
-
-        internal static int IndexOf(string source, string value)
-        {
-            return InvariantCompareInfo.IndexOf(source, value, CompareOptions.Ordinal);
-        }
-
         internal static int IndexOf(string source, char value, int startIndex)
-        {
-            return InvariantCompareInfo.IndexOf(source, value, startIndex, CompareOptions.Ordinal);
-        }
-
-        internal static int IndexOf(string source, string value, int startIndex)
         {
             return InvariantCompareInfo.IndexOf(source, value, startIndex, CompareOptions.Ordinal);
         }
 
         internal static bool Is64BitProcess
         {
-#if NETCOREAPP2_0_OR_GREATER || NET40_OR_GREATER || NETSTANDARD2_0_OR_GREATER
-
             get { return Environment.Is64BitProcess; }
-#else
-            get { return IntPtr.Size == 8; }
-#endif
-        }
-
-        internal static int LastIndexOf(string source, string value)
-        {
-            return InvariantCompareInfo.LastIndexOf(source, value, CompareOptions.Ordinal);
         }
 
         internal static bool StartsWith(string source, string prefix)
         {
             return InvariantCompareInfo.IsPrefix(source, prefix, CompareOptions.Ordinal);
-        }
-
-        internal static bool StartsWithIgnoreCase(string source, string prefix)
-        {
-            return InvariantCompareInfo.IsPrefix(source, prefix, CompareOptions.OrdinalIgnoreCase);
         }
 
         internal static bool EndsWith(string source, string suffix)
