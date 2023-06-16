@@ -10,8 +10,6 @@ namespace PrivateBinSharp.Crypto.math.raw
 
     internal static class Mod
     {
-        private const int M30 = 0x3FFFFFFF;
-        private const ulong M32UL = 0xFFFFFFFFUL;
 
         //#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         //        public static void CheckedModOddInverse(ReadOnlySpan<uint> m, ReadOnlySpan<uint> x, Span<uint> z)

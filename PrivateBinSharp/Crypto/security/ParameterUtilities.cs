@@ -226,10 +226,5 @@ namespace PrivateBinSharp.Crypto.security
 
             return new KeyParameter(keyBytes, offset, length);
         }
-
-        private static byte[] CreateIV(SecureRandom random, int ivLength)
-        {
-            return SecureRandom.GetNextBytes(random, ivLength);
-        }
     }
 }
