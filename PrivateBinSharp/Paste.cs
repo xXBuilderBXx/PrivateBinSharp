@@ -18,12 +18,12 @@ namespace PrivateBinSharp
 
         public string DeleteToken { get; internal set; }
 
-        internal string Url;
+        public string URL { get; internal set; }
 
         public string ViewURL
-            => Url + "?" + Id + "#" + Secret;
+            => URL + "?" + Id + "#" + Secret;
 
         public string DeleteURL
-            => Url + "?pasteid=" + Id + "&deletetoken=" + DeleteToken;
+            => URL + "?pasteid=" + Id + "&deletetoken=" + DeleteToken;
     }
 }

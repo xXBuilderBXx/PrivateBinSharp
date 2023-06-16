@@ -7,6 +7,7 @@ using PrivateBinSharp.Crypto.crypto.parameters;
 using PrivateBinSharp.Crypto.security;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Text.Unicode;
 
 namespace PrivateBinSharp
 {
@@ -35,7 +36,7 @@ namespace PrivateBinSharp
 
         private HttpClient Http;
 
-        public async Task<Paste> CreatePaste(string text, string password, string expire = "5min")
+        public async Task<Paste> CreatePaste(string text, string password, string expire = "5min", bool openDiscussion = false, bool burnAfterReading = false)
         {
             if (string.IsNullOrEmpty(text))
                 throw new ArgumentException("Paste text can't be empty.");
@@ -58,10 +59,10 @@ namespace PrivateBinSharp
                     };
                 }
             }
-            Tuple<PasteJson, byte[]> Json = null;
+            Tuple<PasteJson, byte[]> Json;
             try
             {
-                Json = await GeneratePasteData(text, password, expire);
+                Json = await GeneratePasteData(text, password, expire, openDiscussion, burnAfterReading);
             }
             catch (Exception ex)
             {
@@ -110,11 +111,11 @@ namespace PrivateBinSharp
                 Id = ResponseJson.id,
                 Secret = Base58.EncodePlain(Json.Item2),
                 DeleteToken = ResponseJson.deletetoken,
-                Url = HostUrl
+                URL = HostUrl
             };
         }
 
-        private async Task<Tuple<PasteJson, byte[]>> GeneratePasteData(string text, string password, string expire)
+        private async Task<Tuple<PasteJson, byte[]>> GeneratePasteData(string text, string password, string expire, bool openDiscussion, bool burnAfterReading)
         {
             SecureRandom rng = new();
 
@@ -124,14 +125,18 @@ namespace PrivateBinSharp
             });
             byte[] pasteBlob = Encoding.UTF8.GetBytes(pasteDataJson);
             byte[] _pastePassword = new byte[0];
+            if (!string.IsNullOrEmpty(password))
+                _pastePassword = UTF8Encoding.UTF8.GetBytes(password);
             byte[] urlSecret = new byte[32];
             rng.NextBytes(urlSecret);
             byte[] pastePassphrase = urlSecret;
+            if (_pastePassword.Any())
+                pastePassphrase = pastePassphrase.Concat(_pastePassword).ToArray();
             int kdfIterations = 100000;
             int kdfKeysize = 32;
             byte[] kdfSalt = new byte[8];
             rng.NextBytes(kdfSalt);
-            Pkcs5S2ParametersGenerator pdb = new(new Sha256Digest());
+            Pkcs5S2ParametersGenerator pdb = new Pkcs5S2ParametersGenerator(new Sha256Digest());
             pdb.Init(pastePassphrase, kdfSalt, kdfIterations);
             byte[] kdfKey = (pdb.GenerateDerivedMacParameters(256) as KeyParameter).GetKey();
             int nonceSize = 12;
@@ -141,8 +146,8 @@ namespace PrivateBinSharp
             string cipherMode = "gcm";
             int cipherTagSize = 128;
             string compressionType = "none";
-            int _openDiscussion = 0;
-            int _burnAfterReading = 0;
+            int _openDiscussion = openDiscussion ? 1 : 0;
+            int _burnAfterReading = burnAfterReading ? 1 : 0;
 
             object[] pasteMetaObj = new object[]
             {
