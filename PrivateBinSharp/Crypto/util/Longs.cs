@@ -1,9 +1,4 @@
-﻿#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-using System.Buffers.Binary;
-#endif
-#if NETCOREAPP3_0_OR_GREATER
-using System.Numerics;
-#endif
+﻿using System.Buffers.Binary;
 
 using PrivateBinSharp.Crypto.math.raw;
 
@@ -19,7 +14,6 @@ namespace PrivateBinSharp.Crypto.util
             return i & -i;
         }
 
-        [CLSCompliant(false)]
         public static ulong Reverse(ulong i)
         {
             i = Bits.BitPermuteStepSimple(i, 0x5555555555555555UL, 1);
@@ -28,7 +22,6 @@ namespace PrivateBinSharp.Crypto.util
             return ReverseBytes(i);
         }
 
-        [CLSCompliant(false)]
         public static ulong ReverseBytes(ulong i)
         {
             return BinaryPrimitives.ReverseEndianness(i);

@@ -101,7 +101,6 @@ namespace PrivateBinSharp.Crypto.util
             return data == null ? null : (byte[])data.Clone();
         }
 
-        [CLSCompliant(false)]
         public static uint[] Clone(uint[] data)
         {
             return data == null ? null : (uint[])data.Clone();

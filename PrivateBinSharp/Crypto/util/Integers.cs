@@ -23,7 +23,6 @@ namespace PrivateBinSharp.Crypto.util
             return BitOperations.TrailingZeroCount(i);
         }
 
-        [CLSCompliant(false)]
         public static int PopCount(uint u)
         {
             return BitOperations.PopCount(u);
