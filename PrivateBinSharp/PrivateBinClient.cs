@@ -14,9 +14,18 @@ namespace PrivateBinSharp
     {
         public PrivateBinClient(string hostUrl)
         {
+            if (string.IsNullOrEmpty(hostUrl))
+                throw new ArgumentException("Host url can't be empty.");
+
             HostUrl = hostUrl;
+            if (!HostUrl.EndsWith('/'))
+                HostUrl += '/';
+
             Http = new HttpClient();
-            Http.BaseAddress = new Uri(HostUrl);
+            if (!Uri.TryCreate(HostUrl, UriKind.Absolute, out Uri? uri))
+                throw new ArgumentException("Host url is invalid.");
+
+            Http.BaseAddress = uri;
             Http.DefaultRequestHeaders.Add("X-Requested-With", "JSONHttpRequest");
         }
 
@@ -26,34 +35,83 @@ namespace PrivateBinSharp
 
         private HttpClient Http;
 
-        public async Task<string> CreatePaste(string text, string password, string expire = "5min")
+        public async Task<Paste> CreatePaste(string text, string password, string expire = "5min")
         {
+            if (string.IsNullOrEmpty(text))
+                throw new ArgumentException("Paste text can't be empty.");
+
             if (FirstTimeCheck)
             {
+                HttpResponseMessage TestRes = null;
                 try
                 {
-                    HttpResponseMessage TestRes = await Http.GetAsync(HostUrl);
+                    TestRes = await Http.GetAsync(HostUrl);
                     TestRes.EnsureSuccessStatusCode();
                     FirstTimeCheck = false;
                 }
                 catch
                 {
-                    return string.Empty;
+                    return new Paste
+                    {
+                        IsSuccess = false,
+                        Response = TestRes
+                    };
                 }
             }
-            Tuple<PasteJson, byte[]> Json = await GeneratePasteData(text, password, expire);
+            Tuple<PasteJson, byte[]> Json = null;
+            try
+            {
+                Json = await GeneratePasteData(text, password, expire);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to generate encrypted data, " + ex.Message);
+            }
+
             string body = Newtonsoft.Json.JsonConvert.SerializeObject(Json.Item1);
             HttpRequestMessage Req = new HttpRequestMessage(HttpMethod.Post, HostUrl)
             {
                 Content = new StringContent(body, Encoding.UTF8)
             };
             Req.Headers.Add("X-Requested-With", "JSONHttpRequest");
-            HttpResponseMessage Res = await new HttpClient().SendAsync(Req);
-            string response = await Res.Content.ReadAsStringAsync();
-            Console.WriteLine("Raw: " + response);
-            PasteResponse? responseJson = Newtonsoft.Json.JsonConvert.DeserializeObject<PasteResponse>(response);
+            HttpResponseMessage Res = null;
+            try
+            {
+                Res = await Http.SendAsync(Req);
+            }
+            catch
+            {
+                return new Paste
+                {
+                    IsSuccess = false,
+                    Response = Res
+                };
+            }
 
-            return responseJson.id + '#' + Base58.EncodePlain(Json.Item2);
+            PasteResponse? ResponseJson = null;
+            try
+            {
+
+                string response = await Res.Content.ReadAsStringAsync();
+                ResponseJson = Newtonsoft.Json.JsonConvert.DeserializeObject<PasteResponse>(response);
+            }
+            catch
+            {
+                return new Paste
+                {
+                    IsSuccess = false,
+                    Response = Res
+                };
+            }
+            return new Paste
+            {
+                IsSuccess = true,
+                Response = Res,
+                Id = ResponseJson.id,
+                Secret = Base58.EncodePlain(Json.Item2),
+                DeleteToken = ResponseJson.deletetoken,
+                Url = HostUrl
+            };
         }
 
         private async Task<Tuple<PasteJson, byte[]>> GeneratePasteData(string text, string password, string expire)
