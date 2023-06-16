@@ -1,5 +1,5 @@
-using System.Text;
 using PrivateBinSharp.Crypto.util;
+using System.Text;
 
 namespace PrivateBinSharp.Crypto.crypto
 {

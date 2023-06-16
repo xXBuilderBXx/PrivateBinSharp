@@ -1,10 +1,10 @@
 ﻿#if NETCOREAPP3_0_OR_GREATER
+using PrivateBinSharp.Crypto.crypto.parameters;
+using PrivateBinSharp.Crypto.util;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
-using PrivateBinSharp.Crypto.crypto.parameters;
-using PrivateBinSharp.Crypto.util;
 
 namespace PrivateBinSharp.Crypto.crypto.engines
 {

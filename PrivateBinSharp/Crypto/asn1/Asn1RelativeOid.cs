@@ -1,6 +1,6 @@
-﻿using System.Text;
-using PrivateBinSharp.Crypto.math;
+﻿using PrivateBinSharp.Crypto.math;
 using PrivateBinSharp.Crypto.util;
+using System.Text;
 
 namespace PrivateBinSharp.Crypto.asn1
 {

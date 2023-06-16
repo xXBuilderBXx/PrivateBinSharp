@@ -1,6 +1,6 @@
+using PrivateBinSharp.Crypto.util;
 using System.Diagnostics;
 using System.Text;
-using PrivateBinSharp.Crypto.util;
 
 namespace PrivateBinSharp.Crypto.asn1
 {

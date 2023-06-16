@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using PrivateBinSharp.Crypto.util;
+﻿using PrivateBinSharp.Crypto.util;
+using System.Diagnostics;
 
 namespace PrivateBinSharp.Crypto.math.raw
 {

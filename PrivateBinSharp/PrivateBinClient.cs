@@ -5,9 +5,7 @@ using PrivateBinSharp.Crypto.crypto.generators;
 using PrivateBinSharp.Crypto.crypto.modes;
 using PrivateBinSharp.Crypto.crypto.parameters;
 using PrivateBinSharp.Crypto.security;
-using System.Net.NetworkInformation;
 using System.Text;
-using System.Text.Unicode;
 
 namespace PrivateBinSharp
 {
@@ -62,7 +60,7 @@ namespace PrivateBinSharp
             Tuple<PasteJson, byte[]> Json;
             try
             {
-                Json = await GeneratePasteData(text, password, expire, openDiscussion, burnAfterReading);
+                Json = GeneratePasteData(text, password, expire, openDiscussion, burnAfterReading);
             }
             catch (Exception ex)
             {
@@ -95,6 +93,8 @@ namespace PrivateBinSharp
 
                 string response = await Res.Content.ReadAsStringAsync();
                 ResponseJson = Newtonsoft.Json.JsonConvert.DeserializeObject<PasteResponse>(response);
+                if (ResponseJson == null)
+                    throw new Exception("Failed to parse response json.");
             }
             catch
             {
@@ -115,7 +115,7 @@ namespace PrivateBinSharp
             };
         }
 
-        private async Task<Tuple<PasteJson, byte[]>> GeneratePasteData(string text, string password, string expire, bool openDiscussion, bool burnAfterReading)
+        private Tuple<PasteJson, byte[]> GeneratePasteData(string text, string password, string expire, bool openDiscussion, bool burnAfterReading)
         {
             SecureRandom rng = new();
 
@@ -133,7 +133,6 @@ namespace PrivateBinSharp
             if (_pastePassword.Any())
                 pastePassphrase = pastePassphrase.Concat(_pastePassword).ToArray();
             int kdfIterations = 100000;
-            int kdfKeysize = 32;
             byte[] kdfSalt = new byte[8];
             rng.NextBytes(kdfSalt);
             Pkcs5S2ParametersGenerator pdb = new Pkcs5S2ParametersGenerator(new Sha256Digest());
