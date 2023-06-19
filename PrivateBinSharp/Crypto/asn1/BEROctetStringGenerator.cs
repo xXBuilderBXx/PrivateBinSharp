@@ -58,40 +58,9 @@ namespace PrivateBinSharp.Crypto.asn1
             {
                 Streams.ValidateBufferArguments(buffer, offset, count);
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 Write(buffer.AsSpan(offset, count));
-#else
-                int bufLen = _buf.Length;
-                int available = bufLen - _off;
-                if (count < available)
-                {
-                    Array.Copy(buffer, offset, _buf, _off, count);
-                    _off += count;
-                    return;
-                }
-
-                int pos = 0;
-                if (_off > 0)
-                {
-                    Array.Copy(buffer, offset, _buf, _off, available);
-                    pos = available;
-                    DerOctetString.Encode(_derOut, _buf, 0, bufLen);
-                    //_off = 0;
-                }
-
-                int remaining;
-                while ((remaining = count - pos) >= bufLen)
-                {
-                    DerOctetString.Encode(_derOut, buffer, offset + pos, bufLen);
-                    pos += bufLen;
-                }
-
-                Array.Copy(buffer, offset + pos, _buf, 0, remaining);
-                this._off = remaining;
-#endif
             }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             public override void Write(ReadOnlySpan<byte> buffer)
             {
                 int bufLen = _buf.Length;
@@ -119,7 +88,6 @@ namespace PrivateBinSharp.Crypto.asn1
                 buffer.CopyTo(_buf.AsSpan());
                 _off = buffer.Length;
             }
-#endif
 
             public override void WriteByte(byte value)
             {

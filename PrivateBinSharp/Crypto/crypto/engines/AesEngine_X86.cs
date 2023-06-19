@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP3_0_OR_GREATER
+﻿
 using PrivateBinSharp.Crypto.crypto.parameters;
 using PrivateBinSharp.Crypto.util;
 using System.Buffers.Binary;
@@ -831,4 +831,3 @@ namespace PrivateBinSharp.Crypto.crypto.engines
         }
     }
 }
-#endif

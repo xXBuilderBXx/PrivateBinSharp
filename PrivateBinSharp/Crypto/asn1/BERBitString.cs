@@ -74,24 +74,11 @@ namespace PrivateBinSharp.Crypto.asn1
             elements = null;
         }
 
-        [Obsolete("Use version without segmentLimit (which is ignored anyway)")]
-        public BerBitString(byte[] data, int padBits, int segmentLimit)
-            : this(data, padBits)
-        {
-        }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public BerBitString(ReadOnlySpan<byte> data)
-            : this(data, 0)
-        {
-        }
-
         public BerBitString(ReadOnlySpan<byte> data, int padBits)
             : base(data, padBits)
         {
             elements = null;
         }
-#endif
 
         public BerBitString(int namedBits)
             : base(namedBits)

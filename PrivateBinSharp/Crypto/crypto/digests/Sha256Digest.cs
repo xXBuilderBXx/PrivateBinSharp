@@ -74,7 +74,6 @@ namespace PrivateBinSharp.Crypto.crypto.digests
             }
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal override void ProcessWord(ReadOnlySpan<byte> word)
         {
             X[xOff] = Pack.BE_To_UInt32(word);
@@ -84,7 +83,6 @@ namespace PrivateBinSharp.Crypto.crypto.digests
                 ProcessBlock();
             }
         }
-#endif
 
         internal override void ProcessLength(
             long bitLength)
@@ -116,7 +114,6 @@ namespace PrivateBinSharp.Crypto.crypto.digests
             return DigestLength;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public override int DoFinal(Span<byte> output)
         {
             Finish();
@@ -134,7 +131,6 @@ namespace PrivateBinSharp.Crypto.crypto.digests
 
             return DigestLength;
         }
-#endif
 
         /**
         * reset the chaining variables

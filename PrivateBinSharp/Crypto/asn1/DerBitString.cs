@@ -114,7 +114,6 @@ namespace PrivateBinSharp.Crypto.asn1
             contents = Arrays.Prepend(data, (byte)padBits);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public DerBitString(ReadOnlySpan<byte> data)
             : this(data, 0)
         {
@@ -129,7 +128,6 @@ namespace PrivateBinSharp.Crypto.asn1
 
             contents = Arrays.Prepend(data, (byte)padBits);
         }
-#endif
 
         public DerBitString(int namedBits)
         {
@@ -208,7 +206,6 @@ namespace PrivateBinSharp.Crypto.asn1
             return Arrays.CopyOfRange(contents, 1, contents.Length);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal ReadOnlyMemory<byte> GetOctetsMemory()
         {
             if (contents[0] != 0)
@@ -224,7 +221,6 @@ namespace PrivateBinSharp.Crypto.asn1
 
             return contents.AsSpan(1);
         }
-#endif
 
         public virtual byte[] GetBytes()
         {

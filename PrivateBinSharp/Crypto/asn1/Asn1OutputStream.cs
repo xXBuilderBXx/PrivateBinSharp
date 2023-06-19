@@ -1,9 +1,7 @@
 using System.Diagnostics;
 using PrivateBinSharp.Crypto.util.io;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 using System.Buffers.Binary;
 using System.Numerics;
-#endif
 
 
 namespace PrivateBinSharp.Crypto.asn1
@@ -113,28 +111,11 @@ namespace PrivateBinSharp.Crypto.asn1
                 return;
             }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Span<byte> encoding = stackalloc byte[5];
             BinaryPrimitives.WriteUInt32BigEndian(encoding[1..], (uint)dl);
             int leadingZeroBytes = BitOperations.LeadingZeroCount((uint)dl) / 8;
             encoding[leadingZeroBytes] = (byte)(0x84 - leadingZeroBytes);
             Write(encoding[leadingZeroBytes..]);
-#else
-            byte[] stack = new byte[5];
-            int pos = stack.Length;
-
-            do
-            {
-                stack[--pos] = (byte)dl;
-                dl >>= 8;
-            }
-            while (dl > 0);
-
-            int count = stack.Length - pos;
-            stack[--pos] = (byte)(0x80 | count);
-
-            Write(stack, pos, count + 1);
-#endif
         }
 
         internal void WriteIdentifier(int flags, int tagNo)
@@ -161,11 +142,7 @@ namespace PrivateBinSharp.Crypto.asn1
 
             stack[--pos] = (byte)(flags | 0x1F);
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Write(stack[pos..]);
-#else
-            Write(stack, pos, stack.Length - pos);
-#endif
         }
 
         internal static IAsn1Encoding[] GetContentsEncodings(int encoding, Asn1Encodable[] elements)

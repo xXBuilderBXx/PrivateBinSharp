@@ -1,14 +1,7 @@
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 using System.Runtime.CompilerServices;
-#endif
-#if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-#endif
-
-#if NETCOREAPP3_0_OR_GREATER
-#endif
 using PrivateBinSharp.Crypto.crypto.engines;
 using PrivateBinSharp.Crypto.crypto.modes.gcm;
 using PrivateBinSharp.Crypto.crypto.parameters;
@@ -23,13 +16,11 @@ namespace PrivateBinSharp.Crypto.crypto.modes
     public sealed class GcmBlockCipher
         : IAeadBlockCipher
     {
-#if NETCOREAPP3_0_OR_GREATER
         private static readonly Vector128<byte> ReverseBytesMask =
             Vector128.Create((byte)15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
 
         private static bool IsFourWaySupported =>
             Pclmulqdq.IsSupported && Ssse3.IsSupported && Unsafe.SizeOf<Vector128<byte>>() == BlockSize;
-#endif
 
         internal static IGcmMultiplier CreateGcmMultiplier()
         {
@@ -53,9 +44,7 @@ namespace PrivateBinSharp.Crypto.crypto.modes
         private byte[] nonce;
         private byte[] initialAssociatedText;
         private byte[] H;
-#if NETCOREAPP3_0_OR_GREATER
         private Vector128<ulong>[] HPow = null;
-#endif
         private byte[] J0;
 
         // These fields are modified during processing
@@ -115,19 +104,11 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             initialised = true;
 
             KeyParameter keyParam;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             ReadOnlySpan<byte> newNonce;
-#else
-            byte[] newNonce;
-#endif
 
             if (parameters is AeadParameters aeadParameters)
             {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 newNonce = aeadParameters.Nonce;
-#else
-                newNonce = aeadParameters.GetNonce();
-#endif
                 initialAssociatedText = aeadParameters.GetAssociatedText();
 
                 int macSizeBits = aeadParameters.MacSize;
@@ -139,11 +120,7 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             }
             else if (parameters is ParametersWithIV withIV)
             {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 newNonce = withIV.IV;
-#else
-                newNonce = withIV.GetIV();
-#endif
                 initialAssociatedText = null;
                 macSize = 16;
                 keyParam = (KeyParameter)withIV.Parameters;
@@ -161,11 +138,7 @@ namespace PrivateBinSharp.Crypto.crypto.modes
 
             if (forEncryption)
             {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 if (nonce != null && newNonce.SequenceEqual(nonce))
-#else
-                if (nonce != null && Arrays.AreEqual(nonce, newNonce))
-#endif
                 {
                     if (keyParam == null)
                         throw new ArgumentException("cannot reuse nonce for GCM encryption");
@@ -175,11 +148,7 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 }
             }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             nonce = newNonce.ToArray();
-#else
-            nonce = newNonce;
-#endif
             if (keyParam != null)
             {
                 lastKey = keyParam.GetKey();
@@ -200,7 +169,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 multiplier.Init(H);
                 exp = null;
 
-#if NETCOREAPP3_0_OR_GREATER
                 if (IsFourWaySupported)
                 {
                     var H1 = GcmUtilities.Load(H);
@@ -210,7 +178,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
 
                     HPow = new Vector128<ulong>[4] { H4, H3, H2, H1 };
                 }
-#endif
             }
             else if (H == null)
             {
@@ -247,11 +214,7 @@ namespace PrivateBinSharp.Crypto.crypto.modes
 
             if (initialAssociatedText != null)
             {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 ProcessAadBytes(initialAssociatedText);
-#else
-                ProcessAadBytes(initialAssociatedText, 0, initialAssociatedText.Length);
-#endif
             }
         }
 
@@ -299,44 +262,9 @@ namespace PrivateBinSharp.Crypto.crypto.modes
 
         public void ProcessAadBytes(byte[] inBytes, int inOff, int len)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             ProcessAadBytes(inBytes.AsSpan(inOff, len));
-#else
-            CheckStatus();
-
-            if (atBlockPos > 0)
-            {
-                int available = BlockSize - atBlockPos;
-                if (len < available)
-                {
-                    Array.Copy(inBytes, inOff, atBlock, atBlockPos, len);
-                    atBlockPos += len;
-                    return;
-                }
-
-                Array.Copy(inBytes, inOff, atBlock, atBlockPos, available);
-                gHASHBlock(S_at, atBlock);
-                atLength += BlockSize;
-                inOff += available;
-                len -= available;
-                //atBlockPos = 0;
-            }
-
-            int inLimit = inOff + len - BlockSize;
-
-            while (inOff <= inLimit)
-            {
-                gHASHBlock(S_at, inBytes, inOff);
-                atLength += BlockSize;
-                inOff += BlockSize;
-            }
-
-            atBlockPos = BlockSize + inLimit - inOff;
-            Array.Copy(inBytes, inOff, atBlock, 0, atBlockPos);
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public void ProcessAadBytes(ReadOnlySpan<byte> input)
         {
             CheckStatus();
@@ -368,7 +296,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             input.CopyTo(atBlock);
             atBlockPos = input.Length;
         }
-#endif
 
         private void InitCipher()
         {
@@ -412,20 +339,12 @@ namespace PrivateBinSharp.Crypto.crypto.modes
 
                 if (forEncryption)
                 {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                     EncryptBlock(bufBlock, output.AsSpan(outOff));
-#else
-                    EncryptBlock(bufBlock, 0, output, outOff);
-#endif
                     bufOff = 0;
                 }
                 else
                 {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                     DecryptBlock(bufBlock, output.AsSpan(outOff));
-#else
-                    DecryptBlock(bufBlock, 0, output, outOff);
-#endif
                     Array.Copy(bufBlock, BlockSize, bufBlock, 0, macSize);
                     bufOff = macSize;
                 }
@@ -436,7 +355,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             return 0;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public int ProcessByte(byte input, Span<byte> output)
         {
             CheckStatus();
@@ -473,7 +391,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             }
             return 0;
         }
-#endif
 
         public int ProcessBytes(byte[] input, int inOff, int len, byte[] output, int outOff)
         {
@@ -481,152 +398,9 @@ namespace PrivateBinSharp.Crypto.crypto.modes
 
             Check.DataLength(input, inOff, len, "input buffer too short");
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return ProcessBytes(input.AsSpan(inOff, len), Spans.FromNullable(output, outOff));
-#else
-            int resultLen = bufOff + len;
-
-            if (forEncryption)
-            {
-                resultLen &= -BlockSize;
-                if (resultLen > 0)
-                {
-                    Check.OutputLength(output, outOff, resultLen, "output buffer too short");
-
-                    uint blocksNeeded = (uint)resultLen >> 4;
-                    if (blocksRemaining < blocksNeeded)
-                        throw new InvalidOperationException("Attempt to process too many blocks");
-
-                    blocksRemaining -= blocksNeeded;
-
-                    if (totalLength == 0)
-                    {
-                        InitCipher();
-                    }
-                }
-
-                if (bufOff > 0)
-                {
-                    int available = BlockSize - bufOff;
-                    if (len < available)
-                    {
-                        Array.Copy(input, inOff, bufBlock, bufOff, len);
-                        bufOff += len;
-                        return 0;
-                    }
-
-                    Array.Copy(input, inOff, bufBlock, bufOff, available);
-                    inOff += available;
-                    len -= available;
-
-                    EncryptBlock(bufBlock, 0, output, outOff);
-                    outOff += BlockSize;
-
-                    //bufOff = 0;
-                }
-
-                int inLimit1 = inOff + len - BlockSize;
-                int inLimit2 = inLimit1 - BlockSize;
-
-                while (inOff <= inLimit2)
-                {
-                    EncryptBlocks2(input, inOff, output, outOff);
-                    inOff += BlockSize * 2;
-                    outOff += BlockSize * 2;
-                }
-
-                if (inOff <= inLimit1)
-                {
-                    EncryptBlock(input, inOff, output, outOff);
-                    inOff += BlockSize;
-                    //outOff += BlockSize;
-                }
-
-                bufOff = BlockSize + inLimit1 - inOff;
-                Array.Copy(input, inOff, bufBlock, 0, bufOff);
-            }
-            else
-            {
-                resultLen -= macSize;
-                resultLen &= -BlockSize;
-                if (resultLen > 0)
-                {
-                    Check.OutputLength(output, outOff, resultLen, "output buffer too short");
-
-                    uint blocksNeeded = (uint)resultLen >> 4;
-                    if (blocksRemaining < blocksNeeded)
-                        throw new InvalidOperationException("Attempt to process too many blocks");
-
-                    blocksRemaining -= blocksNeeded;
-
-                    if (totalLength == 0)
-                    {
-                        InitCipher();
-                    }
-                }
-
-                int available = bufBlock.Length - bufOff;
-                if (len < available)
-                {
-                    Array.Copy(input, inOff, bufBlock, bufOff, len);
-                    bufOff += len;
-                    return 0;
-                }
-
-                if (bufOff >= BlockSize)
-                {
-                    DecryptBlock(bufBlock, 0, output, outOff);
-                    outOff += BlockSize;
-
-                    bufOff -= BlockSize;
-                    Array.Copy(bufBlock, BlockSize, bufBlock, 0, bufOff);
-
-                    available += BlockSize;
-                    if (len < available)
-                    {
-                        Array.Copy(input, inOff, bufBlock, bufOff, len);
-                        bufOff += len;
-
-                        totalLength += BlockSize;
-                        return BlockSize;
-                    }
-                }
-
-                int inLimit1 = inOff + len - bufBlock.Length;
-                int inLimit2 = inLimit1 - BlockSize;
-
-                available = BlockSize - bufOff;
-                Array.Copy(input, inOff, bufBlock, bufOff, available);
-                inOff += available;
-
-                DecryptBlock(bufBlock, 0, output, outOff);
-                outOff += BlockSize;
-                //bufOff = 0;
-
-                while (inOff <= inLimit2)
-                {
-                    DecryptBlocks2(input, inOff, output, outOff);
-                    inOff += BlockSize * 2;
-                    outOff += BlockSize * 2;
-                }
-
-                if (inOff <= inLimit1)
-                {
-                    DecryptBlock(input, inOff, output, outOff);
-                    inOff += BlockSize;
-                    //outOff += BlockSize;
-                }
-
-                bufOff = bufBlock.Length + inLimit1 - inOff;
-                Array.Copy(input, inOff, bufBlock, 0, bufOff);
-            }
-
-            totalLength += (uint)resultLen;
-            return resultLen;
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public int ProcessBytes(ReadOnlySpan<byte> input, Span<byte> output)
         {
             CheckStatus();
@@ -671,7 +445,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                     //bufOff = 0;
                 }
 
-#if NETCOREAPP3_0_OR_GREATER
                 if (IsFourWaySupported && input.Length >= BlockSize * 4)
                 {
                     EncryptBlocks4(ref input, ref output);
@@ -684,7 +457,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                     }
                 }
                 else
-#endif
                 {
                     while (input.Length >= BlockSize * 2)
                     {
@@ -763,7 +535,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 output = output[BlockSize..];
                 //bufOff = 0;
 
-#if NETCOREAPP3_0_OR_GREATER
                 if (IsFourWaySupported && input.Length >= inLimit4)
                 {
                     DecryptBlocks4(ref input, ref output, inLimit4);
@@ -776,7 +547,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                     }
                 }
                 else
-#endif
                 {
                     while (input.Length >= inLimit2)
                     {
@@ -800,128 +570,12 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             totalLength += (uint)resultLen;
             return resultLen;
         }
-#endif
 
         public int DoFinal(byte[] output, int outOff)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return DoFinal(output.AsSpan(outOff));
-#else
-            CheckStatus();
-
-            int extra = bufOff;
-
-            if (forEncryption)
-            {
-                Check.OutputLength(output, outOff, extra + macSize, "output buffer too short");
-            }
-            else
-            {
-                if (extra < macSize)
-                    throw new InvalidCipherTextException("data too short");
-
-                extra -= macSize;
-
-                Check.OutputLength(output, outOff, extra, "output buffer too short");
-            }
-
-            if (totalLength == 0)
-            {
-                InitCipher();
-            }
-
-            if (extra > 0)
-            {
-                if (blocksRemaining == 0)
-                    throw new InvalidOperationException("Attempt to process too many blocks");
-
-                --blocksRemaining;
-
-                ProcessPartial(bufBlock, 0, extra, output, outOff);
-            }
-
-            atLength += (uint)atBlockPos;
-
-            if (atLength > atLengthPre)
-            {
-                /*
-                 *  Some AAD was sent after the cipher started. We determine the difference b/w the hash value
-                 *  we actually used when the cipher started (S_atPre) and the final hash value calculated (S_at).
-                 *  Then we carry this difference forward by multiplying by H^c, where c is the number of (full or
-                 *  partial) cipher-text blocks produced, and adjust the current hash.
-                 */
-
-                // Finish hash for partial AAD block
-                if (atBlockPos > 0)
-                {
-                    gHASHPartial(S_at, atBlock, 0, atBlockPos);
-                }
-
-                // Find the difference between the AAD hashes
-                if (atLengthPre > 0)
-                {
-                    GcmUtilities.Xor(S_at, S_atPre);
-                }
-
-                // Number of cipher-text blocks produced
-                long c = (long)(((totalLength * 8) + 127) >> 7);
-
-                // Calculate the adjustment factor
-                byte[] H_c = new byte[16];
-                if (exp == null)
-                {
-                    exp = new BasicGcmExponentiator();
-                    exp.Init(H);
-                }
-                exp.ExponentiateX(c, H_c);
-
-                // Carry the difference forward
-                GcmUtilities.Multiply(S_at, H_c);
-
-                // Adjust the current hash
-                GcmUtilities.Xor(S, S_at);
-            }
-
-            // Final gHASH
-            byte[] X = new byte[BlockSize];
-            Pack.UInt64_To_BE(atLength * 8UL, X, 0);
-            Pack.UInt64_To_BE(totalLength * 8UL, X, 8);
-
-            gHASHBlock(S, X);
-
-            // T = MSBt(GCTRk(J0,S))
-            byte[] tag = new byte[BlockSize];
-            cipher.ProcessBlock(J0, 0, tag, 0);
-            GcmUtilities.Xor(tag, S);
-
-            int resultLen = extra;
-
-            // We place into macBlock our calculated value for T
-            this.macBlock = new byte[macSize];
-            Array.Copy(tag, 0, macBlock, 0, macSize);
-
-            if (forEncryption)
-            {
-                // Append T to the message
-                Array.Copy(macBlock, 0, output, outOff + bufOff, macSize);
-                resultLen += macSize;
-            }
-            else
-            {
-                // Retrieve the T value from the message and compare to calculated one
-                byte[] msgMac = new byte[macSize];
-                Array.Copy(bufBlock, extra, msgMac, 0, macSize);
-                if (!Arrays.FixedTimeEquals(this.macBlock, msgMac))
-                    throw new InvalidCipherTextException("mac check in GCM failed");
-            }
-
-            Reset(false);
-
-            return resultLen;
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public int DoFinal(Span<byte> output)
         {
             CheckStatus();
@@ -1036,7 +690,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
 
             return resultLen;
         }
-#endif
 
         public void Reset()
         {
@@ -1076,21 +729,15 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             }
             else if (initialAssociatedText != null)
             {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 ProcessAadBytes(initialAssociatedText);
-#else
-                ProcessAadBytes(initialAssociatedText, 0, initialAssociatedText.Length);
-#endif
             }
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         private void DecryptBlock(ReadOnlySpan<byte> input, Span<byte> output)
         {
             Span<byte> ctrBlock = stackalloc byte[BlockSize];
 
             GetNextCtrBlock(ctrBlock);
-#if NETCOREAPP3_0_OR_GREATER
             if (Sse2.IsSupported && Unsafe.SizeOf<Vector128<byte>>() == BlockSize)
             {
                 var t0 = MemoryMarshal.Read<Vector128<byte>>(input);
@@ -1104,7 +751,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 MemoryMarshal.Write(S.AsSpan(), ref t2);
             }
             else
-#endif
             {
                 for (int i = 0; i < BlockSize; i += 4)
                 {
@@ -1132,7 +778,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             Span<byte> ctrBlock = stackalloc byte[BlockSize];
 
             GetNextCtrBlock(ctrBlock);
-#if NETCOREAPP3_0_OR_GREATER
             if (Sse2.IsSupported && Unsafe.SizeOf<Vector128<byte>>() == BlockSize)
             {
                 var t0 = MemoryMarshal.Read<Vector128<byte>>(input);
@@ -1146,7 +791,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 MemoryMarshal.Write(S.AsSpan(), ref t2);
             }
             else
-#endif
             {
                 for (int i = 0; i < BlockSize; i += 4)
                 {
@@ -1172,7 +816,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             output = output[BlockSize..];
 
             GetNextCtrBlock(ctrBlock);
-#if NETCOREAPP3_0_OR_GREATER
             if (Sse2.IsSupported && Unsafe.SizeOf<Vector128<byte>>() == BlockSize)
             {
                 var t0 = MemoryMarshal.Read<Vector128<byte>>(input);
@@ -1186,7 +829,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 MemoryMarshal.Write(S.AsSpan(), ref t2);
             }
             else
-#endif
             {
                 for (int i = 0; i < BlockSize; i += 4)
                 {
@@ -1209,7 +851,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             multiplier.MultiplyH(S);
         }
 
-#if NETCOREAPP3_0_OR_GREATER
         private void DecryptBlocks4(ref ReadOnlySpan<byte> input, ref Span<byte> output, int limit)
         {
             if (!IsFourWaySupported)
@@ -1280,14 +921,12 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             S128 = Ssse3.Shuffle(S128, ReverseBytesMask);
             MemoryMarshal.Write(S.AsSpan(), ref S128);
         }
-#endif
 
         private void EncryptBlock(ReadOnlySpan<byte> input, Span<byte> output)
         {
             Span<byte> ctrBlock = stackalloc byte[BlockSize];
 
             GetNextCtrBlock(ctrBlock);
-#if NETCOREAPP3_0_OR_GREATER
             if (Sse2.IsSupported && Unsafe.SizeOf<Vector128<byte>>() == BlockSize)
             {
                 var t0 = MemoryMarshal.Read<Vector128<byte>>(input);
@@ -1301,7 +940,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 MemoryMarshal.Write(S.AsSpan(), ref t2);
             }
             else
-#endif
             {
                 for (int i = 0; i < BlockSize; i += 4)
                 {
@@ -1329,7 +967,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             Span<byte> ctrBlocks = stackalloc byte[BlockSize * 2];
             GetNextCtrBlocks2(ctrBlocks);
 
-#if NETCOREAPP3_0_OR_GREATER
             if (Sse2.IsSupported && Unsafe.SizeOf<Vector128<byte>>() == BlockSize)
             {
                 var t0 = MemoryMarshal.Read<Vector128<byte>>(input);
@@ -1343,7 +980,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 MemoryMarshal.Write(S.AsSpan(), ref t2);
             }
             else
-#endif
             {
                 for (int i = 0; i < BlockSize; i += 4)
                 {
@@ -1369,7 +1005,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             output = output[BlockSize..];
             ctrBlocks = ctrBlocks[BlockSize..];
 
-#if NETCOREAPP3_0_OR_GREATER
             if (Sse2.IsSupported && Unsafe.SizeOf<Vector128<byte>>() == BlockSize)
             {
                 var t0 = MemoryMarshal.Read<Vector128<byte>>(input);
@@ -1383,7 +1018,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 MemoryMarshal.Write(S.AsSpan(), ref t2);
             }
             else
-#endif
             {
                 for (int i = 0; i < BlockSize; i += 4)
                 {
@@ -1406,7 +1040,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             multiplier.MultiplyH(S);
         }
 
-#if NETCOREAPP3_0_OR_GREATER
         private void EncryptBlocks4(ref ReadOnlySpan<byte> input, ref Span<byte> output)
         {
             if (!IsFourWaySupported)
@@ -1474,7 +1107,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             S128 = Ssse3.Shuffle(S128, ReverseBytesMask);
             MemoryMarshal.Write(S.AsSpan(), ref S128);
         }
-#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GetNextCtrBlock(Span<byte> block)
@@ -1504,7 +1136,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             uint counter4 = counter0 + 4U;
             counter32 = counter4;
 
-#if NETCOREAPP3_0_OR_GREATER
             if (AesEngine_X86.IsSupported && cipher is AesEngine_X86 x86)
             {
                 counter.CopyTo(blocks);
@@ -1519,7 +1150,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
                 x86.ProcessFourBlocks(blocks, blocks);
                 return;
             }
-#endif
 
             Pack.UInt32_To_BE(counter1, counter, 12);
             cipher.ProcessBlock(counter, blocks);
@@ -1553,192 +1183,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             partialBlock.CopyTo(output);
             totalLength += (uint)partialBlock.Length;
         }
-#else
-        private void DecryptBlock(byte[] inBuf, int inOff, byte[] outBuf, int outOff)
-        {
-            byte[] ctrBlock = new byte[BlockSize];
-
-            GetNextCtrBlock(ctrBlock);
-            {
-                for (int i = 0; i < BlockSize; i += 4)
-                {
-                    byte c0 = inBuf[inOff + i + 0];
-                    byte c1 = inBuf[inOff + i + 1];
-                    byte c2 = inBuf[inOff + i + 2];
-                    byte c3 = inBuf[inOff + i + 3];
-
-                    S[i + 0] ^= c0;
-                    S[i + 1] ^= c1;
-                    S[i + 2] ^= c2;
-                    S[i + 3] ^= c3;
-
-                    outBuf[outOff + i + 0] = (byte)(c0 ^ ctrBlock[i + 0]);
-                    outBuf[outOff + i + 1] = (byte)(c1 ^ ctrBlock[i + 1]);
-                    outBuf[outOff + i + 2] = (byte)(c2 ^ ctrBlock[i + 2]);
-                    outBuf[outOff + i + 3] = (byte)(c3 ^ ctrBlock[i + 3]);
-                }
-            }
-            multiplier.MultiplyH(S);
-        }
-
-        private void DecryptBlocks2(byte[] inBuf, int inOff, byte[] outBuf, int outOff)
-        {
-            byte[] ctrBlock = new byte[BlockSize];
-
-            GetNextCtrBlock(ctrBlock);
-            {
-                for (int i = 0; i < BlockSize; i += 4)
-                {
-                    byte c0 = inBuf[inOff + i + 0];
-                    byte c1 = inBuf[inOff + i + 1];
-                    byte c2 = inBuf[inOff + i + 2];
-                    byte c3 = inBuf[inOff + i + 3];
-
-                    S[i + 0] ^= c0;
-                    S[i + 1] ^= c1;
-                    S[i + 2] ^= c2;
-                    S[i + 3] ^= c3;
-
-                    outBuf[outOff + i + 0] = (byte)(c0 ^ ctrBlock[i + 0]);
-                    outBuf[outOff + i + 1] = (byte)(c1 ^ ctrBlock[i + 1]);
-                    outBuf[outOff + i + 2] = (byte)(c2 ^ ctrBlock[i + 2]);
-                    outBuf[outOff + i + 3] = (byte)(c3 ^ ctrBlock[i + 3]);
-                }
-            }
-            multiplier.MultiplyH(S);
-
-            inOff += BlockSize;
-            outOff += BlockSize;
-
-            GetNextCtrBlock(ctrBlock);
-            {
-                for (int i = 0; i < BlockSize; i += 4)
-                {
-                    byte c0 = inBuf[inOff + i + 0];
-                    byte c1 = inBuf[inOff + i + 1];
-                    byte c2 = inBuf[inOff + i + 2];
-                    byte c3 = inBuf[inOff + i + 3];
-
-                    S[i + 0] ^= c0;
-                    S[i + 1] ^= c1;
-                    S[i + 2] ^= c2;
-                    S[i + 3] ^= c3;
-
-                    outBuf[outOff + i + 0] = (byte)(c0 ^ ctrBlock[i + 0]);
-                    outBuf[outOff + i + 1] = (byte)(c1 ^ ctrBlock[i + 1]);
-                    outBuf[outOff + i + 2] = (byte)(c2 ^ ctrBlock[i + 2]);
-                    outBuf[outOff + i + 3] = (byte)(c3 ^ ctrBlock[i + 3]);
-                }
-            }
-            multiplier.MultiplyH(S);
-        }
-
-        private void EncryptBlock(byte[] inBuf, int inOff, byte[] outBuf, int outOff)
-        {
-            byte[] ctrBlock = new byte[BlockSize];
-
-            GetNextCtrBlock(ctrBlock);
-            {
-                for (int i = 0; i < BlockSize; i += 4)
-                {
-                    byte c0 = (byte)(ctrBlock[i + 0] ^ inBuf[inOff + i + 0]);
-                    byte c1 = (byte)(ctrBlock[i + 1] ^ inBuf[inOff + i + 1]);
-                    byte c2 = (byte)(ctrBlock[i + 2] ^ inBuf[inOff + i + 2]);
-                    byte c3 = (byte)(ctrBlock[i + 3] ^ inBuf[inOff + i + 3]);
-
-                    S[i + 0] ^= c0;
-                    S[i + 1] ^= c1;
-                    S[i + 2] ^= c2;
-                    S[i + 3] ^= c3;
-
-                    outBuf[outOff + i + 0] = c0;
-                    outBuf[outOff + i + 1] = c1;
-                    outBuf[outOff + i + 2] = c2;
-                    outBuf[outOff + i + 3] = c3;
-                }
-            }
-            multiplier.MultiplyH(S);
-        }
-
-        private void EncryptBlocks2(byte[] inBuf, int inOff, byte[] outBuf, int outOff)
-        {
-            byte[] ctrBlock = new byte[BlockSize];
-
-            GetNextCtrBlock(ctrBlock);
-            {
-                for (int i = 0; i < BlockSize; i += 4)
-                {
-                    byte c0 = (byte)(ctrBlock[i + 0] ^ inBuf[inOff + i + 0]);
-                    byte c1 = (byte)(ctrBlock[i + 1] ^ inBuf[inOff + i + 1]);
-                    byte c2 = (byte)(ctrBlock[i + 2] ^ inBuf[inOff + i + 2]);
-                    byte c3 = (byte)(ctrBlock[i + 3] ^ inBuf[inOff + i + 3]);
-
-                    S[i + 0] ^= c0;
-                    S[i + 1] ^= c1;
-                    S[i + 2] ^= c2;
-                    S[i + 3] ^= c3;
-
-                    outBuf[outOff + i + 0] = c0;
-                    outBuf[outOff + i + 1] = c1;
-                    outBuf[outOff + i + 2] = c2;
-                    outBuf[outOff + i + 3] = c3;
-                }
-            }
-            multiplier.MultiplyH(S);
-
-            inOff += BlockSize;
-            outOff += BlockSize;
-
-            GetNextCtrBlock(ctrBlock);
-            {
-                for (int i = 0; i < BlockSize; i += 4)
-                {
-                    byte c0 = (byte)(ctrBlock[i + 0] ^ inBuf[inOff + i + 0]);
-                    byte c1 = (byte)(ctrBlock[i + 1] ^ inBuf[inOff + i + 1]);
-                    byte c2 = (byte)(ctrBlock[i + 2] ^ inBuf[inOff + i + 2]);
-                    byte c3 = (byte)(ctrBlock[i + 3] ^ inBuf[inOff + i + 3]);
-
-                    S[i + 0] ^= c0;
-                    S[i + 1] ^= c1;
-                    S[i + 2] ^= c2;
-                    S[i + 3] ^= c3;
-
-                    outBuf[outOff + i + 0] = c0;
-                    outBuf[outOff + i + 1] = c1;
-                    outBuf[outOff + i + 2] = c2;
-                    outBuf[outOff + i + 3] = c3;
-                }
-            }
-            multiplier.MultiplyH(S);
-        }
-
-        private void GetNextCtrBlock(byte[] block)
-        {
-            Pack.UInt32_To_BE(++counter32, counter, 12);
-
-            cipher.ProcessBlock(counter, 0, block, 0);
-        }
-
-        private void ProcessPartial(byte[] buf, int off, int len, byte[] output, int outOff)
-        {
-            byte[] ctrBlock = new byte[BlockSize];
-            GetNextCtrBlock(ctrBlock);
-
-            if (forEncryption)
-            {
-                GcmUtilities.Xor(buf, off, ctrBlock, 0, len);
-                gHASHPartial(S, buf, off, len);
-            }
-            else
-            {
-                gHASHPartial(S, buf, off, len);
-                GcmUtilities.Xor(buf, off, ctrBlock, 0, len);
-            }
-
-            Array.Copy(buf, off, output, outOff, len);
-            totalLength += (uint)len;
-        }
-#endif
 
         private void gHASH(byte[] Y, byte[] b, int len)
         {
@@ -1749,7 +1193,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             }
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void gHASHBlock(byte[] Y, ReadOnlySpan<byte> b)
         {
@@ -1763,19 +1206,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes
             GcmUtilities.Xor(Y, b, b.Length);
             multiplier.MultiplyH(Y);
         }
-#else
-        private void gHASHBlock(byte[] Y, byte[] b)
-        {
-            GcmUtilities.Xor(Y, b);
-            multiplier.MultiplyH(Y);
-        }
-
-        private void gHASHBlock(byte[] Y, byte[] b, int off)
-        {
-            GcmUtilities.Xor(Y, b, off);
-            multiplier.MultiplyH(Y);
-        }
-#endif
 
         private void gHASHPartial(byte[] Y, byte[] b, int off, int len)
         {

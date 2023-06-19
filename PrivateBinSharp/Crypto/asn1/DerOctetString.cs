@@ -9,22 +9,10 @@ namespace PrivateBinSharp.Crypto.asn1
         {
         }
 
-        public DerOctetString(IAsn1Convertible obj)
-            : this(obj.ToAsn1Object())
-        {
-        }
-
         public DerOctetString(Asn1Encodable obj)
             : base(obj.GetEncoded(Der))
         {
         }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        internal DerOctetString(ReadOnlySpan<byte> contents)
-            : base(contents)
-        {
-        }
-#endif
 
         internal override IAsn1Encoding GetEncoding(int encoding)
         {
@@ -53,7 +41,6 @@ namespace PrivateBinSharp.Crypto.asn1
             asn1Out.Write(buf, off, len);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal static void Encode(Asn1OutputStream asn1Out, ReadOnlySpan<byte> buf)
         {
             asn1Out.WriteIdentifier(Asn1Tags.Universal, Asn1Tags.OctetString);
@@ -68,6 +55,5 @@ namespace PrivateBinSharp.Crypto.asn1
             asn1Out.Write(buf1);
             asn1Out.Write(buf2);
         }
-#endif
     }
 }

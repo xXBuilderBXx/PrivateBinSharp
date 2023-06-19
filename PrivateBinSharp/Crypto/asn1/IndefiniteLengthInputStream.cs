@@ -54,7 +54,6 @@ namespace PrivateBinSharp.Crypto.asn1
             return numRead + 1;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public override int Read(Span<byte> buffer)
         {
             // Only use this optimisation if we aren't checking for 00
@@ -73,7 +72,6 @@ namespace PrivateBinSharp.Crypto.asn1
 
             return numRead + 1;
         }
-#endif
 
         public override int ReadByte()
         {

@@ -1,6 +1,4 @@
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 using System.Buffers;
-#endif
 using PrivateBinSharp.Crypto.util;
 
 namespace PrivateBinSharp.Crypto.asn1
@@ -83,7 +81,6 @@ namespace PrivateBinSharp.Crypto.asn1
 
             int charLen = byteLen / 2;
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             m_str = string.Create(charLen, contents, (chars, bytes) =>
             {
                 for (int i = 0; i < chars.Length; ++i)
@@ -91,16 +88,6 @@ namespace PrivateBinSharp.Crypto.asn1
                     chars[i] = (char)(bytes[2 * i] << 8 | bytes[2 * i + 1] & 0xff);
                 }
             });
-#else
-            char[] cs = new char[charLen];
-
-            for (int i = 0; i != charLen; i++)
-            {
-                cs[i] = (char)((contents[2 * i] << 8) | (contents[2 * i + 1] & 0xff));
-            }
-
-            m_str = new string(cs);
-#endif
         }
 
 #if !(NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER)
@@ -180,17 +167,9 @@ namespace PrivateBinSharp.Crypto.asn1
             return new DerBmpString(contents);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal static DerBmpString CreatePrimitive<TState>(int length, TState state, SpanAction<char, TState> action)
         {
             return new DerBmpString(string.Create(length, state, action));
         }
-#else
-        internal static DerBmpString CreatePrimitive(char[] str)
-        {
-            // TODO[asn1] Asn1InputStream has a validator/converter that should be unified in this class somehow
-            return new DerBmpString(str);
-        }
-#endif
     }
 }

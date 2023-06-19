@@ -52,78 +52,23 @@ namespace PrivateBinSharp.Crypto.security
                 NistObjectIdentifiers.IdAes256Ofb,
                 NistObjectIdentifiers.IdAes256Wrap);
             AddAlgorithm("ARIA");
-            //AddAlgorithm("ARIA128",
-            //    NsriObjectIdentifiers.id_aria128_cbc,
-            //    NsriObjectIdentifiers.id_aria128_ccm,
-            //    NsriObjectIdentifiers.id_aria128_cfb,
-            //    NsriObjectIdentifiers.id_aria128_ctr,
-            //    NsriObjectIdentifiers.id_aria128_ecb,
-            //    NsriObjectIdentifiers.id_aria128_gcm,
-            //    NsriObjectIdentifiers.id_aria128_ocb2,
-            //    NsriObjectIdentifiers.id_aria128_ofb);
-            //AddAlgorithm("ARIA192",
-            //    NsriObjectIdentifiers.id_aria192_cbc,
-            //    NsriObjectIdentifiers.id_aria192_ccm,
-            //    NsriObjectIdentifiers.id_aria192_cfb,
-            //    NsriObjectIdentifiers.id_aria192_ctr,
-            //    NsriObjectIdentifiers.id_aria192_ecb,
-            //    NsriObjectIdentifiers.id_aria192_gcm,
-            //    NsriObjectIdentifiers.id_aria192_ocb2,
-            //    NsriObjectIdentifiers.id_aria192_ofb);
-            //AddAlgorithm("ARIA256",
-            //    NsriObjectIdentifiers.id_aria256_cbc,
-            //    NsriObjectIdentifiers.id_aria256_ccm,
-            //    NsriObjectIdentifiers.id_aria256_cfb,
-            //    NsriObjectIdentifiers.id_aria256_ctr,
-            //    NsriObjectIdentifiers.id_aria256_ecb,
-            //    NsriObjectIdentifiers.id_aria256_gcm,
-            //    NsriObjectIdentifiers.id_aria256_ocb2,
-            //    NsriObjectIdentifiers.id_aria256_ofb);
+            
             AddAlgorithm("BLOWFISH",
                 "1.3.6.1.4.1.3029.1.2");
             AddAlgorithm("CAMELLIA",
                 "CAMELLIAWRAP");
-            //AddAlgorithm("CAMELLIA128",
-            //    NttObjectIdentifiers.IdCamellia128Cbc,
-            //    NttObjectIdentifiers.IdCamellia128Wrap);
-            //AddAlgorithm("CAMELLIA192",
-            //    NttObjectIdentifiers.IdCamellia192Cbc,
-            //    NttObjectIdentifiers.IdCamellia192Wrap);
-            //AddAlgorithm("CAMELLIA256",
-            //    NttObjectIdentifiers.IdCamellia256Cbc,
-            //    NttObjectIdentifiers.IdCamellia256Wrap);
+            
             AddAlgorithm("CAST5",
                 "1.2.840.113533.7.66.10");
             AddAlgorithm("CAST6");
             AddAlgorithm("CHACHA");
-            //AddAlgorithm("CHACHA7539",
-            //    "CHACHA20",
-            //    "CHACHA20-POLY1305",
-            //    PkcsObjectIdentifiers.IdAlgAeadChaCha20Poly1305);
-            //AddAlgorithm("DES",
-            //    OiwObjectIdentifiers.DesCbc,
-            //    OiwObjectIdentifiers.DesCfb,
-            //    OiwObjectIdentifiers.DesEcb,
-            //    OiwObjectIdentifiers.DesOfb);
-            //AddAlgorithm("DESEDE",
-            //    "DESEDEWRAP",
-            //    "TDEA",
-            //    OiwObjectIdentifiers.DesEde,
-            //    PkcsObjectIdentifiers.IdAlgCms3DesWrap);
-            //AddAlgorithm("DESEDE3",
-            //    PkcsObjectIdentifiers.DesEde3Cbc);
-            //AddAlgorithm("GOST28147",
-            //    "GOST",
-            //    "GOST-28147",
-            //    CryptoProObjectIdentifiers.GostR28147Gcfb);
+            
             AddAlgorithm("HC128");
             AddAlgorithm("HC256");
             AddAlgorithm("IDEA",
                 "1.3.6.1.4.1.188.7.1.1.2");
             AddAlgorithm("NOEKEON");
-            //AddAlgorithm("RC2",
-            //    PkcsObjectIdentifiers.RC2Cbc,
-            //    PkcsObjectIdentifiers.IdAlgCmsRC2Wrap);
+           
             AddAlgorithm("RC4",
                 "ARC4",
                 "1.2.840.113549.3.4");
@@ -133,9 +78,7 @@ namespace PrivateBinSharp.Crypto.security
             AddAlgorithm("RC6");
             AddAlgorithm("RIJNDAEL");
             AddAlgorithm("SALSA20");
-            //AddAlgorithm("SEED",
-            //    KisaObjectIdentifiers.IdNpkiAppCmsSeedWrap,
-            //    KisaObjectIdentifiers.IdSeedCbc);
+            
             AddAlgorithm("SERPENT");
             AddAlgorithm("SKIPJACK");
             AddAlgorithm("SM4");
@@ -153,10 +96,6 @@ namespace PrivateBinSharp.Crypto.security
             AddBasicIVSizeEntries(12, "CHACHA7539");
             AddBasicIVSizeEntries(16, "AES", "AES128", "AES192", "AES256", "ARIA", "ARIA128", "ARIA192", "ARIA256",
                 "CAMELLIA", "CAMELLIA128", "CAMELLIA192", "CAMELLIA256", "NOEKEON", "SEED", "SM4");
-
-            // TODO These algorithms support an IV
-            // but JCE doesn't seem to provide an AlgorithmParametersGenerator for them
-            // "RIJNDAEL", "SKIPJACK", "TWOFISH"
         }
 
         private static void AddAlgorithm(string canonicalName, params object[] aliases)
@@ -182,25 +121,6 @@ namespace PrivateBinSharp.Crypto.security
             return CollectionUtilities.GetValueOrNull(Algorithms, algorithm);
         }
 
-        public static KeyParameter CreateKeyParameter(DerObjectIdentifier algOid, byte[] keyBytes)
-        {
-            return CreateKeyParameter(algOid.Id, keyBytes, 0, keyBytes.Length);
-        }
-
-        public static KeyParameter CreateKeyParameter(string algorithm, byte[] keyBytes)
-        {
-            return CreateKeyParameter(algorithm, keyBytes, 0, keyBytes.Length);
-        }
-
-        public static KeyParameter CreateKeyParameter(
-            DerObjectIdentifier algOid,
-            byte[] keyBytes,
-            int offset,
-            int length)
-        {
-            return CreateKeyParameter(algOid.Id, keyBytes, offset, length);
-        }
-
         public static KeyParameter CreateKeyParameter(
             string algorithm,
             byte[] keyBytes,
@@ -214,16 +134,6 @@ namespace PrivateBinSharp.Crypto.security
 
             if (canonical == null)
                 throw new SecurityUtilityException("Algorithm " + algorithm + " not recognised.");
-
-            //if (canonical == "DES")
-            //    return new DesParameters(keyBytes, offset, length);
-
-            //if (canonical == "DESEDE" || canonical =="DESEDE3")
-            //    return new DesEdeParameters(keyBytes, offset, length);
-
-            //if (canonical == "RC2")
-            //    return new RC2Parameters(keyBytes, offset, length);
-
             return new KeyParameter(keyBytes, offset, length);
         }
     }

@@ -1,6 +1,4 @@
-#if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.Intrinsics.X86;
-#endif
 
 namespace PrivateBinSharp.Crypto.crypto.modes.gcm
 {
@@ -8,11 +6,7 @@ namespace PrivateBinSharp.Crypto.crypto.modes.gcm
     public class BasicGcmMultiplier
         : IGcmMultiplier
     {
-#if NETCOREAPP3_0_OR_GREATER
         internal static bool IsHardwareAccelerated => Pclmulqdq.IsSupported;
-#else
-        internal static bool IsHardwareAccelerated => false;
-#endif
 
         private GcmUtilities.FieldElement H;
 

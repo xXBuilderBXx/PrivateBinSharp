@@ -1,12 +1,7 @@
 using System.Diagnostics;
-#if NETSTANDARD1_0_OR_GREATER || NETCOREAPP1_0_OR_GREATER
 using System.Runtime.CompilerServices;
-#endif
-#if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-#endif
-
 using PrivateBinSharp.Crypto.math.raw;
 using PrivateBinSharp.Crypto.util;
 
@@ -28,26 +23,20 @@ namespace PrivateBinSharp.Crypto.crypto.modes.gcm
             x.n1 = 0UL;
         }
 
-#if NETSTANDARD1_0_OR_GREATER || NETCOREAPP1_0_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         internal static void AsBytes(ulong x0, ulong x1, byte[] z)
         {
             Pack.UInt64_To_BE(x0, z, 0);
             Pack.UInt64_To_BE(x1, z, 8);
         }
 
-#if NETSTANDARD1_0_OR_GREATER || NETCOREAPP1_0_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         internal static void AsBytes(ref FieldElement x, byte[] z)
         {
             AsBytes(x.n0, x.n1, z);
         }
 
-#if NETSTANDARD1_0_OR_GREATER || NETCOREAPP1_0_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         internal static void AsFieldElement(byte[] x, out FieldElement z)
         {
             z.n0 = Pack.BE_To_UInt64(x, 0);
@@ -75,7 +64,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes.gcm
         {
             ulong z0, z1, z2;
 
-#if NETCOREAPP3_0_OR_GREATER
             if (Pclmulqdq.IsSupported)
             {
                 var X = Vector128.Create(x.n1, x.n0);
@@ -106,7 +94,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes.gcm
                 z1 ^= t2 << 63 ^ t2 << 58;
             }
             else
-#endif
             {
                 /*
                  * "Three-way recursion" as described in "Batch binary Edwards", Daniel J. Bernstein.
@@ -147,7 +134,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes.gcm
             x.n1 = z1;
         }
 
-#if NETCOREAPP3_0_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static Vector128<ulong> Load(byte[] x)
         {
@@ -245,7 +231,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes.gcm
             Z0 = Pclmulqdq.CarrylessMultiply(X, X, 0x00);
             Z2 = Pclmulqdq.CarrylessMultiply(X, X, 0x11);
         }
-#endif
 
         internal static void MultiplyP7(ref FieldElement x)
         {
@@ -347,7 +332,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes.gcm
             z.n1 = x.n1 ^ y.n1;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal static void Xor(Span<byte> x, ReadOnlySpan<byte> y)
         {
             int i = 0;
@@ -368,7 +352,6 @@ namespace PrivateBinSharp.Crypto.crypto.modes.gcm
                 x[i] ^= y[i];
             }
         }
-#endif
 
         private static ulong ImplMul64(ulong x, ulong y)
         {

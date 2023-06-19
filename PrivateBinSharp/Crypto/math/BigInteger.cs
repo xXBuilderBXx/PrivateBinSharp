@@ -14,31 +14,6 @@ namespace PrivateBinSharp.Crypto.math
     public sealed class BigInteger
         : IComparable, IComparable<BigInteger>, IEquatable<BigInteger>
     {
-        // The first few odd primes
-        /*
-                3   5   7   11  13  17  19  23  29
-            31  37  41  43  47  53  59  61  67  71
-            73  79  83  89  97  101 103 107 109 113
-            127 131 137 139 149 151 157 163 167 173
-            179 181 191 193 197 199 211 223 227 229
-            233 239 241 251 257 263 269 271 277 281
-            283 293 307 311 313 317 331 337 347 349
-            353 359 367 373 379 383 389 397 401 409
-            419 421 431 433 439 443 449 457 461 463
-            467 479 487 491 499 503 509 521 523 541
-            547 557 563 569 571 577 587 593 599 601
-            607 613 617 619 631 641 643 647 653 659
-            661 673 677 683 691 701 709 719 727 733
-            739 743 751 757 761 769 773 787 797 809
-            811 821 823 827 829 839 853 857 859 863
-            877 881 883 887 907 911 919 929 937 941
-            947 953 967 971 977 983 991 997 1009
-            1013 1019 1021 1031 1033 1039 1049 1051
-            1061 1063 1069 1087 1091 1093 1097 1103
-            1109 1117 1123 1129 1151 1153 1163 1171
-            1181 1187 1193 1201 1213 1217 1223 1229
-            1231 1237 1249 1259 1277 1279 1283 1289
-        */
 
         // Each list has a product < 2^31
         internal static readonly int[][] primeLists = new int[][]
@@ -137,28 +112,6 @@ namespace PrivateBinSharp.Crypto.math
         public static readonly BigInteger Four;
         public static readonly BigInteger Ten;
 
-#if !NETCOREAPP3_0_OR_GREATER
-        private readonly static byte[] BitLengthTable =
-        {
-            0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
-            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
-        };
-#endif
-
         // TODO Parse radix-2 64 bits at a time and radix-8 63 bits at a time
         private const int chunk2 = 1, chunk8 = 1, chunk10 = 19, chunk16 = 16;
         private static readonly BigInteger radix2, radix2E, radix8, radix8E, radix10, radix10E, radix16, radix16E;
@@ -237,16 +190,9 @@ namespace PrivateBinSharp.Crypto.math
             return (nBits + BitsPerByte - 1) / BitsPerByte;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         private static int GetIntsLength(int nBits)
         {
             return (nBits + BitsPerInt - 1) / BitsPerInt;
-        }
-#endif
-
-        public static BigInteger Arbitrary(int sizeInBits)
-        {
-            return new BigInteger(sizeInBits, SecureRandom.ArbitraryRandom);
         }
 
         private BigInteger(int signum, uint[] mag, bool checkMag)
@@ -475,31 +421,6 @@ namespace PrivateBinSharp.Crypto.math
             magnitude = InitBE(bytes, 0, bytes.Length, out sign);
         }
 
-        public BigInteger(byte[] bytes, bool bigEndian)
-        {
-            magnitude = bigEndian
-                ? InitBE(bytes, 0, bytes.Length, out sign)
-                : InitLE(bytes, 0, bytes.Length, out sign);
-        }
-
-        public BigInteger(byte[] bytes, int offset, int length)
-        {
-            if (length == 0)
-                throw new FormatException("Zero length BigInteger");
-
-            magnitude = InitBE(bytes, offset, length, out sign);
-        }
-
-        public BigInteger(byte[] bytes, int offset, int length, bool bigEndian)
-        {
-            if (length <= 0)
-                throw new FormatException("Zero length BigInteger");
-
-            magnitude = bigEndian
-                ? InitBE(bytes, offset, length, out sign)
-                : InitLE(bytes, offset, length, out sign);
-        }
-
         private static uint[] InitBE(byte[] bytes, int offset, int length, out int sign)
         {
             // TODO Move this processing into MakeMagnitudeBE (provide sign argument)
@@ -551,91 +472,12 @@ namespace PrivateBinSharp.Crypto.math
             return MakeMagnitudeBE(inverse);
         }
 
-        private static uint[] InitLE(byte[] bytes, int offset, int length, out int sign)
-        {
-            int end = offset + length;
-
-            // TODO Move this processing into MakeMagnitudeLE (provide sign argument)
-            if ((sbyte)bytes[end - 1] >= 0)
-            {
-                uint[] magnitude = MakeMagnitudeLE(bytes, offset, length);
-                sign = magnitude.Length > 0 ? 1 : 0;
-                return magnitude;
-            }
-
-            sign = -1;
-
-            // strip leading sign bytes
-            int last = length;
-            while (--last >= 0 && bytes[offset + last] == byte.MaxValue)
-            {
-            }
-
-            if (last < 0)
-                return One.magnitude;
-
-            int numBytes = last + 1;
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            Span<byte> inverse = numBytes <= 512
-                ? stackalloc byte[numBytes]
-                : new byte[numBytes];
-#else
-            byte[] inverse = new byte[numBytes];
-#endif
-
-            for (int i = 0; i < numBytes; ++i)
-            {
-                inverse[i] = (byte)~bytes[offset + i];
-            }
-
-            int index = 0;
-            while (inverse[index] == byte.MaxValue)
-            {
-                inverse[index++] = byte.MinValue;
-            }
-
-            inverse[index]++;
-
-            return MakeMagnitudeLE(inverse);
-        }
-
-        private static uint[] MakeMagnitudeBE(byte[] bytes)
-        {
-            return MakeMagnitudeBE(bytes, 0, bytes.Length);
-        }
 
         private static uint[] MakeMagnitudeBE(byte[] bytes, int offset, int length)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return MakeMagnitudeBE(bytes.AsSpan(offset, length));
-#else
-            int end = offset + length;
-
-            // strip leading zeros
-            int start;
-            for (start = offset; start < end && bytes[start] == 0; start++)
-            {
-            }
-
-            int nBytes = end - start;
-            if (nBytes <= 0)
-                return ZeroMagnitude;
-
-            int nInts = (nBytes + BytesPerInt - 1) / BytesPerInt;
-            Debug.Assert(nInts > 0);
-
-            uint[] magnitude = new uint[nInts];
-
-            int first = ((nBytes - 1) % BytesPerInt) + 1;
-            magnitude[0] = Pack.BE_To_UInt32_Low(bytes, start, first);
-            Pack.BE_To_UInt32(bytes, start + first, magnitude, 1, nInts - 1);
-
-            return magnitude;
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         private static uint[] MakeMagnitudeBE(ReadOnlySpan<byte> bytes)
         {
             int end = bytes.Length;
@@ -661,49 +503,13 @@ namespace PrivateBinSharp.Crypto.math
 
             return magnitude;
         }
-#endif
 
-        private static uint[] MakeMagnitudeLE(byte[] bytes)
-        {
-            return MakeMagnitudeLE(bytes, 0, bytes.Length);
-        }
 
         private static uint[] MakeMagnitudeLE(byte[] bytes, int offset, int length)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return MakeMagnitudeLE(bytes.AsSpan(offset, length));
-#else
-            // strip leading zeros
-            int last = length;
-            while (--last >= 0 && bytes[offset + last] == 0)
-            {
-            }
-
-            if (last < 0)
-                return ZeroMagnitude;
-
-            int nInts = (last + BytesPerInt) / BytesPerInt;
-            Debug.Assert(nInts > 0);
-
-            uint[] magnitude = new uint[nInts];
-
-            int partial = last % BytesPerInt;
-            int first = partial + 1;
-            int pos = offset + last - partial;
-
-            magnitude[0] = Pack.LE_To_UInt32_Low(bytes, pos, first);
-            for (int i = 1; i < nInts; ++i)
-            {
-                pos -= BytesPerInt;
-                magnitude[i] = Pack.LE_To_UInt32(bytes, pos);
-            }
-            Debug.Assert(pos == offset);
-
-            return magnitude;
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         private static uint[] MakeMagnitudeLE(ReadOnlySpan<byte> bytes)
         {
             // strip leading zeros
@@ -734,20 +540,9 @@ namespace PrivateBinSharp.Crypto.math
 
             return magnitude;
         }
-#endif
 
         public BigInteger(int sign, byte[] bytes)
             : this(sign, bytes, 0, bytes.Length, true)
-        {
-        }
-
-        public BigInteger(int sign, byte[] bytes, bool bigEndian)
-            : this(sign, bytes, 0, bytes.Length, bigEndian)
-        {
-        }
-
-        public BigInteger(int sign, byte[] bytes, int offset, int length)
-            : this(sign, bytes, offset, length, true)
         {
         }
 
@@ -771,12 +566,6 @@ namespace PrivateBinSharp.Crypto.math
             }
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public BigInteger(int sign, ReadOnlySpan<byte> bytes)
-            : this(sign, bytes, true)
-        {
-        }
-
         public BigInteger(int sign, ReadOnlySpan<byte> bytes, bool bigEndian)
         {
             if (sign < -1 || sign > 1)
@@ -796,7 +585,6 @@ namespace PrivateBinSharp.Crypto.math
                 this.sign = magnitude.Length < 1 ? 0 : sign;
             }
         }
-#endif
 
         public BigInteger(int sizeInBits, Random random)
         {
@@ -815,13 +603,9 @@ namespace PrivateBinSharp.Crypto.math
 
             int nBytes = GetBytesLength(sizeInBits);
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Span<byte> b = nBytes <= 512
                 ? stackalloc byte[nBytes]
                 : new byte[nBytes];
-#else
-            byte[] b = new byte[nBytes];
-#endif
             random.NextBytes(b);
 
             // strip off any excess bits in the MSB
@@ -850,13 +634,9 @@ namespace PrivateBinSharp.Crypto.math
 
             int nBytes = GetBytesLength(bitLength);
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Span<byte> b = nBytes <= 512
                 ? stackalloc byte[nBytes]
                 : new byte[nBytes];
-#else
-            byte[] b = new byte[nBytes];
-#endif
 
             int xBits = BitsPerByte * nBytes - bitLength;
             byte mask = (byte)(255U >> xBits);
@@ -1155,7 +935,6 @@ namespace PrivateBinSharp.Crypto.math
 
             return CompareTo(other);
         }
-
         public int CompareTo(BigInteger other)
         {
             if (other == null)
@@ -1427,28 +1206,6 @@ namespace PrivateBinSharp.Crypto.math
             return true;
         }
 
-        public BigInteger Gcd(BigInteger value)
-        {
-            if (value.sign == 0)
-                return Abs();
-
-            if (sign == 0)
-                return value.Abs();
-
-            BigInteger r;
-            BigInteger u = this;
-            BigInteger v = value;
-
-            while (v.sign != 0)
-            {
-                r = u.Mod(v);
-                u = v;
-                v = r;
-            }
-
-            return u;
-        }
-
         public override int GetHashCode()
         {
             int hc = magnitude.Length;
@@ -1490,43 +1247,6 @@ namespace PrivateBinSharp.Crypto.math
 
                 return sign < 0 ? -v : v;
             }
-        }
-
-        public int IntValueExact
-        {
-            get
-            {
-                if (BitLength > 31)
-                    throw new ArithmeticException("BigInteger out of int range");
-
-                return IntValue;
-            }
-        }
-
-        /**
-         * return whether or not a BigInteger is probably prime with a
-         * probability of 1 - (1/2)**certainty.
-         * <p>From Knuth Vol 2, pg 395.</p>
-         */
-        public bool IsProbablePrime(int certainty)
-        {
-            return IsProbablePrime(certainty, false);
-        }
-
-        internal bool IsProbablePrime(int certainty, bool randomlySelected)
-        {
-            if (certainty <= 0)
-                return true;
-
-            BigInteger n = Abs();
-
-            if (!n.TestBit(0))
-                return n.Equals(Two);
-
-            if (n.Equals(One))
-                return false;
-
-            return n.CheckProbablePrime(certainty, SecureRandom.ArbitraryRandom, randomlySelected);
         }
 
         private bool CheckProbablePrime(int certainty, Random random, bool randomlySelected)
@@ -1574,11 +1294,6 @@ namespace PrivateBinSharp.Crypto.math
             //			Debug.Assert(rbTest == ssTest);
             //
             //			return rbTest;
-        }
-
-        public bool RabinMillerTest(int certainty, Random random)
-        {
-            return RabinMillerTest(certainty, random, false);
         }
 
         internal bool RabinMillerTest(int certainty, Random random, bool randomlySelected)
@@ -1668,298 +1383,6 @@ namespace PrivateBinSharp.Crypto.math
 
                 return sign < 0 ? -v : v;
             }
-        }
-
-        public long LongValueExact
-        {
-            get
-            {
-                if (BitLength > 63)
-                    throw new ArithmeticException("BigInteger out of long range");
-
-                return LongValue;
-            }
-        }
-
-        public BigInteger Max(
-            BigInteger value)
-        {
-            return CompareTo(value) > 0 ? this : value;
-        }
-
-        public BigInteger Min(
-            BigInteger value)
-        {
-            return CompareTo(value) < 0 ? this : value;
-        }
-
-        public BigInteger Mod(
-            BigInteger m)
-        {
-            if (m.sign < 1)
-                throw new ArithmeticException("Modulus must be positive");
-
-            BigInteger biggie = Remainder(m);
-
-            return biggie.sign >= 0 ? biggie : biggie.Add(m);
-        }
-
-        public BigInteger ModInverse(
-            BigInteger m)
-        {
-            if (m.sign < 1)
-                throw new ArithmeticException("Modulus must be positive");
-
-            // TODO Too slow at the moment
-            //			// "Fast Key Exchange with Elliptic Curve Systems" R.Schoeppel
-            //			if (m.TestBit(0))
-            //			{
-            //				//The Almost Inverse Algorithm
-            //				int k = 0;
-            //				BigInteger B = One, C = Zero, F = this, G = m, tmp;
-            //
-            //				for (;;)
-            //				{
-            //					// While F is even, do F=F/u, C=C*u, k=k+1.
-            //					int zeroes = F.GetLowestSetBit();
-            //					if (zeroes > 0)
-            //					{
-            //						F = F.ShiftRight(zeroes);
-            //						C = C.ShiftLeft(zeroes);
-            //						k += zeroes;
-            //					}
-            //
-            //					// If F = 1, then return B,k.
-            //					if (F.Equals(One))
-            //					{
-            //						BigInteger half = m.Add(One).ShiftRight(1);
-            //						BigInteger halfK = half.ModPow(ValueOf(k), m);
-            //						return B.Multiply(halfK).Mod(m);
-            //					}
-            //
-            //					if (F.CompareTo(G) < 0)
-            //					{
-            //						tmp = G; G = F; F = tmp;
-            //						tmp = B; B = C; C = tmp;
-            //					}
-            //
-            //					F = F.Add(G);
-            //					B = B.Add(C);
-            //				}
-            //			}
-
-            if (m.QuickPow2Check())
-            {
-                return ModInversePow2(m);
-            }
-
-            BigInteger d = Remainder(m);
-            BigInteger x;
-            BigInteger gcd = ExtEuclid(d, m, out x);
-
-            if (!gcd.Equals(One))
-                throw new ArithmeticException("Numbers not relatively prime.");
-
-            if (x.sign < 0)
-            {
-                x = x.Add(m);
-            }
-
-            return x;
-        }
-
-        private BigInteger ModInversePow2(BigInteger m)
-        {
-            Debug.Assert(m.SignValue > 0);
-            Debug.Assert(m.BitCount == 1);
-
-            if (!TestBit(0))
-            {
-                throw new ArithmeticException("Numbers not relatively prime.");
-            }
-
-            int pow = m.BitLength - 1;
-
-            long inv64 = (long)raw.Mod.Inverse64((ulong)LongValue);
-            if (pow < 64)
-            {
-                inv64 &= (1L << pow) - 1;
-            }
-
-            BigInteger x = ValueOf(inv64);
-
-            if (pow > 64)
-            {
-                BigInteger d = Remainder(m);
-                int bitsCorrect = 64;
-
-                do
-                {
-                    BigInteger t = x.Multiply(d).Remainder(m);
-                    x = x.Multiply(Two.Subtract(t)).Remainder(m);
-                    bitsCorrect <<= 1;
-                }
-                while (bitsCorrect < pow);
-            }
-
-            if (x.sign < 0)
-            {
-                x = x.Add(m);
-            }
-
-            return x;
-        }
-
-        /**
-         * Calculate the numbers u1, u2, and u3 such that:
-         *
-         * u1 * a + u2 * b = u3
-         *
-         * where u3 is the greatest common divider of a and b.
-         * a and b using the extended Euclid algorithm (refer p. 323
-         * of The Art of Computer Programming vol 2, 2nd ed).
-         * This also seems to have the side effect of calculating
-         * some form of multiplicative inverse.
-         *
-         * @param a    First number to calculate gcd for
-         * @param b    Second number to calculate gcd for
-         * @param u1Out      the return object for the u1 value
-         * @return     The greatest common divisor of a and b
-         */
-        private static BigInteger ExtEuclid(BigInteger a, BigInteger b, out BigInteger u1Out)
-        {
-            BigInteger u1 = One, v1 = Zero;
-            BigInteger u3 = a, v3 = b;
-
-            if (v3.sign > 0)
-            {
-                for (; ; )
-                {
-                    BigInteger[] q = u3.DivideAndRemainder(v3);
-                    u3 = v3;
-                    v3 = q[1];
-
-                    BigInteger oldU1 = u1;
-                    u1 = v1;
-
-                    if (v3.sign <= 0)
-                        break;
-
-                    v1 = oldU1.Subtract(v1.Multiply(q[0]));
-                }
-            }
-
-            u1Out = u1;
-
-            return u3;
-        }
-
-        private static void ZeroOut(
-            int[] x)
-        {
-            Array.Clear(x, 0, x.Length);
-        }
-
-        public BigInteger ModPow(BigInteger e, BigInteger m)
-        {
-            if (m.sign < 1)
-                throw new ArithmeticException("Modulus must be positive");
-
-            if (m.Equals(One))
-                return Zero;
-
-            if (e.sign == 0)
-                return One;
-
-            if (sign == 0)
-                return Zero;
-
-            bool negExp = e.sign < 0;
-            if (negExp)
-                e = e.Negate();
-
-            BigInteger result = Mod(m);
-            if (!e.Equals(One))
-            {
-                if ((m.magnitude[m.magnitude.Length - 1] & 1U) == 0U)
-                {
-                    result = ModPowBarrett(result, e, m);
-                }
-                else
-                {
-                    result = ModPowMonty(result, e, m, true);
-                }
-            }
-
-            if (negExp)
-                result = result.ModInverse(m);
-
-            return result;
-        }
-
-        private static BigInteger ModPowBarrett(BigInteger b, BigInteger e, BigInteger m)
-        {
-            int k = m.magnitude.Length;
-            BigInteger mr = One.ShiftLeft(k + 1 << 5);
-            BigInteger yu = One.ShiftLeft(k << 6).Divide(m);
-
-            // Sliding window from MSW to LSW
-            int extraBits = 0, expLength = e.BitLength;
-            while (expLength > ExpWindowThresholds[extraBits])
-            {
-                ++extraBits;
-            }
-
-            int numPowers = 1 << extraBits;
-            BigInteger[] oddPowers = new BigInteger[numPowers];
-            oddPowers[0] = b;
-
-            BigInteger b2 = ReduceBarrett(b.Square(), m, mr, yu);
-
-            for (int i = 1; i < numPowers; ++i)
-            {
-                oddPowers[i] = ReduceBarrett(oddPowers[i - 1].Multiply(b2), m, mr, yu);
-            }
-
-            int[] windowList = GetWindowList(e.magnitude, extraBits);
-            Debug.Assert(windowList.Length > 0);
-
-            int window = windowList[0];
-            int mult = window & 0xFF, lastZeroes = window >> 8;
-
-            BigInteger y;
-            if (mult == 1)
-            {
-                y = b2;
-                --lastZeroes;
-            }
-            else
-            {
-                y = oddPowers[mult >> 1];
-            }
-
-            int windowPos = 1;
-            while ((window = windowList[windowPos++]) != -1)
-            {
-                mult = window & 0xFF;
-
-                int bits = lastZeroes + BitLen((byte)mult);
-                for (int j = 0; j < bits; ++j)
-                {
-                    y = ReduceBarrett(y.Square(), m, mr, yu);
-                }
-
-                y = ReduceBarrett(y.Multiply(oddPowers[mult >> 1]), m, mr, yu);
-
-                lastZeroes = window >> 8;
-            }
-
-            for (int i = 0; i < lastZeroes; ++i)
-            {
-                y = ReduceBarrett(y.Square(), m, mr, yu);
-            }
-
-            return y;
         }
 
         private static BigInteger ReduceBarrett(BigInteger x, BigInteger m, BigInteger mr, BigInteger yu)
@@ -2575,24 +1998,6 @@ namespace PrivateBinSharp.Crypto.math
             return new BigInteger(-sign, magnitude, false);
         }
 
-        public BigInteger NextProbablePrime()
-        {
-            if (sign < 0)
-                throw new ArithmeticException("Cannot be called on value < 0");
-
-            if (CompareTo(Two) < 0)
-                return Two;
-
-            BigInteger n = Inc().SetBit(0);
-
-            while (!n.CheckProbablePrime(100, SecureRandom.ArbitraryRandom, false))
-            {
-                n = n.Add(Two);
-            }
-
-            return n;
-        }
-
         public BigInteger Not()
         {
             return Inc().Negate();
@@ -2638,11 +2043,6 @@ namespace PrivateBinSharp.Crypto.math
             }
 
             return y;
-        }
-
-        public static BigInteger ProbablePrime(int bitLength, Random random)
-        {
-            return new BigInteger(bitLength, 100, random);
         }
 
         private int Remainder(int m)
@@ -2901,19 +2301,6 @@ namespace PrivateBinSharp.Crypto.math
             return newMag;
         }
 
-        private static int ShiftLeftOneInPlace(int[] x, int carry)
-        {
-            Debug.Assert(carry == 0 || carry == 1);
-            int pos = x.Length;
-            while (--pos >= 0)
-            {
-                uint val = (uint)x[pos];
-                x[pos] = (int)(val << 1) | carry;
-                carry = (int)(val >> 31);
-            }
-            return carry;
-        }
-
         public BigInteger ShiftLeft(int n)
         {
             if (sign == 0 || magnitude.Length == 0)
@@ -3121,66 +2508,10 @@ namespace PrivateBinSharp.Crypto.math
             return GetBytesLength(BitLength + 1);
         }
 
-        public int GetLengthofByteArrayUnsigned()
-        {
-            return GetBytesLength(sign < 0 ? BitLength + 1 : BitLength);
-        }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public int GetLengthofUInt32Array()
-        {
-            return GetIntsLength(BitLength + 1);
-        }
-
-        public int GetLengthofUInt32ArrayUnsigned()
-        {
-            return GetIntsLength(sign < 0 ? BitLength + 1 : BitLength);
-        }
-#endif
-
         public byte[] ToByteArray()
         {
             return ToByteArray(false);
         }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public void ToByteArray(Span<byte> output)
-        {
-            ToByteArray(false, output);
-        }
-
-        public void ToUInt32ArrayBigEndian(Span<uint> output)
-        {
-            ToUInt32ArrayBigEndian(false, output);
-        }
-
-        public void ToUInt32ArrayLittleEndian(Span<uint> output)
-        {
-            ToUInt32ArrayLittleEndian(false, output);
-        }
-#endif
-
-        public byte[] ToByteArrayUnsigned()
-        {
-            return ToByteArray(true);
-        }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public void ToByteArrayUnsigned(Span<byte> output)
-        {
-            ToByteArray(true, output);
-        }
-
-        public void ToUInt32ArrayBigEndianUnsigned(Span<uint> output)
-        {
-            ToUInt32ArrayBigEndian(true, output);
-        }
-
-        public void ToUInt32ArrayLittleEndianUnsigned(Span<uint> output)
-        {
-            ToUInt32ArrayLittleEndian(true, output);
-        }
-#endif
 
         private byte[] ToByteArray(bool unsigned)
         {
@@ -3261,192 +2592,6 @@ namespace PrivateBinSharp.Crypto.math
 
             return bytes;
         }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        private void ToByteArray(bool unsigned, Span<byte> output)
-        {
-            if (sign == 0)
-            {
-                if (!unsigned)
-                {
-                    output[0] = 0;
-                }
-                return;
-            }
-
-            int nBits = unsigned && sign > 0 ? BitLength : BitLength + 1;
-
-            int nBytes = GetBytesLength(nBits);
-            if (nBytes > output.Length)
-                throw new ArgumentException("insufficient space", nameof(output));
-
-            int magIndex = magnitude.Length;
-            int bytesIndex = nBytes;
-
-            if (sign > 0)
-            {
-                while (magIndex > 1)
-                {
-                    uint mag = magnitude[--magIndex];
-                    bytesIndex -= 4;
-                    Pack.UInt32_To_BE(mag, output[bytesIndex..]);
-                }
-
-                uint lastMag = magnitude[0];
-                while (lastMag > byte.MaxValue)
-                {
-                    output[--bytesIndex] = (byte)lastMag;
-                    lastMag >>= 8;
-                }
-
-                output[--bytesIndex] = (byte)lastMag;
-                Debug.Assert((bytesIndex & 1) == bytesIndex);
-                if (bytesIndex != 0)
-                {
-                    output[0] = 0;
-                }
-            }
-            else // sign < 0
-            {
-                bool carry = true;
-
-                while (magIndex > 1)
-                {
-                    uint mag = ~magnitude[--magIndex];
-
-                    if (carry)
-                    {
-                        carry = ++mag == uint.MinValue;
-                    }
-
-                    bytesIndex -= 4;
-                    Pack.UInt32_To_BE(mag, output[bytesIndex..]);
-                }
-
-                uint lastMag = magnitude[0];
-
-                if (carry)
-                {
-                    // Never wraps because magnitude[0] != 0
-                    --lastMag;
-                }
-
-                while (lastMag > byte.MaxValue)
-                {
-                    output[--bytesIndex] = (byte)~lastMag;
-                    lastMag >>= 8;
-                }
-
-                output[--bytesIndex] = (byte)~lastMag;
-                Debug.Assert((bytesIndex & 1) == bytesIndex);
-                if (bytesIndex != 0)
-                {
-                    output[--bytesIndex] = byte.MaxValue;
-                }
-            }
-        }
-
-        private void ToUInt32ArrayBigEndian(bool unsigned, Span<uint> output)
-        {
-            if (sign == 0)
-            {
-                if (!unsigned)
-                {
-                    output[0] = uint.MinValue;
-                }
-                return;
-            }
-
-            int nBits = unsigned && sign > 0 ? BitLength : BitLength + 1;
-
-            int nInts = GetIntsLength(nBits);
-            if (nInts > output.Length)
-                throw new ArgumentException("insufficient space", nameof(output));
-
-            int magIndex = magnitude.Length;
-            int intsIndex = nInts;
-
-            if (sign > 0)
-            {
-                while (magIndex > 0)
-                {
-                    output[--intsIndex] = magnitude[--magIndex];
-                }
-
-                Debug.Assert((intsIndex & 1) == intsIndex);
-                if (intsIndex != 0)
-                {
-                    output[0] = uint.MinValue;
-                }
-            }
-            else // sign < 0
-            {
-                ulong cc = 1UL;
-                while (magIndex > 0)
-                {
-                    cc += ~magnitude[--magIndex];
-                    output[--intsIndex] = (uint)cc; cc >>= 32;
-                }
-                Debug.Assert(cc == 0UL);
-
-                Debug.Assert((intsIndex & 1) == intsIndex);
-                if (intsIndex != 0)
-                {
-                    output[--intsIndex] = uint.MaxValue;
-                }
-            }
-        }
-
-        private void ToUInt32ArrayLittleEndian(bool unsigned, Span<uint> output)
-        {
-            if (sign == 0)
-            {
-                if (!unsigned)
-                {
-                    output[0] = uint.MinValue;
-                }
-                return;
-            }
-
-            int nBits = unsigned && sign > 0 ? BitLength : BitLength + 1;
-
-            int nInts = GetIntsLength(nBits);
-            if (nInts > output.Length)
-                throw new ArgumentException("insufficient space", nameof(output));
-
-            int magIndex = magnitude.Length;
-
-            if (sign > 0)
-            {
-                for (int intsIndex = 0; intsIndex < magnitude.Length; ++intsIndex)
-                {
-                    output[intsIndex] = magnitude[--magIndex];
-                }
-
-                if (nInts > magnitude.Length)
-                {
-                    Debug.Assert(nInts == magnitude.Length + 1);
-                    output[magnitude.Length] = uint.MinValue;
-                }
-            }
-            else // sign < 0
-            {
-                ulong cc = 1UL;
-                for (int intsIndex = 0; intsIndex < magnitude.Length; ++intsIndex)
-                {
-                    cc += ~magnitude[--magIndex];
-                    output[intsIndex] = (uint)cc; cc >>= 32;
-                }
-                Debug.Assert(cc == 0UL);
-
-                if (nInts > magnitude.Length)
-                {
-                    Debug.Assert(nInts == magnitude.Length + 1);
-                    output[magnitude.Length] = uint.MaxValue;
-                }
-            }
-        }
-#endif
 
         public override string ToString()
         {
@@ -3642,13 +2787,6 @@ namespace PrivateBinSharp.Crypto.math
             return CreateValueOf(value);
         }
 
-        public int GetLowestSetBit()
-        {
-            if (sign == 0)
-                return -1;
-
-            return GetLowestSetBitMaskFirst(uint.MaxValue);
-        }
 
         private int GetLowestSetBitMaskFirst(uint firstWordMaskX)
         {
@@ -3748,101 +2886,6 @@ namespace PrivateBinSharp.Crypto.math
             }
 
             return result;
-        }
-
-        public BigInteger Xor(BigInteger value)
-        {
-            if (sign == 0)
-                return value;
-
-            if (value.sign == 0)
-                return this;
-
-            uint[] aMag = sign > 0 ? magnitude : Add(One).magnitude;
-            uint[] bMag = value.sign > 0 ? value.magnitude : value.Add(One).magnitude;
-
-            // TODO Can just replace with sign != value.sign?
-            bool resultNeg = sign < 0 && value.sign >= 0 || sign >= 0 && value.sign < 0;
-            int resultLength = Math.Max(aMag.Length, bMag.Length);
-            uint[] resultMag = new uint[resultLength];
-
-            int aStart = resultMag.Length - aMag.Length;
-            int bStart = resultMag.Length - bMag.Length;
-
-            for (int i = 0; i < resultMag.Length; ++i)
-            {
-                uint aWord = i >= aStart ? aMag[i - aStart] : 0U;
-                uint bWord = i >= bStart ? bMag[i - bStart] : 0U;
-
-                if (sign < 0)
-                {
-                    aWord = ~aWord;
-                }
-
-                if (value.sign < 0)
-                {
-                    bWord = ~bWord;
-                }
-
-                resultMag[i] = aWord ^ bWord;
-
-                if (resultNeg)
-                {
-                    resultMag[i] = ~resultMag[i];
-                }
-            }
-
-            BigInteger result = new BigInteger(1, resultMag, true);
-
-            // TODO Optimise this case
-            if (resultNeg)
-            {
-                result = result.Not();
-            }
-
-            return result;
-        }
-
-        public BigInteger SetBit(int n)
-        {
-            if (n < 0)
-                throw new ArithmeticException("Bit address less than zero");
-
-            if (TestBit(n))
-                return this;
-
-            // TODO Handle negative values and zero
-            if (sign > 0 && n < BitLength - 1)
-                return FlipExistingBit(n);
-
-            return Or(One.ShiftLeft(n));
-        }
-
-        public BigInteger ClearBit(int n)
-        {
-            if (n < 0)
-                throw new ArithmeticException("Bit address less than zero");
-
-            if (!TestBit(n))
-                return this;
-
-            // TODO Handle negative values
-            if (sign > 0 && n < BitLength - 1)
-                return FlipExistingBit(n);
-
-            return AndNot(One.ShiftLeft(n));
-        }
-
-        public BigInteger FlipBit(int n)
-        {
-            if (n < 0)
-                throw new ArithmeticException("Bit address less than zero");
-
-            // TODO Handle negative values and zero
-            if (sign > 0 && n < BitLength - 1)
-                return FlipExistingBit(n);
-
-            return Xor(One.ShiftLeft(n));
         }
 
         private BigInteger FlipExistingBit(int n)

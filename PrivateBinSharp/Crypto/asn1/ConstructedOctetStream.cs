@@ -20,54 +20,9 @@ namespace PrivateBinSharp.Crypto.asn1
         {
             Streams.ValidateBufferArguments(buffer, offset, count);
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return Read(buffer.AsSpan(offset, count));
-#else
-			if (count < 1)
-                return 0;
-
-			if (m_currentStream == null)
-			{
-				if (!m_first)
-					return 0;
-
-                Asn1OctetStringParser next = GetNextParser();
-                if (next == null)
-                    return 0;
-
-				m_first = false;
-				m_currentStream = next.GetOctetStream();
-			}
-
-			int totalRead = 0;
-
-			for (;;)
-			{
-				int numRead = m_currentStream.Read(buffer, offset + totalRead, count - totalRead);
-
-				if (numRead > 0)
-				{
-					totalRead += numRead;
-
-					if (totalRead == count)
-						return totalRead;
-				}
-				else
-				{
-                    Asn1OctetStringParser next = GetNextParser();
-                    if (next == null)
-					{
-						m_currentStream = null;
-						return totalRead;
-					}
-
-					m_currentStream = next.GetOctetStream();
-				}
-			}
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public override int Read(Span<byte> buffer)
         {
             if (buffer.IsEmpty)
@@ -112,7 +67,6 @@ namespace PrivateBinSharp.Crypto.asn1
                 }
             }
         }
-#endif
 
         public override int ReadByte()
         {

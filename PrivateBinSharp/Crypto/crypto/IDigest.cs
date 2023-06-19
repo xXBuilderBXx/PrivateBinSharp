@@ -24,11 +24,10 @@ namespace PrivateBinSharp.Crypto.crypto
         /// <param name="inLen">the length of the data.</param>
         void BlockUpdate(byte[] input, int inOff, int inLen);
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <summary>Update the message digest with a span of bytes.</summary>
         /// <param name="input">the span containing the data.</param>
         void BlockUpdate(ReadOnlySpan<byte> input);
-#endif
+
 
         /// <summary>Close the digest, producing the final digest value.</summary>
         /// <remarks>This call leaves the digest reset.</remarks>
@@ -37,13 +36,12 @@ namespace PrivateBinSharp.Crypto.crypto
         /// <returns>the number of bytes written</returns>
         int DoFinal(byte[] output, int outOff);
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+
         /// <summary>Close the digest, producing the final digest value.</summary>
         /// <remarks>This call leaves the digest reset.</remarks>
         /// <param name="output">the span the digest is to be copied into.</param>
         /// <returns>the number of bytes written</returns>
         int DoFinal(Span<byte> output);
-#endif
 
         /// <summary>Reset the digest back to its initial state.</summary>
         void Reset();

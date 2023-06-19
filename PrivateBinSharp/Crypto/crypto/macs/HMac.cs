@@ -59,12 +59,7 @@ namespace PrivateBinSharp.Crypto.crypto.macs
             int keyLength = keyParameter.KeyLength;
             if (keyLength > blockLength)
             {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 digest.BlockUpdate(keyParameter.Key);
-#else
-                byte[] key = keyParameter.GetKey();
-                digest.BlockUpdate(key, 0, keyLength);
-#endif
 
                 digest.DoFinal(inputPad, 0);
 
@@ -112,48 +107,16 @@ namespace PrivateBinSharp.Crypto.crypto.macs
             digest.BlockUpdate(input, inOff, len);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public virtual void BlockUpdate(ReadOnlySpan<byte> input)
         {
             digest.BlockUpdate(input);
         }
-#endif
 
         public virtual int DoFinal(byte[] output, int outOff)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             return DoFinal(output.AsSpan(outOff));
-#else
-            digest.DoFinal(outputBuf, blockLength);
-
-			if (opadState != null)
-			{
-				((IMemoable)digest).Reset(opadState);
-				digest.BlockUpdate(outputBuf, blockLength, digestSize);
-			}
-			else
-			{
-				digest.BlockUpdate(outputBuf, 0, outputBuf.Length);
-			}
-
-			int len = digest.DoFinal(output, outOff);
-
-			Array.Clear(outputBuf, blockLength, digestSize);
-
-			if (ipadState != null)
-			{
-				((IMemoable)digest).Reset(ipadState);
-			}
-			else
-			{
-				digest.BlockUpdate(inputPad, 0, inputPad.Length);
-			}
-
-            return len;
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public virtual int DoFinal(Span<byte> output)
         {
             digest.DoFinal(outputBuf.AsSpan(blockLength));
@@ -183,7 +146,6 @@ namespace PrivateBinSharp.Crypto.crypto.macs
 
             return len;
         }
-#endif
 
         /**
         * Reset the mac generator.

@@ -4,40 +4,8 @@
     public class DLBitString
         : DerBitString
     {
-        public DLBitString(byte data, int padBits)
-            : base(data, padBits)
-        {
-        }
-
-        public DLBitString(byte[] data)
-            : this(data, 0)
-        {
-        }
-
         public DLBitString(byte[] data, int padBits)
             : base(data, padBits)
-        {
-        }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public DLBitString(ReadOnlySpan<byte> data)
-            : this(data, 0)
-        {
-        }
-
-        public DLBitString(ReadOnlySpan<byte> data, int padBits)
-            : base(data, padBits)
-        {
-        }
-#endif
-
-        public DLBitString(int namedBits)
-            : base(namedBits)
-        {
-        }
-
-        public DLBitString(Asn1Encodable obj)
-            : this(obj.GetDerEncoded(), 0)
         {
         }
 

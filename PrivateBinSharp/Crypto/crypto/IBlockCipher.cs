@@ -23,14 +23,11 @@ namespace PrivateBinSharp.Crypto.crypto
         /// <returns>The number of bytes processed and produced.</returns>
         int ProcessBlock(byte[] inBuf, int inOff, byte[] outBuf, int outOff);
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-
         /// <summary>Process a block.</summary>
         /// <param name="input">The input block as a span.</param>
         /// <param name="output">The output span.</param>
         /// <exception cref="DataLengthException">If input block is wrong size, or output span too small.</exception>
         /// <returns>The number of bytes processed and produced.</returns>
         int ProcessBlock(ReadOnlySpan<byte> input, Span<byte> output);
-#endif
     }
 }

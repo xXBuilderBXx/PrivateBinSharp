@@ -62,19 +62,10 @@ namespace PrivateBinSharp.Crypto.asn1
                 return length - octetsB.Length;
 
             int last = length - 1;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             int c = octetsA.AsSpan(0, last).SequenceCompareTo(
                     octetsB.AsSpan(0, last));
             if (c != 0)
                 return c;
-#else
-            for (int i = 0; i < last; i++)
-            {
-                byte ai = octetsA[i], bi = octetsB[i];
-                if (ai != bi)
-                    return ai - bi;
-            }
-#endif
 
             return suffixA - suffixB;
         }

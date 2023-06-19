@@ -93,7 +93,6 @@ namespace PrivateBinSharp.Crypto.crypto.digests
             byteCount += length;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public void BlockUpdate(ReadOnlySpan<byte> input)
         {
             int length = input.Length;
@@ -135,7 +134,6 @@ namespace PrivateBinSharp.Crypto.crypto.digests
 
             byteCount += length;
         }
-#endif
 
         public void Finish()
         {
@@ -164,9 +162,9 @@ namespace PrivateBinSharp.Crypto.crypto.digests
         }
 
         internal abstract void ProcessWord(byte[] input, int inOff);
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+
         internal abstract void ProcessWord(ReadOnlySpan<byte> word);
-#endif
+
         internal abstract void ProcessLength(long bitLength);
         internal abstract void ProcessBlock();
         public abstract string AlgorithmName { get; }
@@ -174,8 +172,7 @@ namespace PrivateBinSharp.Crypto.crypto.digests
         public abstract int DoFinal(byte[] output, int outOff);
         public abstract IMemoable Copy();
         public abstract void Reset(IMemoable t);
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+
         public abstract int DoFinal(Span<byte> output);
-#endif
     }
 }

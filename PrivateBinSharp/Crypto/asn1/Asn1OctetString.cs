@@ -84,12 +84,10 @@ namespace PrivateBinSharp.Crypto.asn1
             this.contents = contents;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal Asn1OctetString(ReadOnlySpan<byte> contents)
         {
             this.contents = contents.ToArray();
         }
-#endif
 
         public Stream GetOctetStream()
         {
@@ -106,7 +104,6 @@ namespace PrivateBinSharp.Crypto.asn1
             return contents;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal ReadOnlyMemory<byte> GetOctetsMemory()
         {
             return contents.AsMemory();
@@ -116,7 +113,6 @@ namespace PrivateBinSharp.Crypto.asn1
         {
             return contents.AsSpan();
         }
-#endif
 
         protected override int Asn1GetHashCode()
         {
