@@ -7,16 +7,6 @@ namespace PrivateBinSharp.Crypto.math.raw
     internal static class Bits
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static uint BitPermuteStep(uint x, uint m, int s)
-        {
-            Debug.Assert((m & m << s) == 0U);
-            Debug.Assert(m << s >> s == m);
-
-            uint t = (x ^ x >> s) & m;
-            return t ^ t << s ^ x;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static ulong BitPermuteStep(ulong x, ulong m, int s)
         {
             Debug.Assert((m & m << s) == 0UL);

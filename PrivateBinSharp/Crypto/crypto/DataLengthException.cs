@@ -11,23 +11,8 @@ namespace PrivateBinSharp.Crypto.crypto
     public class DataLengthException
         : CryptoException
     {
-        public DataLengthException()
-            : base()
-        {
-        }
-
         public DataLengthException(string message)
             : base(message)
-        {
-        }
-
-        public DataLengthException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-        protected DataLengthException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

@@ -7,23 +7,8 @@ namespace PrivateBinSharp.Crypto.crypto
     public class InvalidCipherTextException
         : CryptoException
     {
-        public InvalidCipherTextException()
-            : base()
-        {
-        }
-
         public InvalidCipherTextException(string message)
             : base(message)
-        {
-        }
-
-        public InvalidCipherTextException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-        protected InvalidCipherTextException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

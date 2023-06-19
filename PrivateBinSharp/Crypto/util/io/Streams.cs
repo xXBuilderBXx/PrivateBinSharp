@@ -8,11 +8,6 @@ namespace PrivateBinSharp.Crypto.util.io
 
         public static int DefaultBufferSize => MaxStackAlloc;
 
-        public static void CopyTo(Stream source, Stream destination)
-        {
-            CopyTo(source, destination, DefaultBufferSize);
-        }
-
         public static void CopyTo(Stream source, Stream destination, int bufferSize)
         {
             int bytesRead;
@@ -25,21 +20,6 @@ namespace PrivateBinSharp.Crypto.util.io
             }
         }
 
-        public static Task CopyToAsync(Stream source, Stream destination)
-        {
-            return CopyToAsync(source, destination, DefaultBufferSize);
-        }
-
-        public static Task CopyToAsync(Stream source, Stream destination, int bufferSize)
-        {
-            return CopyToAsync(source, destination, bufferSize, CancellationToken.None);
-        }
-
-        public static Task CopyToAsync(Stream source, Stream destination, CancellationToken cancellationToken)
-        {
-            return CopyToAsync(source, destination, DefaultBufferSize, cancellationToken);
-        }
-
         public static async Task CopyToAsync(Stream source, Stream destination, int bufferSize,
             CancellationToken cancellationToken)
         {
@@ -49,11 +29,6 @@ namespace PrivateBinSharp.Crypto.util.io
             {
                 await WriteAsync(destination, new ReadOnlyMemory<byte>(buffer, 0, bytesRead), cancellationToken).ConfigureAwait(false);
             }
-        }
-
-        public static void Drain(Stream inStr)
-        {
-            CopyTo(inStr, Stream.Null, DefaultBufferSize);
         }
 
         /// <summary>Write the full contents of inStr to the destination stream outStr.</summary>
@@ -73,33 +48,6 @@ namespace PrivateBinSharp.Crypto.util.io
         public static void PipeAll(Stream inStr, Stream outStr, int bufferSize)
         {
             CopyTo(inStr, outStr, bufferSize);
-        }
-
-        /// <summary>
-        /// Pipe all bytes from <c>inStr</c> to <c>outStr</c>, throwing <c>StreamFlowException</c> if greater
-        /// than <c>limit</c> bytes in <c>inStr</c>.
-        /// </summary>
-        /// <param name="inStr">
-        /// A <see cref="Stream"/>
-        /// </param>
-        /// <param name="limit">
-        /// A <see cref="long"/>
-        /// </param>
-        /// <param name="outStr">
-        /// A <see cref="Stream"/>
-        /// </param>
-        /// <returns>The number of bytes actually transferred, if not greater than <c>limit</c></returns>
-        /// <exception cref="IOException"></exception>
-        public static long PipeAllLimited(Stream inStr, long limit, Stream outStr)
-        {
-            return PipeAllLimited(inStr, limit, outStr, DefaultBufferSize);
-        }
-
-        public static long PipeAllLimited(Stream inStr, long limit, Stream outStr, int bufferSize)
-        {
-            var limited = new LimitedInputStream(inStr, limit);
-            CopyTo(limited, outStr, bufferSize);
-            return limit - limited.CurrentLimit;
         }
 
         public static byte[] ReadAll(Stream inStr)

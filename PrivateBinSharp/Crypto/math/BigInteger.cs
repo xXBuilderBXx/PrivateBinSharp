@@ -559,26 +559,6 @@ namespace PrivateBinSharp.Crypto.math
             }
         }
 
-        public BigInteger(int sign, ReadOnlySpan<byte> bytes, bool bigEndian)
-        {
-            if (sign < -1 || sign > 1)
-                throw new FormatException("Invalid sign value");
-
-            if (sign == 0)
-            {
-                this.sign = 0;
-                magnitude = ZeroMagnitude;
-            }
-            else
-            {
-                // copy bytes
-                magnitude = bigEndian
-                    ? MakeMagnitudeBE(bytes)
-                    : MakeMagnitudeLE(bytes);
-                this.sign = magnitude.Length < 1 ? 0 : sign;
-            }
-        }
-
         public BigInteger(int sizeInBits, Random random)
         {
             if (sizeInBits < 0)
@@ -607,64 +587,6 @@ namespace PrivateBinSharp.Crypto.math
 
             magnitude = MakeMagnitudeBE(b);
             sign = magnitude.Length < 1 ? 0 : 1;
-        }
-
-        public BigInteger(int bitLength, int certainty, Random random)
-        {
-            if (bitLength < 2)
-                throw new ArithmeticException("bitLength < 2");
-
-            sign = 1;
-            nBitLength = bitLength;
-
-            if (bitLength == 2)
-            {
-                magnitude = random.Next(2) == 0
-                    ? Two.magnitude
-                    : Three.magnitude;
-                return;
-            }
-
-            int nBytes = GetBytesLength(bitLength);
-
-            Span<byte> b = nBytes <= 512
-                ? stackalloc byte[nBytes]
-                : new byte[nBytes];
-
-            int xBits = BitsPerByte * nBytes - bitLength;
-            byte mask = (byte)(255U >> xBits);
-            byte lead = (byte)(1 << 7 - xBits);
-
-            for (; ; )
-            {
-                random.NextBytes(b);
-
-                // strip off any excess bits in the MSB
-                b[0] &= mask;
-
-                // ensure the leading bit is 1 (to meet the strength requirement)
-                b[0] |= lead;
-
-                // ensure the trailing bit is 1 (i.e. must be odd)
-                b[nBytes - 1] |= 1;
-
-                magnitude = MakeMagnitudeBE(b);
-                nBits = -1;
-
-                if (certainty < 1)
-                    break;
-
-                if (CheckProbablePrime(certainty, random, true))
-                    break;
-
-                for (int j = 1; j < magnitude.Length - 1; ++j)
-                {
-                    magnitude[j] ^= (uint)random.Next();
-
-                    if (CheckProbablePrime(certainty, random, true))
-                        return;
-                }
-            }
         }
 
         public BigInteger Abs()
@@ -1096,25 +1018,6 @@ namespace PrivateBinSharp.Crypto.math
             }
 
             return count;
-        }
-
-        public BigInteger Divide(BigInteger val)
-        {
-            if (val.sign == 0)
-                throw new ArithmeticException("Division by zero error");
-
-            if (sign == 0)
-                return Zero;
-
-            if (val.QuickPow2Check()) // val is power of two
-            {
-                BigInteger result = Abs().ShiftRight(val.Abs().BitLength - 1);
-                return val.sign == sign ? result : result.Negate();
-            }
-
-            uint[] mag = (uint[])magnitude.Clone();
-
-            return new BigInteger(sign * val.sign, Divide(mag, val.magnitude), true);
         }
 
         public BigInteger[] DivideAndRemainder(BigInteger val)
@@ -2841,15 +2744,5 @@ namespace PrivateBinSharp.Crypto.math
             return result;
         }
 
-        private BigInteger FlipExistingBit(int n)
-        {
-            Debug.Assert(sign > 0);
-            Debug.Assert(n >= 0);
-            Debug.Assert(n < BitLength - 1);
-
-            uint[] mag = (uint[])magnitude.Clone();
-            mag[mag.Length - 1 - (n >> 5)] ^= 1U << (n & 31); // Flip bit
-            return new BigInteger(sign, mag, false);
-        }
     }
 }
