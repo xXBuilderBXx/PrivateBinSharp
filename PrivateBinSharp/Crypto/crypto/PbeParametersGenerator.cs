@@ -42,14 +42,12 @@ namespace PrivateBinSharp.Crypto.crypto
             mIterationCount = iterationCount;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public virtual void Init(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, int iterationCount)
         {
             mPassword = password.ToArray();
             mSalt = salt.ToArray();
             mIterationCount = iterationCount;
         }
-#endif
 
         public virtual byte[] Password
         {
@@ -115,7 +113,6 @@ namespace PrivateBinSharp.Crypto.crypto
             return Strings.ToUtf8ByteArray(password);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static byte[] Pkcs5PasswordToBytes(ReadOnlySpan<char> password)
         {
             return Strings.ToByteArray(password);
@@ -125,7 +122,6 @@ namespace PrivateBinSharp.Crypto.crypto
         {
             return Strings.ToUtf8ByteArray(password);
         }
-#endif
 
         /**
          * converts a password to a byte array according to the scheme in
@@ -157,7 +153,6 @@ namespace PrivateBinSharp.Crypto.crypto
             return bytes;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static byte[] Pkcs12PasswordToBytes(ReadOnlySpan<char> password)
         {
             return Pkcs12PasswordToBytes(password, false);
@@ -175,6 +170,5 @@ namespace PrivateBinSharp.Crypto.crypto
 
             return bytes;
         }
-#endif
     }
 }

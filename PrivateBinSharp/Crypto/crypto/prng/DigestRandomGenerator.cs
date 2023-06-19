@@ -44,7 +44,6 @@ namespace PrivateBinSharp.Crypto.crypto.prng
             }
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public void AddSeedMaterial(ReadOnlySpan<byte> inSeed)
         {
             lock (this)
@@ -57,7 +56,6 @@ namespace PrivateBinSharp.Crypto.crypto.prng
                 DigestDoFinal(seed);
             }
         }
-#endif
 
         public void AddSeedMaterial(long rSeed)
         {
@@ -76,30 +74,9 @@ namespace PrivateBinSharp.Crypto.crypto.prng
 
         public void NextBytes(byte[] bytes, int start, int len)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             NextBytes(bytes.AsSpan(start, len));
-#else
-			lock (this)
-			{
-				int stateOff = 0;
-
-				GenerateState();
-
-				int end = start + len;
-				for (int i = start; i < end; ++i)
-				{
-					if (stateOff == state.Length)
-					{
-						GenerateState();
-						stateOff = 0;
-					}
-					bytes[i] = state[stateOff++];
-				}
-			}
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public void NextBytes(Span<byte> bytes)
         {
             lock (this)
@@ -119,7 +96,6 @@ namespace PrivateBinSharp.Crypto.crypto.prng
                 }
             }
         }
-#endif
 
         private void CycleSeed()
         {
@@ -141,7 +117,6 @@ namespace PrivateBinSharp.Crypto.crypto.prng
             }
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         private void DigestAddCounter(long seedVal)
         {
             Span<byte> bytes = stackalloc byte[8];
@@ -158,23 +133,5 @@ namespace PrivateBinSharp.Crypto.crypto.prng
         {
             digest.DoFinal(result);
         }
-#else
-        private void DigestAddCounter(long seedVal)
-        {
-            byte[] bytes = new byte[8];
-            Pack.UInt64_To_LE((ulong)seedVal, bytes);
-            digest.BlockUpdate(bytes, 0, bytes.Length);
-        }
-
-		private void DigestUpdate(byte[] inSeed)
-		{
-			digest.BlockUpdate(inSeed, 0, inSeed.Length);
-		}
-
-        private void DigestDoFinal(byte[] result)
-		{
-			digest.DoFinal(result, 0);
-		}
-#endif
     }
 }

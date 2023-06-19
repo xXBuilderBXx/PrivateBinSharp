@@ -8,13 +8,11 @@ namespace PrivateBinSharp.Crypto.math.raw
 
         internal static ulong Expand64To128Rev(ulong x, out ulong low)
         {
-#if NETCOREAPP3_0_OR_GREATER
             if (Bmi2.X64.IsSupported)
             {
                 low = Bmi2.X64.ParallelBitDeposit(x >> 32, 0xAAAAAAAAAAAAAAAAUL);
                 return Bmi2.X64.ParallelBitDeposit(x, 0xAAAAAAAAAAAAAAAAUL);
             }
-#endif
 
             // "shuffle" low half to even bits and high half to odd bits
             x = Bits.BitPermuteStep(x, 0x00000000FFFF0000UL, 16);

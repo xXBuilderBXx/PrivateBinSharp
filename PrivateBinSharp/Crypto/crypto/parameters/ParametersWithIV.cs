@@ -1,13 +1,10 @@
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 using System.Buffers;
-#endif
 
 namespace PrivateBinSharp.Crypto.crypto.parameters
 {
     public class ParametersWithIV
         : ICipherParameters
     {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static ParametersWithIV Create<TState>(ICipherParameters parameter, int ivLength, TState state,
             SpanAction<byte, TState> action)
         {
@@ -20,7 +17,6 @@ namespace PrivateBinSharp.Crypto.crypto.parameters
             action(result.m_iv, state);
             return result;
         }
-#endif
 
         internal static ICipherParameters ApplyOptionalIV(ICipherParameters parameters, byte[] iv)
         {
@@ -52,14 +48,12 @@ namespace PrivateBinSharp.Crypto.crypto.parameters
             Array.Copy(iv, ivOff, m_iv, 0, ivLen);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public ParametersWithIV(ICipherParameters parameters, ReadOnlySpan<byte> iv)
         {
             // NOTE: 'parameters' may be null to imply key re-use
             m_parameters = parameters;
             m_iv = iv.ToArray();
         }
-#endif
 
         private ParametersWithIV(ICipherParameters parameters, int ivLength)
         {
@@ -80,8 +74,6 @@ namespace PrivateBinSharp.Crypto.crypto.parameters
 
         public ICipherParameters Parameters => m_parameters;
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal ReadOnlySpan<byte> IV => m_iv;
-#endif
     }
 }

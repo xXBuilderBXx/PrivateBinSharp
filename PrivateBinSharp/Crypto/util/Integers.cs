@@ -1,8 +1,4 @@
-﻿#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-#endif
-#if NETCOREAPP3_0_OR_GREATER
-using System.Numerics;
-#endif
+﻿using System.Numerics;
 
 
 namespace PrivateBinSharp.Crypto.util

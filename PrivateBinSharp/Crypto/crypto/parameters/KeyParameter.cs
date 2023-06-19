@@ -1,6 +1,4 @@
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 using System.Buffers;
-#endif
 
 using PrivateBinSharp.Crypto.util;
 
@@ -9,7 +7,6 @@ namespace PrivateBinSharp.Crypto.crypto.parameters
     public class KeyParameter
         : ICipherParameters
     {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static KeyParameter Create<TState>(int length, TState state, SpanAction<byte, TState> action)
         {
             if (action == null)
@@ -21,7 +18,6 @@ namespace PrivateBinSharp.Crypto.crypto.parameters
             action(result.m_key, state);
             return result;
         }
-#endif
 
         private readonly byte[] m_key;
 
@@ -46,12 +42,10 @@ namespace PrivateBinSharp.Crypto.crypto.parameters
             Array.Copy(key, keyOff, m_key, 0, keyLen);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public KeyParameter(ReadOnlySpan<byte> key)
         {
             m_key = key.ToArray();
         }
-#endif
 
         private KeyParameter(int length)
         {
@@ -81,9 +75,7 @@ namespace PrivateBinSharp.Crypto.crypto.parameters
             return Arrays.FixedTimeEquals(m_key, data);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal ReadOnlySpan<byte> Key => m_key;
-#endif
 
         public KeyParameter Reverse()
         {

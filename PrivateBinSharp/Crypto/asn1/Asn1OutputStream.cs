@@ -126,11 +126,7 @@ namespace PrivateBinSharp.Crypto.asn1
                 return;
             }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Span<byte> stack = stackalloc byte[6];
-#else
-            byte[] stack = new byte[6];
-#endif
             int pos = stack.Length;
 
             stack[--pos] = (byte)(tagNo & 0x7F);

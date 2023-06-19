@@ -1,11 +1,8 @@
 using System.Diagnostics;
 using System.Globalization;
-#if NETCOREAPP3_0_OR_GREATER
 using System.Numerics;
-#endif
 using System.Runtime.Serialization;
 using System.Text;
-using PrivateBinSharp.Crypto.security;
 using PrivateBinSharp.Crypto.util;
 
 namespace PrivateBinSharp.Crypto.math
@@ -446,13 +443,9 @@ namespace PrivateBinSharp.Crypto.math
 
             int numBytes = end - iBval;
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Span<byte> inverse = numBytes <= 512
                 ? stackalloc byte[numBytes]
                 : new byte[numBytes];
-#else
-            byte[] inverse = new byte[numBytes];
-#endif
 
             int index = 0;
             while (index < numBytes)
@@ -895,29 +888,12 @@ namespace PrivateBinSharp.Crypto.math
 
         private static int BitLen(byte b)
         {
-#if NETCOREAPP3_0_OR_GREATER
             return 32 - BitOperations.LeadingZeroCount(b);
-#else
-            return BitLengthTable[b];
-#endif
         }
 
         private static int BitLen(uint v)
         {
-#if NETCOREAPP3_0_OR_GREATER
             return 32 - BitOperations.LeadingZeroCount(v);
-#else
-            uint t = v >> 24;
-            if (t != 0)
-                return 24 + BitLengthTable[t];
-            t = v >> 16;
-            if (t != 0)
-                return 16 + BitLengthTable[t];
-            t = v >> 8;
-            if (t != 0)
-                return 8 + BitLengthTable[t];
-            return BitLengthTable[v];
-#endif
         }
 
         private bool QuickPow2Check()
@@ -1578,17 +1554,9 @@ namespace PrivateBinSharp.Crypto.math
         {
             Debug.Assert(mult > 0);
 
-#if NETCOREAPP3_0_OR_GREATER
             int tz = BitOperations.TrailingZeroCount(mult);
             mult >>= tz;
             zeroes += tz;
-#else
-            while ((mult & 1) == 0)
-            {
-                mult >>= 1;
-                ++zeroes;
-            }
-#endif
 
             return mult | zeroes << 8;
         }
@@ -2801,22 +2769,7 @@ namespace PrivateBinSharp.Crypto.math
                 offset += 32;
             }
 
-#if NETCOREAPP3_0_OR_GREATER
             offset += BitOperations.TrailingZeroCount(word);
-#else
-            while ((word & 0xFF) == 0)
-            {
-                word >>= 8;
-                offset += 8;
-            }
-
-            while ((word & 1) == 0)
-            {
-                word >>= 1;
-                ++offset;
-            }
-
-#endif
             return offset;
         }
 

@@ -3,11 +3,7 @@
 namespace PrivateBinSharp.Crypto.util.collections
 {
     internal abstract class ReadOnlySet<T>
-#if NETCOREAPP1_0_OR_GREATER || NET40_OR_GREATER || NETSTANDARD1_0_OR_GREATER
         : ISet<T>
-#else
-        : ICollection<T>, IEnumerable<T>, IEnumerable
-#endif
     {
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -38,7 +34,6 @@ namespace PrivateBinSharp.Crypto.util.collections
         public abstract bool Overlaps(IEnumerable<T> other);
     }
 
-#if NETCOREAPP1_0_OR_GREATER || NET40_OR_GREATER || NETSTANDARD1_0_OR_GREATER
     internal class ReadOnlySetProxy<T>
         : ReadOnlySet<T>
     {
@@ -62,5 +57,4 @@ namespace PrivateBinSharp.Crypto.util.collections
         public override bool IsSupersetOf(IEnumerable<T> other) => m_target.IsSupersetOf(other);
         public override bool Overlaps(IEnumerable<T> other) => m_target.Overlaps(other);
     }
-#endif
 }

@@ -57,21 +57,9 @@ namespace PrivateBinSharp.Crypto.crypto.prng
             if (seed == null)
                 return;
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             AddSeedMaterial(seed.AsSpan());
-#else
-            for (int m = 0; m < seed.Length; m++) 
-            {
-                byte pn = P[n];
-                s = P[(s + pn + seed[m]) & 0xff];
-                P[n] = P[s];
-                P[s] = pn;
-                n = (byte)(n + 1);
-            }
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public void AddSeedMaterial(ReadOnlySpan<byte> seed)
         {
             for (int m = 0; m < seed.Length; m++)
@@ -83,17 +71,12 @@ namespace PrivateBinSharp.Crypto.crypto.prng
                 n = (byte)(n + 1);
             }
         }
-#endif
 
         public void AddSeedMaterial(long seed)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Span<byte> bytes = stackalloc byte[8];
             Pack.UInt64_To_BE((ulong)seed, bytes);
             AddSeedMaterial(bytes);
-#else
-            AddSeedMaterial(Pack.UInt64_To_BE((ulong)seed));
-#endif
         }
 
         public void NextBytes(byte[] bytes)
@@ -103,27 +86,9 @@ namespace PrivateBinSharp.Crypto.crypto.prng
 
         public void NextBytes(byte[] bytes, int start, int len)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             NextBytes(bytes.AsSpan(start, len));
-#else
-            lock (P) 
-            {
-                int end = start + len;
-                for (int i = start; i != end; i++) 
-                {
-                    byte pn = P[n];
-                    s = P[(s + pn) & 0xFF];
-                    byte ps = P[s];
-                    bytes[i] = P[(P[ps] + 1) & 0xFF];
-                    P[s] = pn;
-                    P[n] = ps;
-                    n = (byte)(n + 1);
-                }
-            }
-#endif
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public void NextBytes(Span<byte> bytes)
         {
             lock (P)
@@ -140,6 +105,5 @@ namespace PrivateBinSharp.Crypto.crypto.prng
                 }
             }
         }
-#endif
     }
 }

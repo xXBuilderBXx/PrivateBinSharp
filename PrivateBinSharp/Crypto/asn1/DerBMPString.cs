@@ -90,16 +90,6 @@ namespace PrivateBinSharp.Crypto.asn1
             });
         }
 
-#if !(NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER)
-        internal DerBmpString(char[] str)
-        {
-            if (str == null)
-                throw new ArgumentNullException("str");
-
-            m_str = new string(str);
-        }
-#endif
-
         /**
          * basic constructor
          */

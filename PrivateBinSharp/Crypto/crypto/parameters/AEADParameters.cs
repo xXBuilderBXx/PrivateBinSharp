@@ -59,8 +59,6 @@ namespace PrivateBinSharp.Crypto.crypto.parameters
             return (byte[])nonce.Clone();
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         internal ReadOnlySpan<byte> Nonce => nonce;
-#endif
     }
 }
