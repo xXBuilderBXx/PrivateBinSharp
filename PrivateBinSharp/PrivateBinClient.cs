@@ -5,6 +5,7 @@ using PrivateBinSharp.Crypto.crypto.generators;
 using PrivateBinSharp.Crypto.crypto.modes;
 using PrivateBinSharp.Crypto.crypto.parameters;
 using PrivateBinSharp.Crypto.security;
+using System.Reflection;
 using System.Text;
 
 namespace PrivateBinSharp
@@ -33,6 +34,11 @@ namespace PrivateBinSharp
         private bool FirstTimeCheck;
 
         private HttpClient Http;
+
+        /// <summary>
+        /// Version of the current PrivateBinClient lib installed.
+        /// </summary>
+        public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
         public async Task<Paste> CreatePaste(string text, string password, string expire = "5min", bool openDiscussion = false, bool burnAfterReading = false)
         {

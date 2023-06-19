@@ -2,8 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <Version>1.0.0</Version>
+    <Authors>xXBuilderBXx</Authors>
+    <Description>C# PrivateBin API client for programs and automation!</Description>
+    <PackageProjectUrl>https://github.com/xXBuilderBXx/PrivateBinSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/xXBuilderBXx/PrivateBinSharp</RepositoryUrl>
+    <PackageTags>privatebin</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
