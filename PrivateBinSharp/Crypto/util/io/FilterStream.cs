@@ -1,6 +1,3 @@
-#if NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER || NETSTANDARD1_0_OR_GREATER
-#endif
-
 namespace PrivateBinSharp.Crypto.util.io
 {
     public class FilterStream
@@ -24,18 +21,7 @@ namespace PrivateBinSharp.Crypto.util.io
         {
             get { return s.CanWrite; }
         }
-#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        //public override void CopyTo(Stream destination, int bufferSize)
-        //{
-        //    Streams.CopyTo(s, destination, bufferSize);
-        //}
-#endif
-#if NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER || NETSTANDARD1_0_OR_GREATER
-        //public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
-        //{
-        //    return Streams.CopyToAsync(s, destination, bufferSize, cancellationToken);
-        //}
-#endif
+
         public override void Flush()
         {
             s.Flush();
@@ -53,16 +39,11 @@ namespace PrivateBinSharp.Crypto.util.io
         {
             return s.Read(buffer, offset, count);
         }
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public override int Read(Span<byte> buffer)
         {
             return s.Read(buffer);
         }
-        //public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-        //{
-        //    return Streams.ReadAsync(s, buffer, cancellationToken);
-        //}
-#endif
+
         public override int ReadByte()
         {
             return s.ReadByte();
@@ -79,16 +60,11 @@ namespace PrivateBinSharp.Crypto.util.io
         {
             s.Write(buffer, offset, count);
         }
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public override void Write(ReadOnlySpan<byte> buffer)
         {
             s.Write(buffer);
         }
-        //public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
-        //{
-        //    return Streams.WriteAsync(s, buffer, cancellationToken);
-        //}
-#endif
+
         public override void WriteByte(byte value)
         {
             s.WriteByte(value);

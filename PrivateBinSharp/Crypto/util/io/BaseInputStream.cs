@@ -1,6 +1,3 @@
-#if NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER || NETSTANDARD1_0_OR_GREATER
-#endif
-
 namespace PrivateBinSharp.Crypto.util.io
 {
     public abstract class BaseInputStream
@@ -10,19 +7,15 @@ namespace PrivateBinSharp.Crypto.util.io
         public sealed override bool CanSeek { get { return false; } }
         public sealed override bool CanWrite { get { return false; } }
 
-#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public override void CopyTo(Stream destination, int bufferSize)
         {
             Streams.CopyTo(this, destination, bufferSize);
         }
-#endif
 
-#if NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER || NETSTANDARD1_0_OR_GREATER
         public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
         {
             return Streams.CopyToAsync(this, destination, bufferSize, cancellationToken);
         }
-#endif
 
         public sealed override void Flush() { }
         public sealed override long Length { get { throw new NotSupportedException(); } }
@@ -56,7 +49,6 @@ namespace PrivateBinSharp.Crypto.util.io
             return pos;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public override int Read(Span<byte> buffer)
         {
             int count = buffer.Length, pos = 0;
@@ -83,13 +75,11 @@ namespace PrivateBinSharp.Crypto.util.io
         {
             return Streams.ReadAsync(this, buffer, cancellationToken);
         }
-#endif
 
         public sealed override long Seek(long offset, SeekOrigin origin) { throw new NotSupportedException(); }
         public sealed override void SetLength(long value) { throw new NotSupportedException(); }
         public sealed override void Write(byte[] buffer, int offset, int count) { throw new NotSupportedException(); }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         // TODO[api] sealed
         public override void Write(ReadOnlySpan<byte> buffer) { throw new NotSupportedException(); }
         // TODO[api] sealed
@@ -97,7 +87,6 @@ namespace PrivateBinSharp.Crypto.util.io
         {
             throw new NotSupportedException();
         }
-#endif
 
         // TODO[api] WriteByte
     }

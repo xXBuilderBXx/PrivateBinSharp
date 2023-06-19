@@ -1,8 +1,4 @@
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
-#endif
-#if NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER || NETSTANDARD1_0_OR_GREATER
-#endif
 
 namespace PrivateBinSharp.Crypto.util.io
 {
@@ -20,7 +16,6 @@ namespace PrivateBinSharp.Crypto.util.io
         public static void CopyTo(Stream source, Stream destination, int bufferSize)
         {
             int bytesRead;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Span<byte> buffer = bufferSize <= MaxStackAlloc
                 ? stackalloc byte[bufferSize]
                 : new byte[bufferSize];
@@ -28,16 +23,8 @@ namespace PrivateBinSharp.Crypto.util.io
             {
                 destination.Write(buffer[..bytesRead]);
             }
-#else
-			byte[] buffer = new byte[bufferSize];
-			while ((bytesRead = source.Read(buffer, 0, buffer.Length)) != 0)
-			{
-			    destination.Write(buffer, 0, bytesRead);
-			}
-#endif
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER || NETSTANDARD1_0_OR_GREATER
         public static Task CopyToAsync(Stream source, Stream destination)
         {
             return CopyToAsync(source, destination, DefaultBufferSize);
@@ -58,19 +45,11 @@ namespace PrivateBinSharp.Crypto.util.io
         {
             int bytesRead;
             byte[] buffer = new byte[bufferSize];
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             while ((bytesRead = await ReadAsync(source, new Memory<byte>(buffer), cancellationToken).ConfigureAwait(false)) != 0)
             {
                 await WriteAsync(destination, new ReadOnlyMemory<byte>(buffer, 0, bytesRead), cancellationToken).ConfigureAwait(false);
             }
-#else
-			while ((bytesRead = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) != 0)
-			{
-				await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
-			}
-#endif
         }
-#endif
 
         public static void Drain(Stream inStr)
         {
@@ -130,19 +109,6 @@ namespace PrivateBinSharp.Crypto.util.io
             return buf.ToArray();
         }
 
-        public static byte[] ReadAll(MemoryStream inStr)
-        {
-            return inStr.ToArray();
-        }
-
-        public static byte[] ReadAllLimited(Stream inStr, int limit)
-        {
-            MemoryStream buf = new MemoryStream();
-            PipeAllLimited(inStr, limit, buf);
-            return buf.ToArray();
-        }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static ValueTask<int> ReadAsync(Stream source, Memory<byte> buffer,
             CancellationToken cancellationToken = default)
         {
@@ -171,12 +137,6 @@ namespace PrivateBinSharp.Crypto.util.io
                 Array.Clear(localBuffer, 0, localBuffer.Length);
             }
         }
-#endif
-
-        public static int ReadFully(Stream inStr, byte[] buf)
-        {
-            return ReadFully(inStr, buf, 0, buf.Length);
-        }
 
         public static int ReadFully(Stream inStr, byte[] buf, int off, int len)
         {
@@ -191,7 +151,6 @@ namespace PrivateBinSharp.Crypto.util.io
             return totalRead;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static int ReadFully(Stream inStr, Span<byte> buffer)
         {
             int totalRead = 0;
@@ -204,7 +163,6 @@ namespace PrivateBinSharp.Crypto.util.io
             }
             return totalRead;
         }
-#endif
 
         public static void ValidateBufferArguments(byte[] buffer, int offset, int count)
         {
@@ -218,7 +176,6 @@ namespace PrivateBinSharp.Crypto.util.io
                 throw new ArgumentOutOfRangeException("count");
         }
 
-#if NETCOREAPP1_0_OR_GREATER || NET45_OR_GREATER || NETSTANDARD1_0_OR_GREATER
         internal static async Task WriteAsyncCompletion(Task writeTask, byte[] localBuffer)
         {
             try
@@ -231,18 +188,6 @@ namespace PrivateBinSharp.Crypto.util.io
             }
         }
 
-        internal static Task WriteAsyncDirect(Stream destination, byte[] buffer, int offset, int count,
-            CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-                return Task.FromCanceled(cancellationToken);
-
-            destination.Write(buffer, offset, count);
-            return Task.CompletedTask;
-        }
-#endif
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static ValueTask WriteAsync(Stream destination, ReadOnlyMemory<byte> buffer,
             CancellationToken cancellationToken = default)
         {
@@ -255,45 +200,6 @@ namespace PrivateBinSharp.Crypto.util.io
             byte[] sharedBuffer = buffer.ToArray();
             var writeTask = destination.WriteAsync(sharedBuffer, 0, buffer.Length, cancellationToken);
             return new ValueTask(WriteAsyncCompletion(writeTask, sharedBuffer));
-        }
-
-        internal static async ValueTask WriteAsyncCompletion(ValueTask writeTask, byte[] localBuffer)
-        {
-            try
-            {
-                await writeTask.ConfigureAwait(false);
-            }
-            finally
-            {
-                Array.Clear(localBuffer, 0, localBuffer.Length);
-            }
-        }
-
-        internal static ValueTask WriteAsyncDirect(Stream destination, ReadOnlyMemory<byte> buffer,
-            CancellationToken cancellationToken = default)
-        {
-            if (cancellationToken.IsCancellationRequested)
-                return ValueTask.FromCanceled(cancellationToken);
-
-            destination.Write(buffer.Span);
-            return ValueTask.CompletedTask;
-        }
-#endif
-
-        /// <exception cref="IOException"></exception>
-        public static int WriteBufTo(MemoryStream buf, byte[] output, int offset)
-        {
-#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            if (buf.TryGetBuffer(out var buffer))
-            {
-                buffer.CopyTo(output, offset);
-                return buffer.Count;
-            }
-#endif
-
-            int size = Convert.ToInt32(buf.Length);
-            buf.WriteTo(new MemoryStream(output, offset, size));
-            return size;
         }
     }
 }

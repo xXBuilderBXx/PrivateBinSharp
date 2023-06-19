@@ -25,7 +25,6 @@
             return numRead;
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public override int Read(Span<byte> buffer)
         {
             int numRead = m_stream.Read(buffer);
@@ -36,7 +35,6 @@
             }
             return numRead;
         }
-#endif
 
         public override int ReadByte()
         {

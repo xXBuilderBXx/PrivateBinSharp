@@ -1,5 +1,4 @@
 ﻿#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-using System.Buffers.Binary;
 #endif
 #if NETCOREAPP3_0_OR_GREATER
 using System.Numerics;
@@ -16,11 +15,6 @@ namespace PrivateBinSharp.Crypto.util
         public static int NumberOfLeadingZeros(int i)
         {
             return BitOperations.LeadingZeroCount((uint)i);
-        }
-
-        public static int NumberOfTrailingZeros(int i)
-        {
-            return BitOperations.TrailingZeroCount(i);
         }
 
         public static int PopCount(uint u)

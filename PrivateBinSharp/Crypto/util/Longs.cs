@@ -9,11 +9,6 @@ namespace PrivateBinSharp.Crypto.util
         public const int NumBits = 64;
         public const int NumBytes = 8;
 
-        public static long LowestOneBit(long i)
-        {
-            return i & -i;
-        }
-
         public static ulong Reverse(ulong i)
         {
             i = Bits.BitPermuteStepSimple(i, 0x5555555555555555UL, 1);
