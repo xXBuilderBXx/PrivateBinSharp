@@ -2,27 +2,26 @@
 using System.Runtime.CompilerServices;
 
 
-namespace PrivateBinSharp.Crypto.math.raw
+namespace PrivateBinSharp.Crypto.math.raw;
+
+internal static class Bits
 {
-    internal static class Bits
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ulong BitPermuteStep(ulong x, ulong m, int s)
-        {
-            Debug.Assert((m & m << s) == 0UL);
-            Debug.Assert(m << s >> s == m);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	internal static ulong BitPermuteStep(ulong x, ulong m, int s)
+	{
+		Debug.Assert((m & m << s) == 0UL);
+		Debug.Assert(m << s >> s == m);
 
-            ulong t = (x ^ x >> s) & m;
-            return t ^ t << s ^ x;
-        }
+		ulong t = (x ^ x >> s) & m;
+		return t ^ t << s ^ x;
+	}
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ulong BitPermuteStepSimple(ulong x, ulong m, int s)
-        {
-            Debug.Assert(m << s == ~m);
-            Debug.Assert((m & ~m) == 0UL);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	internal static ulong BitPermuteStepSimple(ulong x, ulong m, int s)
+	{
+		Debug.Assert(m << s == ~m);
+		Debug.Assert((m & ~m) == 0UL);
 
-            return (x & m) << s | x >> s & m;
-        }
-    }
+		return (x & m) << s | x >> s & m;
+	}
 }

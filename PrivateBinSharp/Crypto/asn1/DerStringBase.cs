@@ -1,22 +1,21 @@
-namespace PrivateBinSharp.Crypto.asn1
+namespace PrivateBinSharp.Crypto.asn1;
+
+internal abstract class DerStringBase
+	: Asn1Object, IAsn1String
 {
-    public abstract class DerStringBase
-        : Asn1Object, IAsn1String
-    {
-        protected DerStringBase()
-        {
-        }
+	protected DerStringBase()
+	{
+	}
 
-        public abstract string GetString();
+	public abstract string GetString();
 
-        public override string ToString()
-        {
-            return GetString();
-        }
+	public override string ToString()
+	{
+		return GetString();
+	}
 
-        protected override int Asn1GetHashCode()
-        {
-            return GetString().GetHashCode();
-        }
-    }
+	protected override int Asn1GetHashCode()
+	{
+		return GetString().GetHashCode();
+	}
 }

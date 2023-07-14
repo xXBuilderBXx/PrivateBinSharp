@@ -1,32 +1,31 @@
-namespace PrivateBinSharp.Crypto.asn1
+namespace PrivateBinSharp.Crypto.asn1;
+
+internal class DerGeneralizedTime
+	: Asn1GeneralizedTime
 {
-    public class DerGeneralizedTime
-        : Asn1GeneralizedTime
-    {
-        public DerGeneralizedTime(string timeString)
-            : base(timeString)
-        {
-        }
+	public DerGeneralizedTime(string timeString)
+		: base(timeString)
+	{
+	}
 
-        public DerGeneralizedTime(DateTime dateTime)
-            : base(dateTime)
-        {
-        }
+	public DerGeneralizedTime(DateTime dateTime)
+		: base(dateTime)
+	{
+	}
 
-        internal DerGeneralizedTime(byte[] contents)
-            : base(contents)
-        {
-        }
+	internal DerGeneralizedTime(byte[] contents)
+		: base(contents)
+	{
+	}
 
-        internal override IAsn1Encoding GetEncoding(int encoding)
-        {
-            return new PrimitiveEncoding(Asn1Tags.Universal, Asn1Tags.GeneralizedTime,
-                GetContents(Asn1OutputStream.EncodingDer));
-        }
+	internal override IAsn1Encoding GetEncoding(int encoding)
+	{
+		return new PrimitiveEncoding(Asn1Tags.Universal, Asn1Tags.GeneralizedTime,
+			GetContents(Asn1OutputStream.EncodingDer));
+	}
 
-        internal override IAsn1Encoding GetEncodingImplicit(int encoding, int tagClass, int tagNo)
-        {
-            return new PrimitiveEncoding(tagClass, tagNo, GetContents(Asn1OutputStream.EncodingDer));
-        }
-    }
+	internal override IAsn1Encoding GetEncodingImplicit(int encoding, int tagClass, int tagNo)
+	{
+		return new PrimitiveEncoding(tagClass, tagNo, GetContents(Asn1OutputStream.EncodingDer));
+	}
 }

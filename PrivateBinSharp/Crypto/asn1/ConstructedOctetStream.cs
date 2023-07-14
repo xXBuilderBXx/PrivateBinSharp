@@ -1,116 +1,115 @@
 using PrivateBinSharp.Crypto.util;
 using PrivateBinSharp.Crypto.util.io;
 
-namespace PrivateBinSharp.Crypto.asn1
+namespace PrivateBinSharp.Crypto.asn1;
+
+internal class ConstructedOctetStream
+	: BaseInputStream
 {
-    internal class ConstructedOctetStream
-        : BaseInputStream
-    {
-        private readonly Asn1StreamParser m_parser;
+	private readonly Asn1StreamParser m_parser;
 
-        private bool m_first = true;
-        private Stream m_currentStream;
+	private bool m_first = true;
+	private Stream? m_currentStream;
 
-        internal ConstructedOctetStream(Asn1StreamParser parser)
-        {
-            m_parser = parser;
-        }
+	internal ConstructedOctetStream(Asn1StreamParser parser)
+	{
+		m_parser = parser;
+	}
 
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            Streams.ValidateBufferArguments(buffer, offset, count);
+	public override int Read(byte[] buffer, int offset, int count)
+	{
+		Streams.ValidateBufferArguments(buffer, offset, count);
 
-            return Read(buffer.AsSpan(offset, count));
-        }
+		return Read(buffer.AsSpan(offset, count));
+	}
 
-        public override int Read(Span<byte> buffer)
-        {
-            if (buffer.IsEmpty)
-                return 0;
+	public override int Read(Span<byte> buffer)
+	{
+		if (buffer.IsEmpty)
+			return 0;
 
-            if (m_currentStream == null)
-            {
-                if (!m_first)
-                    return 0;
+		if (m_currentStream == null)
+		{
+			if (!m_first)
+				return 0;
 
-                Asn1OctetStringParser next = GetNextParser();
-                if (next == null)
-                    return 0;
+			Asn1OctetStringParser next = GetNextParser();
+			if (next == null)
+				return 0;
 
-                m_first = false;
-                m_currentStream = next.GetOctetStream();
-            }
+			m_first = false;
+			m_currentStream = next.GetOctetStream();
+		}
 
-            int totalRead = 0;
+		int totalRead = 0;
 
-            for (; ; )
-            {
-                int numRead = m_currentStream.Read(buffer[totalRead..]);
+		for (; ; )
+		{
+			int numRead = m_currentStream.Read(buffer[totalRead..]);
 
-                if (numRead > 0)
-                {
-                    totalRead += numRead;
+			if (numRead > 0)
+			{
+				totalRead += numRead;
 
-                    if (totalRead == buffer.Length)
-                        return totalRead;
-                }
-                else
-                {
-                    Asn1OctetStringParser next = GetNextParser();
-                    if (next == null)
-                    {
-                        m_currentStream = null;
-                        return totalRead;
-                    }
+				if (totalRead == buffer.Length)
+					return totalRead;
+			}
+			else
+			{
+				Asn1OctetStringParser next = GetNextParser();
+				if (next == null)
+				{
+					m_currentStream = null;
+					return totalRead;
+				}
 
-                    m_currentStream = next.GetOctetStream();
-                }
-            }
-        }
+				m_currentStream = next.GetOctetStream();
+			}
+		}
+	}
 
-        public override int ReadByte()
-        {
-            if (m_currentStream == null)
-            {
-                if (!m_first)
-                    return -1;
+	public override int ReadByte()
+	{
+		if (m_currentStream == null)
+		{
+			if (!m_first)
+				return -1;
 
-                Asn1OctetStringParser next = GetNextParser();
-                if (next == null)
-                    return -1;
+			Asn1OctetStringParser next = GetNextParser();
+			if (next == null)
+				return -1;
 
-                m_first = false;
-                m_currentStream = next.GetOctetStream();
-            }
+			m_first = false;
+			m_currentStream = next.GetOctetStream();
+		}
 
-            for (; ; )
-            {
-                int b = m_currentStream.ReadByte();
+		for (; ; )
+		{
+			int b = m_currentStream.ReadByte();
 
-                if (b >= 0)
-                    return b;
+			if (b >= 0)
+				return b;
 
-                Asn1OctetStringParser next = GetNextParser();
-                if (next == null)
-                {
-                    m_currentStream = null;
-                    return -1;
-                }
+			Asn1OctetStringParser next = GetNextParser();
+			if (next == null)
+			{
+				m_currentStream = null;
+				return -1;
+			}
 
-                m_currentStream = next.GetOctetStream();
-            }
-        }
+			m_currentStream = next.GetOctetStream();
+		}
+	}
 
-        private Asn1OctetStringParser GetNextParser()
-        {
-            IAsn1Convertible asn1Obj = m_parser.ReadObject();
-            if (asn1Obj == null)
-                return null;
+	private Asn1OctetStringParser GetNextParser()
+	{
+		IAsn1Convertible asn1Obj = m_parser.ReadObject();
+		if (asn1Obj == null)
+			return null;
 
-            if (asn1Obj is Asn1OctetStringParser)
-                return (Asn1OctetStringParser)asn1Obj;
+		if (asn1Obj is Asn1OctetStringParser)
+			return (Asn1OctetStringParser)asn1Obj;
 
-            throw new IOException("unknown object encountered: " + Platform.GetTypeName(asn1Obj));
-        }
-    }
+		throw new IOException("unknown object encountered: " + Platform.GetTypeName(asn1Obj));
+	}
 }

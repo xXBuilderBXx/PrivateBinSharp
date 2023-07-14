@@ -1,64 +1,63 @@
-namespace PrivateBinSharp.Crypto.crypto.parameters
-{
-    public class AeadParameters
-        : ICipherParameters
-    {
-        private readonly byte[] associatedText;
-        private readonly byte[] nonce;
-        private readonly KeyParameter key;
-        private readonly int macSize;
+namespace PrivateBinSharp.Crypto.crypto.parameters;
 
-        /**
+internal class AeadParameters
+	: ICipherParameters
+{
+	private readonly byte[] associatedText;
+	private readonly byte[] nonce;
+	private readonly KeyParameter key;
+	private readonly int macSize;
+
+	/**
          * Base constructor.
          *
          * @param key key to be used by underlying cipher
          * @param macSize macSize in bits
          * @param nonce nonce to be used
          */
-        public AeadParameters(KeyParameter key, int macSize, byte[] nonce)
-           : this(key, macSize, nonce, null)
-        {
-        }
+	public AeadParameters(KeyParameter key, int macSize, byte[] nonce)
+	   : this(key, macSize, nonce, null)
+	{
+	}
 
-        /**
-		 * Base constructor.
-		 *
-		 * @param key key to be used by underlying cipher
-		 * @param macSize macSize in bits
-		 * @param nonce nonce to be used
-		 * @param associatedText associated text, if any
-		 */
-        public AeadParameters(KeyParameter key, int macSize, byte[] nonce, byte[] associatedText)
-        {
-            if (nonce == null)
-                throw new ArgumentNullException(nameof(nonce));
+	/**
+	 * Base constructor.
+	 *
+	 * @param key key to be used by underlying cipher
+	 * @param macSize macSize in bits
+	 * @param nonce nonce to be used
+	 * @param associatedText associated text, if any
+	 */
+	public AeadParameters(KeyParameter key, int macSize, byte[] nonce, byte[] associatedText)
+	{
+		if (nonce == null)
+			throw new ArgumentNullException(nameof(nonce));
 
-            this.key = key;
-            this.nonce = nonce;
-            this.macSize = macSize;
-            this.associatedText = associatedText;
-        }
+		this.key = key;
+		this.nonce = nonce;
+		this.macSize = macSize;
+		this.associatedText = associatedText;
+	}
 
-        public virtual KeyParameter Key
-        {
-            get { return key; }
-        }
+	public virtual KeyParameter Key
+	{
+		get { return key; }
+	}
 
-        public virtual int MacSize
-        {
-            get { return macSize; }
-        }
+	public virtual int MacSize
+	{
+		get { return macSize; }
+	}
 
-        public virtual byte[] GetAssociatedText()
-        {
-            return associatedText;
-        }
+	public virtual byte[] GetAssociatedText()
+	{
+		return associatedText;
+	}
 
-        public virtual byte[] GetNonce()
-        {
-            return (byte[])nonce.Clone();
-        }
+	public virtual byte[] GetNonce()
+	{
+		return (byte[])nonce.Clone();
+	}
 
-        internal ReadOnlySpan<byte> Nonce => nonce;
-    }
+	internal ReadOnlySpan<byte> Nonce => nonce;
 }

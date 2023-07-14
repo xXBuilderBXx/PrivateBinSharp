@@ -1,14 +1,11 @@
-using System.Runtime.Serialization;
+namespace PrivateBinSharp.Crypto.security;
 
-namespace PrivateBinSharp.Crypto.security
+[Serializable]
+internal class SecurityUtilityException
+	: Exception
 {
-    [Serializable]
-    public class SecurityUtilityException
-        : Exception
-    {
-        public SecurityUtilityException(string message)
-            : base(message)
-        {
-        }
-    }
+	public SecurityUtilityException(string message)
+		: base(message)
+	{
+	}
 }

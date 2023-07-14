@@ -1,27 +1,26 @@
-﻿namespace PrivateBinSharp.Crypto.asn1
+﻿namespace PrivateBinSharp.Crypto.asn1;
+
+internal abstract class Asn1Type
 {
-    internal abstract class Asn1Type
-    {
-        internal readonly Type m_platformType;
+	internal readonly Type m_platformType;
 
-        internal Asn1Type(Type platformType)
-        {
-            m_platformType = platformType;
-        }
+	internal Asn1Type(Type platformType)
+	{
+		m_platformType = platformType;
+	}
 
-        internal Type PlatformType
-        {
-            get { return m_platformType; }
-        }
+	internal Type PlatformType
+	{
+		get { return m_platformType; }
+	}
 
-        public sealed override bool Equals(object that)
-        {
-            return this == that;
-        }
+	public sealed override bool Equals(object that)
+	{
+		return this == that;
+	}
 
-        public sealed override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-    }
+	public sealed override int GetHashCode()
+	{
+		return base.GetHashCode();
+	}
 }

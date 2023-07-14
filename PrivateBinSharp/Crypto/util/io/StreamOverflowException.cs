@@ -1,14 +1,11 @@
-using System.Runtime.Serialization;
+namespace PrivateBinSharp.Crypto.util.io;
 
-namespace PrivateBinSharp.Crypto.util.io
+[Serializable]
+internal class StreamOverflowException
+	: IOException
 {
-    [Serializable]
-    public class StreamOverflowException
-        : IOException
-    {
-        public StreamOverflowException(string message)
-            : base(message)
-        {
-        }
-    }
+	public StreamOverflowException(string message)
+		: base(message)
+	{
+	}
 }

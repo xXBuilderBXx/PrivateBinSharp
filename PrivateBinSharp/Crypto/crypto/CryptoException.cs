@@ -1,14 +1,11 @@
-using System.Runtime.Serialization;
+namespace PrivateBinSharp.Crypto.crypto;
 
-namespace PrivateBinSharp.Crypto.crypto
+[Serializable]
+internal class CryptoException
+	: Exception
 {
-    [Serializable]
-    public class CryptoException
-        : Exception
-    {
-        public CryptoException(string message)
-            : base(message)
-        {
-        }
-    }
+	public CryptoException(string message)
+		: base(message)
+	{
+	}
 }

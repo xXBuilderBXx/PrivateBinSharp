@@ -1,0 +1,1441 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PrivateBinSharp</name>
+    </assembly>
+    <members>
+        <member name="F:PrivateBinSharp.Base58.ALPHABET">
+            <summary>
+            "Don't want 0OIl characters that look the same in some fonts and"
+            </summary>
+        </member>
+        <member name="M:PrivateBinSharp.Base58.EncodePlain(System.Collections.Generic.ICollection{System.Byte})">
+            <summary>
+            Encodes data in plain Base58, without any checksum
+            </summary>
+            <param name="input">The data to be encoded</param>
+            <returns></returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1BitStringParser.GetBitStream">
+            <summary>Return a <see cref="T:System.IO.Stream"/> representing the contents of the BIT STRING. The final byte, if any,
+            may include pad bits. See <see cref="P:PrivateBinSharp.Crypto.asn1.Asn1BitStringParser.PadBits"/>.</summary>
+            <returns>A <see cref="T:System.IO.Stream"/> with its source as the BIT STRING content.</returns>
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1BitStringParser.GetOctetStream">
+            <summary>Return a <see cref="T:System.IO.Stream"/> representing the contents of the BIT STRING, where the content is
+            expected to be octet-aligned (this will be automatically checked during parsing).</summary>
+            <returns>A <see cref="T:System.IO.Stream"/> with its source as the BIT STRING content.</returns>
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.asn1.Asn1BitStringParser.PadBits">
+            <summary>Return the number of pad bits, if any, in the final byte, if any, read from
+            <see cref="M:PrivateBinSharp.Crypto.asn1.Asn1BitStringParser.GetBitStream"/>.</summary>
+            <remarks>
+            This number is in the range zero to seven. That number of the least significant bits of the final byte, if
+            any, are not part of the contents and should be ignored. NOTE: Must be called AFTER the stream has been
+            fully processed. (Does not need to be called if <see cref="M:PrivateBinSharp.Crypto.asn1.Asn1BitStringParser.GetOctetStream"/> was used instead of
+            <see cref="M:PrivateBinSharp.Crypto.asn1.Asn1BitStringParser.GetBitStream"/>.
+            </remarks>
+            <returns>The number of pad bits. In the range zero to seven.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Encodable.GetDerEncoded">
+             Return the DER encoding of the object, null if the DER encoding can not be made.
+            
+             @return a DER byte array, null otherwise.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.Asn1EncodableVector">
+            Mutable class for building ASN.1 constructed objects such as SETs or SEQUENCEs.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.Asn1GeneralizedTime">
+            <summary>GeneralizedTime ASN.1 type</summary>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.Asn1InputStream">
+            a general purpose ASN.1 decoder - note: this class differs from the
+            others in that it returns null after it has read the last object in
+            the stream. If an ASN.1 Null is encountered a Der/BER Null object is
+            returned.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1InputStream.#ctor(System.Byte[])">
+             Create an ASN1InputStream based on the input byte array. The length of DER objects in
+             the stream is automatically limited to the length of the input array.
+            
+             @param input array containing ASN.1 encoded data.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1InputStream.#ctor(System.IO.Stream,System.Int32)">
+             Create an ASN1InputStream where no DER object will be longer than limit.
+            
+             @param input stream containing ASN.1 encoded data.
+             @param limit maximum size of a DER encoded object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1InputStream.BuildObject(System.Int32,System.Int32,System.Int32)">
+            build an object given its tag and the number of bytes to construct it from.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.Asn1Null">
+            A Null object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Object.FromByteArray(System.Byte[])">
+            <summary>Create a base ASN.1 object from a byte array.</summary>
+            <param name="data">The byte array to parse.</param>
+            <returns>The base ASN.1 object represented by the byte array.</returns>
+            <exception cref="T:System.IO.IOException">
+            If there is a problem parsing the data, or parsing an object did not exhaust the available data.
+            </exception>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Object.FromStream(System.IO.Stream)">
+            <summary>Read a base ASN.1 object from a stream.</summary>
+            <param name="inStr">The stream to parse.</param>
+            <returns>The base ASN.1 object represented by the byte array.</returns>
+            <exception cref="T:System.IO.IOException">If there is a problem parsing the data.</exception>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1ObjectDescriptor.GetInstance(System.Object)">
+             Return an ObjectDescriptor from the passed in object.
+            
+             @param obj an ASN1ObjectDescriptor or an object that can be converted into one.
+             @exception IllegalArgumentException if the object cannot be converted.
+             @return an ASN1ObjectDescriptor instance, or null.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1ObjectDescriptor.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             Return an ObjectDescriptor from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want.
+             @param declaredExplicit true if the object is meant to be explicitly tagged, false otherwise.
+             @exception IllegalArgumentException if the tagged object cannot be converted.
+             @return an ASN1ObjectDescriptor instance, or null.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1OctetString.GetInstance(System.Object)">
+             return an Octet string from the given object.
+            
+             @param obj the object we want converted.
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1OctetString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return an octet string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want.
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1OctetString.#ctor(System.Byte[])">
+            @param string the octets making up the octet string.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1OctetStringParser.GetOctetStream">
+            <summary>Return the content of the OCTET STRING as a <see cref="T:System.IO.Stream"/>.</summary>
+            <returns>A <see cref="T:System.IO.Stream"/> represnting the OCTET STRING's content.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Sequence.GetInstance(System.Object)">
+             return an Asn1Sequence from the given object.
+            
+             @param obj the object we want converted.
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Sequence.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             Return an ASN1 sequence from a tagged object. There is a special
+             case here, if an object appears to have been explicitly tagged on
+             reading but we were expecting it to be implicitly tagged in the
+             normal course of events it indicates that we lost the surrounding
+             sequence - so we need to add it back (this will happen if the tagged
+             object is a sequence that contains other sequences). If you are
+             dealing with implicitly tagged sequences you really <b>should</b>
+             be using this method.
+            
+             @param taggedObject the tagged object.
+             @param declaredExplicit true if the object is meant to be explicitly tagged, false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.asn1.Asn1Sequence.Item(System.Int32)">
+             return the object at the sequence position indicated by index.
+            
+             @param index the sequence number (starting at zero) of the object
+             @return the object at the sequence position indicated by index.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Set.GetInstance(System.Object)">
+             return an ASN1Set from the given object.
+            
+             @param obj the object we want converted.
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Set.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             Return an ASN1 set from a tagged object. There is a special
+             case here, if an object appears to have been explicitly tagged on
+             reading but we were expecting it to be implicitly tagged in the
+             normal course of events it indicates that we lost the surrounding
+             set - so we need to add it back (this will happen if the tagged
+             object is a sequence that contains other sequences). If you are
+             dealing with implicitly tagged sets you really <b>should</b>
+             be using this method.
+            
+             @param taggedObject the tagged object.
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.asn1.Asn1Set.Item(System.Int32)">
+             return the object at the set position indicated by index.
+            
+             @param index the set number (starting at zero) of the object
+             @return the object at the set position indicated by index.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.Asn1TaggedObject">
+            ASN.1 TaggedObject - in ASN.1 notation this is any object preceded by
+            a [n] where n is some number - these are assumed to follow the construction
+            rules (as with sequences).
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObject.#ctor(System.Boolean,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            @param explicitly true if the object is explicitly tagged.
+            @param tagNo the tag number for this object.
+            @param obj the tagged object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObject.IsExplicit">
+            return whether or not the object may be explicitly tagged.
+            <p>
+            Note: if the object has been read from an input stream, the only
+            time you can be sure if isExplicit is returning the true state of
+            affairs is if it returns false. An implicitly tagged object may appear
+            to be explicitly tagged, so you need to understand the context under
+            which the reading was done as well, see GetObject below.</p>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObject.GetObject">
+            return whatever was following the tag.
+            <p>
+            Note: tagged objects are generally context dependent if you're
+            trying to extract a tagged object you should be going via the
+            appropriate GetInstance method.</p>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObject.GetBaseObject">
+            Needed for open types, until we have better type-guided parsing support. Use sparingly for other
+            purposes, and prefer {@link #getExplicitBaseTagged()}, {@link #getImplicitBaseTagged(int, int)} or
+            {@link #getBaseUniversal(boolean, int)} where possible. Before using, check for matching tag
+            {@link #getTagClass() class} and {@link #getTagNo() number}.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObject.GetExplicitBaseObject">
+            Needed for open types, until we have better type-guided parsing support. Use
+            sparingly for other purposes, and prefer {@link #getExplicitBaseTagged()} or
+            {@link #getBaseUniversal(boolean, int)} where possible. Before using, check
+            for matching tag {@link #getTagClass() class} and {@link #getTagNo() number}.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser.ParseBaseUniversal(System.Boolean,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser.ParseExplicitBaseObject">
+            <summary>Needed for open types, until we have better type-guided parsing support.</summary>
+            <remarks>
+            Use sparingly for other purposes, and prefer <see cref="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser.ParseExplicitBaseTagged"/> or
+            <see cref="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser.ParseBaseUniversal(System.Boolean,System.Int32)"/> where possible. Before using, check for matching tag
+            <see cref="P:PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser.TagClass">class</see> and <see cref="P:PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser.TagNo">number</see>.
+            </remarks>
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser.ParseExplicitBaseTagged">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser.ParseImplicitBaseTagged(System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1UniversalType.FromByteArray(System.Byte[])">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.Asn1UtcTime">
+            <summary>UTCTime ASN.1 type</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1UtcTime.GetInstance(System.Object)">
+             return a UTC Time from the passed in object.
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1UtcTime.ToAdjustedDateTime">
+            <summary>Return an adjusted date in the range of 1950 - 2049.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseExplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseExplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseExplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseExplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseImplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseImplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseImplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseImplicitBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Int32,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseImplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseImplicitContextBaseTagged(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseBaseUniversal(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Boolean,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseContextBaseUniversal(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Boolean,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseBaseUniversal(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Boolean,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseBaseUniversal(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,System.Boolean,System.Int32,PrivateBinSharp.Crypto.asn1.IAsn1Convertible@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseContextBaseUniversal(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Boolean,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseContextBaseUniversal(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Boolean,System.Int32,PrivateBinSharp.Crypto.asn1.IAsn1Convertible@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseExplicitBaseObject(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.ParseExplicitContextBaseObject(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitBaseObject(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitBaseObject(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,System.Int32,PrivateBinSharp.Crypto.asn1.IAsn1Convertible@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitContextBaseObject(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.Asn1Utilities.TryParseExplicitContextBaseObject(PrivateBinSharp.Crypto.asn1.Asn1TaggedObjectParser,System.Int32,PrivateBinSharp.Crypto.asn1.IAsn1Convertible@)">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.BerBitStringParser">
+            <summary>A parser for indefinite-length BIT STRINGs.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerOctetStringGenerator.GetOctetOutputStream">
+            <remarks>The caller is responsible for disposing the returned <see cref="T:System.IO.Stream"/> before disposing
+            this generator.</remarks>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerOctetStringGenerator.GetOctetOutputStream(System.Int32)">
+            <remarks>The caller is responsible for disposing the returned <see cref="T:System.IO.Stream"/> before disposing
+            this generator.</remarks>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerOctetStringGenerator.GetOctetOutputStream(System.Byte[])">
+            <remarks>The caller is responsible for disposing the returned <see cref="T:System.IO.Stream"/> before disposing
+            this generator.</remarks>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerSequence.#ctor">
+            create an empty sequence
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            create a sequence containing one object
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable,PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            create a sequence containing two objects
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1EncodableVector)">
+            create a sequence containing a vector of objects.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerSet.#ctor">
+            create an empty set
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerSet.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            create a set containing one object
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerSet.#ctor(PrivateBinSharp.Crypto.asn1.Asn1EncodableVector)">
+            create a set containing a vector of objects.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.BerTaggedObject">
+            BER TaggedObject - in ASN.1 notation this is any object preceded by
+            a [n] where n is some number - these are assumed to follow the construction
+            rules (as with sequences).
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerTaggedObject.#ctor(System.Int32,PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            @param tagNo the tag number for this object.
+            @param obj the tagged object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.BerTaggedObject.#ctor(System.Boolean,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            @param isExplicit true if an explicitly tagged object.
+            @param tagNo the tag number for this object.
+            @param obj the tagged object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBitString.GetInstance(System.Object)">
+             return a Bit string from the passed in object
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBitString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a Bit string from a tagged object.
+            
+             @param obj the tagged object holding the object we want
+             @param explicitly true if the object is meant to be explicitly
+                          tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot
+                           be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBitString.#ctor(System.Byte[],System.Int32)">
+            @param data the octets making up the bit string.
+            @param padBits the number of extra bits at the end of the string.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBitString.GetOctets">
+             Return the octets contained in this BIT STRING, checking that this BIT STRING really
+             does represent an octet aligned string. Only use this method when the standard you are
+             following dictates that the BIT STRING will be octet aligned.
+            
+             @return a copy of the octet aligned data.
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.asn1.DerBitString.IntValue">
+            @return the value of the bit string as an int (truncating if necessary)
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerBmpString">
+            Der BMPString object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBmpString.GetInstance(System.Object)">
+             return a BMP string from the given object.
+            
+             @param obj the object we want converted.
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBmpString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a BMP string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBmpString.#ctor(System.String)">
+            basic constructor
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBoolean.GetInstance(System.Object)">
+             return a bool from the passed in object.
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerBoolean.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a Boolean from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerEnumerated.GetInstance(System.Object)">
+             return an integer from the passed in object
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerEnumerated.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return an Enumerated from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerExternal">
+            Class representing the DER-type External
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerExternal.#ctor(PrivateBinSharp.Crypto.asn1.DerObjectIdentifier,PrivateBinSharp.Crypto.asn1.DerInteger,PrivateBinSharp.Crypto.asn1.Asn1ObjectDescriptor,PrivateBinSharp.Crypto.asn1.DerTaggedObject)">
+            Creates a new instance of DerExternal
+            See X.690 for more informations about the meaning of these parameters
+            @param directReference The direct reference or <code>null</code> if not set.
+            @param indirectReference The indirect reference or <code>null</code> if not set.
+            @param dataValueDescriptor The data value descriptor or <code>null</code> if not set.
+            @param externalData The external data in its encoded form.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerExternal.#ctor(PrivateBinSharp.Crypto.asn1.DerObjectIdentifier,PrivateBinSharp.Crypto.asn1.DerInteger,PrivateBinSharp.Crypto.asn1.Asn1ObjectDescriptor,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1Object)">
+            Creates a new instance of DerExternal.
+            See X.690 for more informations about the meaning of these parameters
+            @param directReference The direct reference or <code>null</code> if not set.
+            @param indirectReference The indirect reference or <code>null</code> if not set.
+            @param dataValueDescriptor The data value descriptor or <code>null</code> if not set.
+            @param encoding The encoding to be used for the external data
+            @param externalData The external data
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.asn1.DerExternal.Encoding">
+            The encoding of the content. Valid values are
+            <ul>
+            <li><code>0</code> single-ASN1-type</li>
+            <li><code>1</code> OCTET STRING</li>
+            <li><code>2</code> BIT STRING</li>
+            </ul>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerGraphicString.GetInstance(System.Object)">
+             return a Graphic String from the passed in object
+            
+             @param obj a DerGraphicString or an object that can be converted into one.
+             @exception IllegalArgumentException if the object cannot be converted.
+             @return a DerGraphicString instance, or null.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerGraphicString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a Graphic String from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception IllegalArgumentException if the tagged object cannot be converted.
+             @return a DerGraphicString instance, or null.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerIA5String">
+            IA5String object - this is an Ascii string.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerIA5String.GetInstance(System.Object)">
+             return an IA5 string from the passed in object
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerIA5String.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return an IA5 string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerIA5String.#ctor(System.String,System.Boolean)">
+             Constructor with optional validation.
+            
+             @param string the base string to wrap.
+             @param validate whether or not to check the string.
+             @throws ArgumentException if validate is true and the string
+             contains characters that should not be in an IA5String.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerIA5String.IsIA5String(System.String)">
+             return true if the passed in String can be represented without
+             loss as an IA5String, false otherwise.
+            
+             @return true if in printable set, false otherwise.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerInteger.GetInstance(System.Object)">
+             return an integer from the passed in object
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerInteger.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return an Integer from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot  be converted.
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.asn1.DerInteger.PositiveValue">
+            in some cases positive values Get crammed into a space,
+            that's not quite big enough...
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerInteger.IsMalformed(System.Byte[])">
+             Apply the correct validation for an INTEGER primitive following the BER rules.
+            
+             @param bytes The raw encoding of the integer.
+             @return true if the (in)put fails this validation.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerNull">
+            A Null object.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerNumericString">
+            Der NumericString object - this is an ascii string of characters {0,1,2,3,4,5,6,7,8,9, }.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerNumericString.GetInstance(System.Object)">
+             return a numeric string from the passed in object
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerNumericString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a numeric string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerNumericString.#ctor(System.String,System.Boolean)">
+             Constructor with optional validation.
+            
+             @param string the base string to wrap.
+             @param validate whether or not to check the string.
+             @throws ArgumentException if validate is true and the string
+             contains characters that should not be in a NumericString.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerNumericString.IsNumericString(System.String)">
+             Return true if the string can be represented as a NumericString ('0'..'9', ' ')
+            
+             @param str string to validate.
+             @return true if numeric, fale otherwise.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerObjectIdentifier.GetInstance(System.Object)">
+             return an OID from the passed in object
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerObjectIdentifier.On(PrivateBinSharp.Crypto.asn1.DerObjectIdentifier)">
+            Return  true if this oid is an extension of the passed in branch, stem.
+            @param stem the arc or branch that is a possible parent.
+            @return  true if the branch is on the passed in stem, false otherwise.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerOctetString.#ctor(System.Byte[])">
+            <param name="contents">The octets making up the octet string.</param>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerPrintableString">
+            Der PrintableString object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerPrintableString.GetInstance(System.Object)">
+             return a printable string from the passed in object.
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerPrintableString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a printable string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerPrintableString.#ctor(System.String,System.Boolean)">
+             Constructor with optional validation.
+            
+             @param string the base string to wrap.
+             @param validate whether or not to check the string.
+             @throws ArgumentException if validate is true and the string
+             contains characters that should not be in a PrintableString.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerPrintableString.IsPrintableString(System.String)">
+             return true if the passed in String can be represented without
+             loss as a PrintableString, false otherwise.
+            
+             @return true if in printable set, false otherwise.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerSequence.#ctor">
+            create an empty sequence
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            create a sequence containing one object
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable,PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            create a sequence containing two objects
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1EncodableVector)">
+            create a sequence containing a vector of objects.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerSet">
+            A Der encoded set object
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerSet.#ctor">
+            create an empty set
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerSet.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            @param obj - a single object that makes up the set.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerSet.#ctor(PrivateBinSharp.Crypto.asn1.Asn1EncodableVector)">
+            @param v - a vector of objects making up the set.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerT61String">
+            Der T61String (also the teletex string) - 8-bit characters
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerT61String.GetInstance(System.Object)">
+             return a T61 string from the passed in object.
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerT61String.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a T61 string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerTaggedObject">
+            DER TaggedObject - in ASN.1 notation this is any object preceded by
+            a [n] where n is some number - these are assumed to follow the construction
+            rules (as with sequences).
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerTaggedObject.#ctor(System.Boolean,System.Int32,PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            @param isExplicit true if an explicitly tagged object.
+            @param tagNo the tag number for this object.
+            @param obj the tagged object.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerUniversalString">
+            UniversalString object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerUniversalString.GetInstance(System.Object)">
+             return a universal string from the passed in object.
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerUniversalString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a universal string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerUtf8String">
+            Der UTF8String object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerUtf8String.GetInstance(System.Object)">
+             return an UTF8 string from the passed in object.
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerUtf8String.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a UTF8 string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerVideotexString.GetInstance(System.Object)">
+             return a videotex string from the passed in object
+            
+             @param obj a DERVideotexString or an object that can be converted into one.
+             @exception IllegalArgumentException if the object cannot be converted.
+             @return a DERVideotexString instance, or null.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerVideotexString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a videotex string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception IllegalArgumentException if the tagged object cannot be converted.
+             @return a DERVideotexString instance, or null.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DerVisibleString">
+            VisibleString object.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerVisibleString.GetInstance(System.Object)">
+             return a visible string from the passed in object.
+            
+             @exception ArgumentException if the object cannot be converted.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DerVisibleString.GetInstance(PrivateBinSharp.Crypto.asn1.Asn1TaggedObject,System.Boolean)">
+             return a visible string from a tagged object.
+            
+             @param taggedObject the tagged object holding the object we want
+             @param declaredExplicit true if the object is meant to be explicitly tagged false otherwise.
+             @exception ArgumentException if the tagged object cannot be converted.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DLBitString">
+            <summary>A Definite length BIT STRING</summary>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DLBitStringParser">
+            <summary>Parser for a DL encoded BIT STRING.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DLSequence.#ctor">
+            create an empty sequence
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DLSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            create a sequence containing one object
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DLSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable,PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            create a sequence containing two objects
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DLSequence.#ctor(PrivateBinSharp.Crypto.asn1.Asn1EncodableVector)">
+            create a sequence containing a vector of objects.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DLSet.#ctor">
+            create an empty set
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DLSet.#ctor(PrivateBinSharp.Crypto.asn1.Asn1Encodable)">
+            create a set containing one object
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.asn1.DLSet.#ctor(PrivateBinSharp.Crypto.asn1.Asn1EncodableVector)">
+            create a set containing a vector of objects.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.DLTaggedObjectParser">
+            Parser for definite-length tagged objects.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.IAsn1Choice">
+            Marker interface for CHOICE objects - if you implement this in a roll-your-own
+            object, any attempt to tag the object implicitly will convert the tag to an
+            explicit one as the encoding rules require.
+            <p>
+            If you use this interface your class should also implement the getInstance
+            pattern which takes a tag object and the tagging mode used. 
+            </p>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.IAsn1String">
+            basic interface for Der string objects.
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdDsaWithSha3_224">
+            2.16.840.1.101.3.4.3.5 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdDsaWithSha3_256">
+            2.16.840.1.101.3.4.3.6 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdDsaWithSha3_384">
+            2.16.840.1.101.3.4.3.7 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdDsaWithSha3_512">
+            2.16.840.1.101.3.4.3.8 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdEcdsaWithSha3_224">
+            2.16.840.1.101.3.4.3.9 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdEcdsaWithSha3_256">
+            2.16.840.1.101.3.4.3.10 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdEcdsaWithSha3_384">
+            2.16.840.1.101.3.4.3.11 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdEcdsaWithSha3_512">
+            2.16.840.1.101.3.4.3.12 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdRsassaPkcs1V15WithSha3_224">
+            2.16.840.1.101.3.4.3.9 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdRsassaPkcs1V15WithSha3_256">
+            2.16.840.1.101.3.4.3.10 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdRsassaPkcs1V15WithSha3_384">
+            2.16.840.1.101.3.4.3.11 
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.asn1.nist.NistObjectIdentifiers.IdRsassaPkcs1V15WithSha3_512">
+            2.16.840.1.101.3.4.3.12 
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.asn1.OidTokenizer">
+            class for breaking up an Oid into it's component tokens, ala
+            java.util.StringTokenizer. We need this class as some of the
+            lightweight Java environment don't support classes like
+            StringTokenizer.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.DataLengthException">
+            <summary>This exception is thrown if a buffer that is meant to have output copied into it turns out to be too
+            short, or if we've been given insufficient input.</summary>
+            <remarks>
+            In general this exception will get thrown rather than an <see cref="T:System.IndexOutOfRangeException"/>.
+            </remarks>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.digests.GeneralDigest">
+            base implementation of MD4 family style digest as outlined in
+            "Handbook of Applied Cryptography", pages 344 - 347.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.digests.Sha1Digest">
+             implementation of SHA-1 as outlined in "Handbook of Applied Cryptography", pages 346 - 349.
+            
+             It is interesting to ponder why the, apart from the extra IV, the other difference here from MD5
+             is the "endianness" of the word processing!
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.digests.Sha1Digest.#ctor(PrivateBinSharp.Crypto.crypto.digests.Sha1Digest)">
+            Copy constructor.  This will copy the state of the provided
+            message digest.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.digests.Sha1Digest.Reset">
+            reset the chaining variables
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.digests.Sha256Digest">
+             Draft FIPS 180-2 implementation of SHA-256. <b>Note:</b> As this is
+             based on a draft this implementation is subject to change.
+            
+             <pre>
+                     block  word  digest
+             SHA-1   512    32    160
+             SHA-256 512    32    256
+             SHA-384 1024   64    384
+             SHA-512 1024   64    512
+             </pre>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.digests.Sha256Digest.#ctor(PrivateBinSharp.Crypto.crypto.digests.Sha256Digest)">
+            Copy constructor.  This will copy the state of the provided
+            message digest.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.digests.Sha256Digest.Reset">
+            reset the chaining variables
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.engines.AesEngine">
+             an implementation of the AES (Rijndael), from FIPS-197.
+             <p>
+             For further details see: <a href="http://csrc.nist.gov/encryption/aes/">http://csrc.nist.gov/encryption/aes/</a>.
+            
+             This implementation is based on optimizations from Dr. Brian Gladman's paper and C code at
+             <a href="http://fp.gladman.plus.com/cryptography_technology/rijndael/">http://fp.gladman.plus.com/cryptography_technology/rijndael/</a>
+            
+             There are three levels of tradeoff of speed vs memory
+             Because java has no preprocessor, they are written as three separate classes from which to choose
+            
+             The fastest uses 8Kbytes of static tables to precompute round calculations, 4 256 word tables for encryption
+             and 4 for decryption.
+            
+             The middle performance version uses only one 256 word table for each, for a total of 2Kbytes,
+             adding 12 rotate operations per round to compute the values contained in the other tables from
+             the contents of the first.
+            
+             The slowest version uses no static tables at all and computes the values in each round.
+             </p>
+             <p>
+             This file contains the middle performance version with 2Kbytes of static tables for round precomputation.
+             </p>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.engines.AesEngine.GenerateWorkingKey(PrivateBinSharp.Crypto.crypto.parameters.KeyParameter,System.Boolean)">
+            Calculate the necessary round keys
+            The number of calculations depends on key size and block size
+            AES specified a fixed block size of 128 bits and key sizes 128/192/256 bits
+            This code is written assuming those are the only possible values
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.engines.AesEngine.#ctor">
+            default constructor - 128 bit block size.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.engines.AesEngine.Init(System.Boolean,PrivateBinSharp.Crypto.crypto.ICipherParameters)">
+             initialise an AES cipher.
+            
+             @param forEncryption whether or not we are for encryption.
+             @param parameters the parameters required to set up the cipher.
+             @exception ArgumentException if the parameters argument is
+             inappropriate.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.generators.Pkcs5S2ParametersGenerator">
+            Generator for Pbe derived keys and ivs as defined by Pkcs 5 V2.0 Scheme 2.
+            This generator uses a SHA-1 HMac as the calculation function.
+            <p>
+            The document this implementation is based on can be found at
+            <a href="http://www.rsasecurity.com/rsalabs/pkcs/pkcs-5/index.html">
+            RSA's Pkcs5 Page</a></p>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.generators.Pkcs5S2ParametersGenerator.#ctor">
+            construct a Pkcs5 Scheme 2 Parameters generator.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.generators.Pkcs5S2ParametersGenerator.GenerateDerivedMacParameters(System.Int32)">
+             Generate a key parameter for use with a MAC derived from the password,
+             salt, and iteration count we are currently initialised with.
+            
+             @param keySize the size of the key we want (in bits)
+             @return a KeyParameter object.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.IBlockCipher">
+            <remarks>Base interface for a symmetric key block cipher.</remarks>
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.crypto.IBlockCipher.AlgorithmName">
+            <summary>The name of the algorithm this cipher implements.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IBlockCipher.Init(System.Boolean,PrivateBinSharp.Crypto.crypto.ICipherParameters)">
+            <summary>Initialise the cipher.</summary>
+            <param name="forEncryption">Initialise for encryption if true, for decryption if false.</param>
+            <param name="parameters">The key or other data required by the cipher.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IBlockCipher.GetBlockSize">
+            <returns>The block size for this cipher, in bytes.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IBlockCipher.ProcessBlock(System.Byte[],System.Int32,System.Byte[],System.Int32)">
+            <summary>Process a block.</summary>
+            <param name="inBuf">The input buffer.</param>
+            <param name="inOff">The offset into <paramref>inBuf</paramref> that the input block begins.</param>
+            <param name="outBuf">The output buffer.</param>
+            <param name="outOff">The offset into <paramref>outBuf</paramref> to write the output block.</param>
+            <exception cref="T:PrivateBinSharp.Crypto.crypto.DataLengthException">If input block is wrong size, or outBuf too small.</exception>
+            <returns>The number of bytes processed and produced.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IBlockCipher.ProcessBlock(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+            <summary>Process a block.</summary>
+            <param name="input">The input block as a span.</param>
+            <param name="output">The output span.</param>
+            <exception cref="T:PrivateBinSharp.Crypto.crypto.DataLengthException">If input block is wrong size, or output span too small.</exception>
+            <returns>The number of bytes processed and produced.</returns>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.ICipherParameters">
+            all parameter classes implement this.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.IDigest">
+            <remarks>Base interface for a message digest.</remarks>
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.crypto.IDigest.AlgorithmName">
+            <summary>The algorithm name.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IDigest.GetDigestSize">
+            <summary>Return the size, in bytes, of the digest produced by this message digest.</summary>
+            <returns>the size, in bytes, of the digest produced by this message digest.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IDigest.GetByteLength">
+            <summary>Return the size, in bytes, of the internal buffer used by this digest.</summary>
+            <returns>the size, in bytes, of the internal buffer used by this digest.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IDigest.Update(System.Byte)">
+            <summary>Update the message digest with a single byte.</summary>
+            <param name="input">the input byte to be entered.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IDigest.BlockUpdate(System.Byte[],System.Int32,System.Int32)">
+            <summary>Update the message digest with a block of bytes.</summary>
+            <param name="input">the byte array containing the data.</param>
+            <param name="inOff">the offset into the byte array where the data starts.</param>
+            <param name="inLen">the length of the data.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IDigest.BlockUpdate(System.ReadOnlySpan{System.Byte})">
+            <summary>Update the message digest with a span of bytes.</summary>
+            <param name="input">the span containing the data.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IDigest.DoFinal(System.Byte[],System.Int32)">
+            <summary>Close the digest, producing the final digest value.</summary>
+            <remarks>This call leaves the digest reset.</remarks>
+            <param name="output">the byte array the digest is to be copied into.</param>
+            <param name="outOff">the offset into the byte array the digest is to start at.</param>
+            <returns>the number of bytes written</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IDigest.DoFinal(System.Span{System.Byte})">
+            <summary>Close the digest, producing the final digest value.</summary>
+            <remarks>This call leaves the digest reset.</remarks>
+            <param name="output">the span the digest is to be copied into.</param>
+            <returns>the number of bytes written</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IDigest.Reset">
+            <summary>Reset the digest back to its initial state.</summary>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.IMac">
+            <summary>The base interface for implementations of message authentication codes (MACs).</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IMac.Init(PrivateBinSharp.Crypto.crypto.ICipherParameters)">
+            <summary>Initialise the MAC.</summary>
+            <param name="parameters">The key or other data required by the MAC.</param>
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.crypto.IMac.AlgorithmName">
+            <summary>The algorithm name.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IMac.GetMacSize">
+            <summary>Return the size, in bytes, of the MAC produced by this implementation.</summary>
+            <returns>the size, in bytes, of the MAC produced by this implementation.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IMac.Update(System.Byte)">
+            <summary>Update the MAC with a single byte.</summary>
+            <param name="input">the input byte to be entered.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IMac.BlockUpdate(System.Byte[],System.Int32,System.Int32)">
+            <summary>Update the MAC with a block of bytes.</summary>
+            <param name="input">the byte array containing the data.</param>
+            <param name="inOff">the offset into the byte array where the data starts.</param>
+            <param name="inLen">the length of the data.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IMac.BlockUpdate(System.ReadOnlySpan{System.Byte})">
+            <summary>Update the MAC with a span of bytes.</summary>
+            <param name="input">the span containing the data.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IMac.DoFinal(System.Byte[],System.Int32)">
+            <summary>Perform final calculations, producing the result MAC.</summary>
+            <remarks>This call leaves the MAC reset.</remarks>
+            <param name="output">the byte array the MAC is to be copied into.</param>
+            <param name="outOff">the offset into the byte array the MAC is to start at.</param>
+            <returns>the number of bytes written</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IMac.DoFinal(System.Span{System.Byte})">
+            <summary>Perform final calculations, producing the result MAC.</summary>
+            <remarks>This call leaves the MAC reset.</remarks>
+            <param name="output">the span the MAC is to be copied into.</param>
+            <returns>the number of bytes written</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.IMac.Reset">
+            <summary>Reset the MAC back to its initial state.</summary>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.InvalidCipherTextException">
+            <summary>This exception is thrown whenever we find something we don't expect in a message.</summary>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.macs.HMac">
+             HMAC implementation based on RFC2104
+            
+             H(K XOR opad, H(K XOR ipad, text))
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.macs.HMac.Reset">
+            Reset the mac generator.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.modes.GcmBlockCipher">
+            <summary>
+            Implements the Galois/Counter mode (GCM) detailed in NIST Special Publication 800-38D.
+            </summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.GcmBlockCipher.Init(System.Boolean,PrivateBinSharp.Crypto.crypto.ICipherParameters)">
+            <remarks>
+            MAC sizes from 32 bits to 128 bits (must be a multiple of 8) are supported. The default is 128 bits.
+            Sizes less than 96 are not recommended, but are supported for specialized applications.
+            </remarks>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.modes.IAeadBlockCipher">
+            <summary>An IAeadCipher based on an IBlockCipher.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadBlockCipher.GetBlockSize">
+            <returns>The block size for this cipher, in bytes.</returns>
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.crypto.modes.IAeadBlockCipher.UnderlyingCipher">
+            <summary>The block cipher underlying this algorithm.</summary>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher">
+            <summary>
+            A cipher mode that includes authenticated encryption with a streaming mode and optional
+            associated data.
+            </summary>
+            <remarks>
+            Implementations of this interface may operate in a packet mode (where all input data is
+            buffered and processed during the call to DoFinal, or in a streaming mode (where output
+            data is incrementally produced with each call to ProcessByte or ProcessBytes. This is
+            important to consider during decryption: in a streaming mode, unauthenticated plaintext
+            data may be output prior to the call to DoFinal that results in an authentication failure.
+            The higher level protocol utilising this cipher must ensure the plaintext data is handled
+            appropriately until the end of data is reached and the entire ciphertext is authenticated.
+            </remarks>
+            <see cref="T:PrivateBinSharp.Crypto.crypto.parameters.AeadParameters"/>
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.AlgorithmName">
+            <summary>The name of the algorithm this cipher implements.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.Init(System.Boolean,PrivateBinSharp.Crypto.crypto.ICipherParameters)">
+            <summary>Initialise the cipher.</summary>
+            <remarks>Parameter can either be an AeadParameters or a ParametersWithIV object.</remarks>
+            <param name="forEncryption">Initialise for encryption if true, for decryption if false.</param>
+            <param name="parameters">The key or other data required by the cipher.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.ProcessAadByte(System.Byte)">
+            <summary>Add a single byte to the associated data check.</summary>
+            <remarks>If the implementation supports it, this will be an online operation and will not retain the associated data.</remarks>
+            <param name="input">The byte to be processed.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.ProcessAadBytes(System.Byte[],System.Int32,System.Int32)">
+            <summary>Add a sequence of bytes to the associated data check.</summary>
+            <remarks>If the implementation supports it, this will be an online operation and will not retain the associated data.</remarks>
+            <param name="inBytes">The input byte array.</param>
+            <param name="inOff">The offset into the input array where the data to be processed starts.</param>
+            <param name="len">The number of bytes to be processed.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.ProcessAadBytes(System.ReadOnlySpan{System.Byte})">
+            <summary>Add a span of bytes to the associated data check.</summary>
+            <remarks>If the implementation supports it, this will be an online operation and will not retain the associated data.</remarks>
+            <param name="input">the span containing the data.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.ProcessByte(System.Byte,System.Byte[],System.Int32)">
+             Encrypt/decrypt a single byte.
+            
+             @param input the byte to be processed.
+             @param outBytes the output buffer the processed byte goes into.
+             @param outOff the offset into the output byte array the processed data starts at.
+             @return the number of bytes written to out.
+             @exception DataLengthException if the output buffer is too small.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.ProcessBytes(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+             Process a block of bytes from in putting the result into out.
+            
+             @param inBytes the input byte array.
+             @param inOff the offset into the in array where the data to be processed starts.
+             @param len the number of bytes to be processed.
+             @param outBytes the output buffer the processed bytes go into.
+             @param outOff the offset into the output byte array the processed data starts at.
+             @return the number of bytes written to out.
+             @exception DataLengthException if the output buffer is too small.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.DoFinal(System.Byte[],System.Int32)">
+             Finish the operation either appending or verifying the MAC at the end of the data.
+            
+             @param outBytes space for any resulting output data.
+             @param outOff offset into out to start copying the data at.
+             @return number of bytes written into out.
+             @throws InvalidOperationException if the cipher is in an inappropriate state.
+             @throws InvalidCipherTextException if the MAC fails to match.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.GetMac">
+             Return the value of the MAC associated with the last stream processed.
+            
+             @return MAC for plaintext data.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.GetUpdateOutputSize(System.Int32)">
+             Return the size of the output buffer required for a ProcessBytes
+             an input of len bytes.
+            
+             @param len the length of the input.
+             @return the space required to accommodate a call to ProcessBytes
+             with len bytes of input.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.GetOutputSize(System.Int32)">
+             Return the size of the output buffer required for a ProcessBytes plus a
+             DoFinal with an input of len bytes.
+            
+             @param len the length of the input.
+             @return the space required to accommodate a call to ProcessBytes and DoFinal
+             with len bytes of input.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.modes.IAeadCipher.Reset">
+            <summary>
+            Reset the cipher to the same state as it was after the last init (if there was one).
+            </summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.parameters.AeadParameters.#ctor(PrivateBinSharp.Crypto.crypto.parameters.KeyParameter,System.Int32,System.Byte[])">
+             Base constructor.
+            
+             @param key key to be used by underlying cipher
+             @param macSize macSize in bits
+             @param nonce nonce to be used
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.parameters.AeadParameters.#ctor(PrivateBinSharp.Crypto.crypto.parameters.KeyParameter,System.Int32,System.Byte[],System.Byte[])">
+             Base constructor.
+            
+             @param key key to be used by underlying cipher
+             @param macSize macSize in bits
+             @param nonce nonce to be used
+             @param associatedText associated text, if any
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.PbeParametersGenerator">
+            super class for all Password Based Encyrption (Pbe) parameter generator classes.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.PbeParametersGenerator.#ctor">
+            base constructor.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.PbeParametersGenerator.Init(System.Byte[],System.Byte[],System.Int32)">
+             initialise the Pbe generator.
+            
+             @param password the password converted into bytes (see below).
+             @param salt the salt to be mixed with the password.
+             @param iterationCount the number of iterations the "mixing" function
+             is to be applied for.
+        </member>
+        <member name="P:PrivateBinSharp.Crypto.crypto.PbeParametersGenerator.IterationCount">
+             return the iteration count.
+            
+             @return the iteration count.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.PbeParametersGenerator.GenerateDerivedMacParameters(System.Int32)">
+             Generate derived parameters for a key of length keySize, specifically
+             for use with a MAC.
+            
+             @param keySize the length, in bits, of the key required.
+             @return a parameters object representing a key.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.prng.CryptoApiRandomGenerator">
+            <summary>
+            Uses RandomNumberGenerator.Create() to get randomness generator
+            </summary>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.prng.DigestRandomGenerator">
+            Random generation based on the digest with counter. Calling AddSeedMaterial will
+            always increase the entropy of the hash.
+            <p>
+            Internal access to the digest is synchronized so a single one of these can be shared.
+            </p>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.crypto.prng.IRandomGenerator">
+            <remarks>Generic interface for objects generating random bytes.</remarks>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.prng.IRandomGenerator.AddSeedMaterial(System.Byte[])">
+            <summary>Add more seed material to the generator.</summary>
+            <param name="seed">A byte array to be mixed into the generator's state.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.prng.IRandomGenerator.AddSeedMaterial(System.Int64)">
+            <summary>Add more seed material to the generator.</summary>
+            <param name="seed">A long value to be mixed into the generator's state.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.prng.IRandomGenerator.NextBytes(System.Byte[])">
+            <summary>Fill byte array with random values.</summary>
+            <param name="bytes">Array to be filled.</param>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.crypto.prng.IRandomGenerator.NextBytes(System.Byte[],System.Int32,System.Int32)">
+            <summary>Fill byte array with random values.</summary>
+            <param name="bytes">Array to receive bytes.</param>
+            <param name="start">Index to start filling at.</param>
+            <param name="len">Length of segment to fill.</param>
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.crypto.prng.VmpcRandomGenerator.P">
+            <remarks>
+            Permutation generated by code:
+            <code>
+            // First 1850 fractional digit of Pi number. 
+            byte[] key = new BigInteger("14159265358979323846...5068006422512520511").ToByteArray();
+            s = 0;
+            P = new byte[256];
+            for (int i = 0; i &lt; 256; i++) 
+            {
+                P[i] = (byte) i;
+            }
+            for (int m = 0; m &lt; 768; m++) 
+            {
+                s = P[(s + P[m &amp; 0xff] + key[m % key.length]) &amp; 0xff];
+                byte temp = P[m &amp; 0xff];
+                P[m &amp; 0xff] = P[s &amp; 0xff];
+                P[s &amp; 0xff] = temp;
+            } </code>
+            </remarks>
+        </member>
+        <member name="F:PrivateBinSharp.Crypto.crypto.prng.VmpcRandomGenerator.s">
+            <remarks>Value generated in the same way as <c>P</c>.</remarks>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.AddMagnitudes(System.UInt32[],System.UInt32[])">
+            return a = a + b - b preserved.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.CompareTo(System.Int32,System.UInt32[],System.Int32,System.UInt32[])">
+            unsigned comparison on two arrays - note the arrays may
+            start with leading zeros.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.Divide(System.UInt32[],System.UInt32[])">
+            return z = x / y - done in place (z value preserved, x contains the
+            remainder)
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.Square(System.UInt32[],System.UInt32[])">
+            return w with w = x * x - w is assumed to have enough space.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.Multiply(System.UInt32[],System.UInt32[],System.UInt32[])">
+            return x with x = y * z - x is assumed to have enough space.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.GetMQuote">
+            Calculate mQuote = -m^(-1) mod b with b = 2^32 (32 = word size)
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.MultiplyMonty(System.UInt32[],System.UInt32[],System.UInt32[],System.UInt32[],System.UInt32,System.Boolean)">
+            Montgomery multiplication: a = x * y * R^(-1) mod m
+            <br/>
+            Based algorithm 14.36 of Handbook of Applied Cryptography.
+            <br/>
+            <li> m, x, y should have length n </li>
+            <li> a should have length (n + 1) </li>
+            <li> b = 2^32, R = b^n </li>
+            <br/>
+            The result is put in x
+            <br/>
+            NOTE: the indices of x, y, m, a different in HAC and in Java
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.Remainder(System.UInt32[],System.UInt32[])">
+            return x = x % y - done in place (y value preserved)
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.ShiftLeft(System.UInt32[],System.Int32)">
+            do a left shift - this returns a new array.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.ShiftRightInPlace(System.Int32,System.UInt32[],System.Int32)">
+            do a right shift - this does it in place.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.ShiftRightOneInPlace(System.Int32,System.UInt32[])">
+            do a right shift by one - this does it in place.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.math.BigInteger.Subtract(System.Int32,System.UInt32[],System.Int32,System.UInt32[])">
+            returns x = x - y - we assume x is >= y
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.security.DigestUtilities">
+            <remarks>
+             Utility class for creating IDigest objects from their names/Oids
+            </remarks>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.security.SecureRandom.#ctor(PrivateBinSharp.Crypto.crypto.prng.IRandomGenerator)">
+            <summary>Use the specified instance of IRandomGenerator as random source.</summary>
+            <remarks>
+            This constructor performs no seeding of either the <c>IRandomGenerator</c> or the
+            constructed <c>SecureRandom</c>. It is the responsibility of the client to provide
+            proper seed material as necessary/appropriate for the given <c>IRandomGenerator</c>
+            implementation.
+            </remarks>
+            <param name="generator">The source to generate all random bytes from.</param>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.util.Arrays">
+            <summary> General array utilities.</summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.Arrays.AreEqual(System.Byte[],System.Byte[])">
+            <summary>
+            Are two arrays equal.
+            </summary>
+            <param name="a">Left side.</param>
+            <param name="b">Right side.</param>
+            <returns>True if equal.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.Arrays.CopyOfRange(System.Byte[],System.Int32,System.Int32)">
+             Make a copy of a range of bytes from the passed in data array. The range can
+             extend beyond the end of the input array, in which case the return array will
+             be padded with zeroes.
+            
+             @param data the array from which the data is to be copied.
+             @param from the start index at which the copying should take place.
+             @param to the final index of the range (exclusive).
+            
+             @return a new byte array containing the range given.
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.util.BigIntegers">
+            BigInteger utilities.
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.BigIntegers.CreateRandomInRange(PrivateBinSharp.Crypto.math.BigInteger,PrivateBinSharp.Crypto.math.BigInteger,PrivateBinSharp.Crypto.security.SecureRandom)">
+            Return a random BigInteger not less than 'min' and not greater than 'max'
+            
+            @param min the least value that may be generated
+            @param max the greatest value that may be generated
+            @param random the source of randomness
+            @return a random BigInteger value in the range [min,max]
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.util.collections.ISelector`1">
+            <summary>Interface for matching objects in an <see cref="T:PrivateBinSharp.Crypto.util.collections.IStore`1"/>.</summary>
+            <typeparam name="T">The contravariant type of selectable objects.</typeparam>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.collections.ISelector`1.Match(`0)">
+            <summary>Match the passed in object, returning true if it would be selected by this selector, false
+            otherwise.</summary>
+            <param name="candidate">The object to be matched.</param>
+            <returns><code>true</code> if the objects is matched by this selector, false otherwise.</returns>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.util.collections.IStore`1">
+            <summary>A generic interface describing a simple store of objects.</summary>
+            <typeparam name="T">The covariant type of stored objects.</typeparam>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.collections.IStore`1.EnumerateMatches(PrivateBinSharp.Crypto.util.collections.ISelector{`0})">
+            <summary>Enumerate the (possibly empty) collection of objects matched by the given selector.</summary>
+            <param name="selector">The <see cref="T:PrivateBinSharp.Crypto.util.collections.ISelector`1"/> used to select matching objects.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of the matching objects.</returns>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.date.DateTimeUtilities.DateTimeToUnixMs(System.DateTime)">
+            <summary>
+            Return the number of milliseconds since the Unix epoch (1 Jan., 1970 UTC) for a given DateTime value.
+            </summary>
+            <remarks>The DateTime value will be converted to UTC (using <see cref="M:System.DateTime.ToUniversalTime"/> before
+            conversion.</remarks>
+            <param name="dateTime">A DateTime value not before the epoch.</param>
+            <returns>Number of whole milliseconds after epoch.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">'dateTime' is before the epoch.</exception>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.date.DateTimeUtilities.CurrentUnixMs">
+            <summary>
+            Return the current number of milliseconds since the Unix epoch (1 Jan., 1970 UTC).
+            </summary>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.IMemoable.Copy">
+            <summary>
+            Produce a copy of this object with its configuration and in its current state.
+            </summary>
+            <remarks>
+            The returned object may be used simply to store the state, or may be used as a similar object
+            starting from the copied state.
+            </remarks>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.IMemoable.Reset(PrivateBinSharp.Crypto.util.IMemoable)">
+            <summary>
+            Restore a copied object state into this object.
+            </summary>
+            <remarks>
+            Implementations of this method <em>should</em> try to avoid or minimise memory allocation to perform the reset.
+            </remarks>
+            <param name="other">an object originally {@link #copy() copied} from an object of the same type as this instance.</param>
+            <exception cref="T:System.InvalidCastException">if the provided object is not of the correct type.</exception>
+            <exception cref="!:MemoableResetException">if the <b>other</b> parameter is in some other way invalid.</exception>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.io.Streams.PipeAll(System.IO.Stream,System.IO.Stream)">
+            <summary>Write the full contents of inStr to the destination stream outStr.</summary>
+            <param name="inStr">Source stream.</param>
+            <param name="outStr">Destination stream.</param>
+            <exception cref="T:System.IO.IOException">In case of IO failure.</exception>
+        </member>
+        <member name="M:PrivateBinSharp.Crypto.util.io.Streams.PipeAll(System.IO.Stream,System.IO.Stream,System.Int32)">
+            <summary>Write the full contents of inStr to the destination stream outStr.</summary>
+            <param name="inStr">Source stream.</param>
+            <param name="outStr">Destination stream.</param>
+            <param name="bufferSize">The size of temporary buffer to use.</param>
+            <exception cref="T:System.IO.IOException">In case of IO failure.</exception>
+        </member>
+        <member name="T:PrivateBinSharp.Crypto.util.Strings">
+            <summary> General string utilities.</summary>
+        </member>
+        <member name="P:PrivateBinSharp.PrivateBinClient.Version">
+            <summary>
+            Version of the current PrivateBinClient lib installed.
+            </summary>
+        </member>
+    </members>
+</doc>

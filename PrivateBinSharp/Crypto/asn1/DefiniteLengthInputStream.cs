@@ -1,133 +1,132 @@
 using PrivateBinSharp.Crypto.util.io;
 
-namespace PrivateBinSharp.Crypto.asn1
+namespace PrivateBinSharp.Crypto.asn1;
+
+internal class DefiniteLengthInputStream
+	: LimitedInputStream
 {
-    internal class DefiniteLengthInputStream
-        : LimitedInputStream
-    {
-        private static readonly byte[] EmptyBytes = Array.Empty<byte>();
+	private static readonly byte[] EmptyBytes = Array.Empty<byte>();
 
-        private readonly int _originalLength;
-        private int _remaining;
+	private readonly int _originalLength;
+	private int _remaining;
 
-        internal DefiniteLengthInputStream(Stream inStream, int length, int limit)
-            : base(inStream, limit)
-        {
-            if (length <= 0)
-            {
-                if (length < 0)
-                    throw new ArgumentException("negative lengths not allowed", "length");
+	internal DefiniteLengthInputStream(Stream inStream, int length, int limit)
+		: base(inStream, limit)
+	{
+		if (length <= 0)
+		{
+			if (length < 0)
+				throw new ArgumentException("negative lengths not allowed", "length");
 
-                SetParentEofDetect();
-            }
+			SetParentEofDetect();
+		}
 
-            _originalLength = length;
-            _remaining = length;
-        }
+		_originalLength = length;
+		_remaining = length;
+	}
 
-        internal int Remaining
-        {
-            get { return _remaining; }
-        }
+	internal int Remaining
+	{
+		get { return _remaining; }
+	}
 
-        public override int ReadByte()
-        {
-            if (_remaining < 2)
-            {
-                if (_remaining == 0)
-                    return -1;
+	public override int ReadByte()
+	{
+		if (_remaining < 2)
+		{
+			if (_remaining == 0)
+				return -1;
 
-                int b = _in.ReadByte();
-                if (b < 0)
-                    throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
+			int b = _in.ReadByte();
+			if (b < 0)
+				throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
 
-                _remaining = 0;
-                SetParentEofDetect();
+			_remaining = 0;
+			SetParentEofDetect();
 
-                return b;
-            }
-            else
-            {
-                int b = _in.ReadByte();
-                if (b < 0)
-                    throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
+			return b;
+		}
+		else
+		{
+			int b = _in.ReadByte();
+			if (b < 0)
+				throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
 
-                --_remaining;
-                return b;
-            }
-        }
+			--_remaining;
+			return b;
+		}
+	}
 
-        public override int Read(byte[] buf, int off, int len)
-        {
-            if (_remaining == 0)
-                return 0;
+	public override int Read(byte[] buf, int off, int len)
+	{
+		if (_remaining == 0)
+			return 0;
 
-            int toRead = Math.Min(len, _remaining);
-            int numRead = _in.Read(buf, off, toRead);
+		int toRead = Math.Min(len, _remaining);
+		int numRead = _in.Read(buf, off, toRead);
 
-            if (numRead < 1)
-                throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
+		if (numRead < 1)
+			throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
 
-            if ((_remaining -= numRead) == 0)
-            {
-                SetParentEofDetect();
-            }
+		if ((_remaining -= numRead) == 0)
+		{
+			SetParentEofDetect();
+		}
 
-            return numRead;
-        }
+		return numRead;
+	}
 
-        public override int Read(Span<byte> buffer)
-        {
-            if (_remaining == 0)
-                return 0;
+	public override int Read(Span<byte> buffer)
+	{
+		if (_remaining == 0)
+			return 0;
 
-            int toRead = Math.Min(buffer.Length, _remaining);
-            int numRead = _in.Read(buffer[..toRead]);
+		int toRead = Math.Min(buffer.Length, _remaining);
+		int numRead = _in.Read(buffer[..toRead]);
 
-            if (numRead < 1)
-                throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
+		if (numRead < 1)
+			throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
 
-            if ((_remaining -= numRead) == 0)
-            {
-                SetParentEofDetect();
-            }
+		if ((_remaining -= numRead) == 0)
+		{
+			SetParentEofDetect();
+		}
 
-            return numRead;
-        }
+		return numRead;
+	}
 
-        internal void ReadAllIntoByteArray(byte[] buf)
-        {
-            if (_remaining != buf.Length)
-                throw new ArgumentException("buffer length not right for data");
+	internal void ReadAllIntoByteArray(byte[] buf)
+	{
+		if (_remaining != buf.Length)
+			throw new ArgumentException("buffer length not right for data");
 
-            if (_remaining == 0)
-                return;
+		if (_remaining == 0)
+			return;
 
-            // make sure it's safe to do this!
-            int limit = Limit;
-            if (_remaining >= limit)
-                throw new IOException("corrupted stream - out of bounds length found: " + _remaining + " >= " + limit);
+		// make sure it's safe to do this!
+		int limit = Limit;
+		if (_remaining >= limit)
+			throw new IOException("corrupted stream - out of bounds length found: " + _remaining + " >= " + limit);
 
-            if ((_remaining -= Streams.ReadFully(_in, buf, 0, buf.Length)) != 0)
-                throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
-            SetParentEofDetect();
-        }
+		if ((_remaining -= Streams.ReadFully(_in, buf, 0, buf.Length)) != 0)
+			throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
+		SetParentEofDetect();
+	}
 
-        internal byte[] ToArray()
-        {
-            if (_remaining == 0)
-                return EmptyBytes;
+	internal byte[] ToArray()
+	{
+		if (_remaining == 0)
+			return EmptyBytes;
 
-            // make sure it's safe to do this!
-            int limit = Limit;
-            if (_remaining >= limit)
-                throw new IOException("corrupted stream - out of bounds length found: " + _remaining + " >= " + limit);
+		// make sure it's safe to do this!
+		int limit = Limit;
+		if (_remaining >= limit)
+			throw new IOException("corrupted stream - out of bounds length found: " + _remaining + " >= " + limit);
 
-            byte[] bytes = new byte[_remaining];
-            if ((_remaining -= Streams.ReadFully(_in, bytes, 0, bytes.Length)) != 0)
-                throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
-            SetParentEofDetect();
-            return bytes;
-        }
-    }
+		byte[] bytes = new byte[_remaining];
+		if ((_remaining -= Streams.ReadFully(_in, bytes, 0, bytes.Length)) != 0)
+			throw new EndOfStreamException("DEF length " + _originalLength + " object truncated by " + _remaining);
+		SetParentEofDetect();
+		return bytes;
+	}
 }

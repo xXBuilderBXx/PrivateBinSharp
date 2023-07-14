@@ -1,37 +1,36 @@
-namespace PrivateBinSharp.Crypto.crypto.modes.gcm
+namespace PrivateBinSharp.Crypto.crypto.modes.gcm;
+
+[Obsolete("Will be removed")]
+internal class BasicGcmExponentiator
+	: IGcmExponentiator
 {
-    [Obsolete("Will be removed")]
-    public class BasicGcmExponentiator
-        : IGcmExponentiator
-    {
-        private GcmUtilities.FieldElement x;
+	private GcmUtilities.FieldElement x;
 
-        public void Init(byte[] x)
-        {
-            GcmUtilities.AsFieldElement(x, out this.x);
-        }
+	public void Init(byte[] x)
+	{
+		GcmUtilities.AsFieldElement(x, out this.x);
+	}
 
-        public void ExponentiateX(long pow, byte[] output)
-        {
-            GcmUtilities.FieldElement y;
-            GcmUtilities.One(out y);
+	public void ExponentiateX(long pow, byte[] output)
+	{
+		GcmUtilities.FieldElement y;
+		GcmUtilities.One(out y);
 
-            if (pow > 0)
-            {
-                GcmUtilities.FieldElement powX = x;
-                do
-                {
-                    if ((pow & 1L) != 0)
-                    {
-                        GcmUtilities.Multiply(ref y, ref powX);
-                    }
-                    GcmUtilities.Square(ref powX);
-                    pow >>= 1;
-                }
-                while (pow > 0);
-            }
+		if (pow > 0)
+		{
+			GcmUtilities.FieldElement powX = x;
+			do
+			{
+				if ((pow & 1L) != 0)
+				{
+					GcmUtilities.Multiply(ref y, ref powX);
+				}
+				GcmUtilities.Square(ref powX);
+				pow >>= 1;
+			}
+			while (pow > 0);
+		}
 
-            GcmUtilities.AsBytes(ref y, output);
-        }
-    }
+		GcmUtilities.AsBytes(ref y, output);
+	}
 }

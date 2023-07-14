@@ -1,14 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿namespace PrivateBinSharp.Crypto.crypto;
 
-namespace PrivateBinSharp.Crypto.crypto
+[Serializable]
+internal class OutputLengthException
+	: DataLengthException
 {
-    [Serializable]
-    public class OutputLengthException
-        : DataLengthException
-    {
-        public OutputLengthException(string message)
-            : base(message)
-        {
-        }
-    }
+	public OutputLengthException(string message)
+		: base(message)
+	{
+	}
 }

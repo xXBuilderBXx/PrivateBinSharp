@@ -1,7 +1,6 @@
-namespace PrivateBinSharp.Crypto.asn1
+namespace PrivateBinSharp.Crypto.asn1;
+
+internal interface IAsn1Convertible
 {
-    public interface IAsn1Convertible
-    {
-        Asn1Object ToAsn1Object();
-    }
+	Asn1Object ToAsn1Object();
 }

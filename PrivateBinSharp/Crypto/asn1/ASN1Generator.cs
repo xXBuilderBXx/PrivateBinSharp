@@ -1,48 +1,47 @@
-namespace PrivateBinSharp.Crypto.asn1
+namespace PrivateBinSharp.Crypto.asn1;
+
+internal abstract class Asn1Generator
+	: IDisposable
 {
-    public abstract class Asn1Generator
-        : IDisposable
-    {
-        private Stream m_outStream;
+	private Stream? m_outStream;
 
-        protected Asn1Generator(Stream outStream)
-        {
-            m_outStream = outStream ?? throw new ArgumentNullException(nameof(outStream));
-        }
+	protected Asn1Generator(Stream outStream)
+	{
+		m_outStream = outStream ?? throw new ArgumentNullException(nameof(outStream));
+	}
 
-        protected abstract void Finish();
+	protected abstract void Finish();
 
-        protected Stream OutStream
-        {
-            get { return m_outStream ?? throw new InvalidOperationException(); }
-        }
+	protected Stream OutStream
+	{
+		get { return m_outStream ?? throw new InvalidOperationException(); }
+	}
 
-        public abstract void AddObject(Asn1Encodable obj);
+	public abstract void AddObject(Asn1Encodable obj);
 
-        public abstract void AddObject(Asn1Object obj);
+	public abstract void AddObject(Asn1Object obj);
 
-        public abstract Stream GetRawOutputStream();
+	public abstract Stream GetRawOutputStream();
 
-        #region IDisposable
+	#region IDisposable
 
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+	public void Dispose()
+	{
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
+	}
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (m_outStream != null)
-                {
-                    Finish();
-                    m_outStream = null;
-                }
-            }
-        }
+	protected virtual void Dispose(bool disposing)
+	{
+		if (disposing)
+		{
+			if (m_outStream != null)
+			{
+				Finish();
+				m_outStream = null;
+			}
+		}
+	}
 
-        #endregion
-    }
+	#endregion
 }
