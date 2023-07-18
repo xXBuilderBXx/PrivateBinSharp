@@ -6,7 +6,7 @@ internal sealed class Asn1UniversalTypes
 	{
 	}
 
-	internal static Asn1UniversalType Get(int tagNo)
+	internal static Asn1UniversalType? Get(int tagNo)
 	{
 		switch (tagNo)
 		{

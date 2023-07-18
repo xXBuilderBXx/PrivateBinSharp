@@ -11,7 +11,7 @@ internal static class Platform
 		return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
 	}
 
-	internal static string GetEnvironmentVariable(string variable)
+	internal static string? GetEnvironmentVariable(string variable)
 	{
 		try
 		{
@@ -52,6 +52,6 @@ internal static class Platform
 
 	internal static string GetTypeName(Type t)
 	{
-		return t.FullName;
+		return t.FullName!;
 	}
 }

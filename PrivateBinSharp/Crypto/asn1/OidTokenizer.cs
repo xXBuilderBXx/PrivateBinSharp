@@ -22,7 +22,7 @@ internal class OidTokenizer
 		get { return index != -1; }
 	}
 
-	public string NextToken()
+	public string? NextToken()
 	{
 		if (index == -1)
 		{

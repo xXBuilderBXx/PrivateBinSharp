@@ -33,7 +33,7 @@ internal abstract class Asn1Encodable
 	*
 	* @return a DER byte array, null otherwise.
 	*/
-	public byte[] GetDerEncoded()
+	public byte[]? GetDerEncoded()
 	{
 		try
 		{
@@ -50,7 +50,7 @@ internal abstract class Asn1Encodable
 		return ToAsn1Object().CallAsn1GetHashCode();
 	}
 
-	public sealed override bool Equals(object obj)
+	public sealed override bool Equals(object? obj)
 	{
 		if (obj == this)
 			return true;

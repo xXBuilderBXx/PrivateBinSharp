@@ -25,7 +25,7 @@ internal class DerUtf8String
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerUtf8String GetInstance(object obj)
+	public static DerUtf8String? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

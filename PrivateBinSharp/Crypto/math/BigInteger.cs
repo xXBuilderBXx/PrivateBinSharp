@@ -823,7 +823,7 @@ internal sealed class BigInteger
 		return sign > 0 && nBits == 1;
 	}
 
-	public int CompareTo(object obj)
+	public int CompareTo(object? obj)
 	{
 		if (obj == null)
 			return 1;
@@ -833,7 +833,7 @@ internal sealed class BigInteger
 
 		return CompareTo(other);
 	}
-	public int CompareTo(BigInteger other)
+	public int CompareTo(BigInteger? other)
 	{
 		if (other == null)
 			return 1;
@@ -891,7 +891,7 @@ internal sealed class BigInteger
          * return z = x / y - done in place (z value preserved, x contains the
          * remainder)
          */
-	private uint[] Divide(uint[] x, uint[] y)
+	private static uint[] Divide(uint[] x, uint[] y)
 	{
 		int xStart = 0;
 		while (xStart < x.Length && x[xStart] == 0U)
@@ -1053,7 +1053,7 @@ internal sealed class BigInteger
 		return biggies;
 	}
 
-	public override bool Equals(object obj)
+	public override bool Equals(object? obj)
 	{
 		if (obj == this)
 			return true;
@@ -1063,7 +1063,7 @@ internal sealed class BigInteger
 		return sign == biggie.sign && IsEqualMagnitude(biggie);
 	}
 
-	public bool Equals(BigInteger other)
+	public bool Equals(BigInteger? other)
 	{
 		if (other == this)
 			return true;
@@ -1339,12 +1339,12 @@ internal sealed class BigInteger
 		uint[][] oddPowers = new uint[numPowers][];
 		oddPowers[0] = zVal;
 
-		uint[] zSquared = Arrays.Clone(zVal);
-		SquareMonty(yAccum, zSquared, m.magnitude, mDash, smallMontyModulus);
+		uint[] zSquared = Arrays.Clone(zVal)!;
+		SquareMonty(yAccum, zSquared!, m.magnitude, mDash, smallMontyModulus);
 
 		for (int i = 1; i < numPowers; ++i)
 		{
-			oddPowers[i] = Arrays.Clone(oddPowers[i - 1]);
+			oddPowers[i] = Arrays.Clone(oddPowers[i - 1])!;
 			MultiplyMonty(yAccum, oddPowers[i], zSquared, m.magnitude, mDash, smallMontyModulus);
 		}
 
@@ -1362,7 +1362,7 @@ internal sealed class BigInteger
 		}
 		else
 		{
-			yVal = Arrays.Clone(oddPowers[mult >> 1]);
+			yVal = Arrays.Clone(oddPowers[mult >> 1])!;
 		}
 
 		int windowPos = 1;
@@ -1373,30 +1373,30 @@ internal sealed class BigInteger
 			int bits = lastZeroes + BitLen((byte)mult);
 			for (int j = 0; j < bits; ++j)
 			{
-				SquareMonty(yAccum, yVal, m.magnitude, mDash, smallMontyModulus);
+				SquareMonty(yAccum, yVal!, m.magnitude, mDash, smallMontyModulus);
 			}
 
-			MultiplyMonty(yAccum, yVal, oddPowers[mult >> 1], m.magnitude, mDash, smallMontyModulus);
+			MultiplyMonty(yAccum, yVal!, oddPowers[mult >> 1], m.magnitude, mDash, smallMontyModulus);
 
 			lastZeroes = window >> 8;
 		}
 
 		for (int i = 0; i < lastZeroes; ++i)
 		{
-			SquareMonty(yAccum, yVal, m.magnitude, mDash, smallMontyModulus);
+			SquareMonty(yAccum, yVal!, m.magnitude, mDash, smallMontyModulus);
 		}
 
 		if (convert)
 		{
 			// Return y * R^(-1) mod m
-			MontgomeryReduce(yVal, m.magnitude, mDash);
+			MontgomeryReduce(yVal!, m.magnitude, mDash);
 		}
-		else if (smallMontyModulus && CompareTo(0, yVal, 0, m.magnitude) >= 0)
+		else if (smallMontyModulus && CompareTo(0, yVal!, 0, m.magnitude) >= 0)
 		{
 			Subtract(0, yVal, 0, m.magnitude);
 		}
 
-		return new BigInteger(1, yVal, true);
+		return new BigInteger(1, yVal!, true);
 	}
 
 	private static int[] GetWindowList(uint[] mag, int extraBits)

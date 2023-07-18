@@ -20,7 +20,7 @@ internal abstract class Asn1Null
 		}
 	}
 
-	public static Asn1Null GetInstance(object obj)
+	public static Asn1Null? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

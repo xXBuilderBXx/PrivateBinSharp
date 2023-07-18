@@ -51,7 +51,7 @@ internal abstract class Asn1Object
 		{
 			using (var asn1In = new Asn1InputStream(new MemoryStream(data, false), data.Length))
 			{
-				Asn1Object result = asn1In.ReadObject();
+				Asn1Object result = asn1In.ReadObject()!;
 				if (data.Length != asn1In.Position)
 					throw new IOException("extra data found after object");
 				return result;
@@ -73,7 +73,7 @@ internal abstract class Asn1Object
 		{
 			using (var asn1In = new Asn1InputStream(inStr, int.MaxValue, leaveOpen: true))
 			{
-				return asn1In.ReadObject();
+				return asn1In.ReadObject()!;
 			}
 		}
 		catch (InvalidCastException)

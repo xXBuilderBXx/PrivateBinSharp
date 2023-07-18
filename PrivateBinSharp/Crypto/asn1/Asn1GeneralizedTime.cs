@@ -20,7 +20,7 @@ internal class Asn1GeneralizedTime
 		}
 	}
 
-	public static Asn1GeneralizedTime GetInstance(object obj)
+	public static Asn1GeneralizedTime? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

@@ -74,7 +74,7 @@ internal class Pkcs5S2ParametersGenerator
 		byte[] outBytes = new byte[l * hLen];
 		int outPos = 0;
 
-		ICipherParameters param = new KeyParameter(mPassword);
+		ICipherParameters param = new KeyParameter(mPassword!);
 
 		hMac.Init(param);
 
@@ -87,7 +87,7 @@ internal class Pkcs5S2ParametersGenerator
 				--pos;
 			}
 
-			F(mSalt, mIterationCount, iBuf, outBytes, outPos);
+			F(mSalt!, mIterationCount, iBuf, outBytes, outPos);
 			outPos += hLen;
 		}
 

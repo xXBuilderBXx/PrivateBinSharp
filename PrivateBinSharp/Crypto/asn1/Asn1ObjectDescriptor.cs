@@ -31,7 +31,7 @@ internal sealed class Asn1ObjectDescriptor
          * @exception IllegalArgumentException if the object cannot be converted.
          * @return an ASN1ObjectDescriptor instance, or null.
          */
-	public static Asn1ObjectDescriptor GetInstance(object obj)
+	public static Asn1ObjectDescriptor? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

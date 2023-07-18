@@ -25,7 +25,7 @@ internal class DerVisibleString
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerVisibleString GetInstance(object obj)
+	public static DerVisibleString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

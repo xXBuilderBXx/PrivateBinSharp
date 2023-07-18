@@ -25,7 +25,7 @@ internal class DerNumericString
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerNumericString GetInstance(object obj)
+	public static DerNumericString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

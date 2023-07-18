@@ -140,7 +140,7 @@ internal struct AesEngine_X86
 
 	private enum Mode { DEC_128, DEC_192, DEC_256, ENC_128, ENC_192, ENC_256, UNINITIALIZED };
 
-	private Vector128<byte>[] m_roundKeys = null;
+	private Vector128<byte>[]? m_roundKeys = null;
 	private Mode m_mode = Mode.UNINITIALIZED;
 
 	public AesEngine_X86()
@@ -149,7 +149,7 @@ internal struct AesEngine_X86
 			throw new PlatformNotSupportedException(nameof(AesEngine_X86));
 	}
 
-	public string AlgorithmName => "AES";
+	public readonly string AlgorithmName => "AES";
 
 	public int GetBlockSize() => 16;
 
@@ -221,12 +221,12 @@ internal struct AesEngine_X86
 	{
 		switch (m_mode)
 		{
-			case Mode.DEC_128: Decrypt128(m_roundKeys, ref state); break;
-			case Mode.DEC_192: Decrypt192(m_roundKeys, ref state); break;
-			case Mode.DEC_256: Decrypt256(m_roundKeys, ref state); break;
-			case Mode.ENC_128: Encrypt128(m_roundKeys, ref state); break;
-			case Mode.ENC_192: Encrypt192(m_roundKeys, ref state); break;
-			case Mode.ENC_256: Encrypt256(m_roundKeys, ref state); break;
+			case Mode.DEC_128: Decrypt128(m_roundKeys!, ref state); break;
+			case Mode.DEC_192: Decrypt192(m_roundKeys!, ref state); break;
+			case Mode.DEC_256: Decrypt256(m_roundKeys!, ref state); break;
+			case Mode.ENC_128: Encrypt128(m_roundKeys!, ref state); break;
+			case Mode.ENC_192: Encrypt192(m_roundKeys!, ref state); break;
+			case Mode.ENC_256: Encrypt256(m_roundKeys!, ref state); break;
 			default: throw new InvalidOperationException(nameof(AesEngine_X86) + " not initialised");
 		}
 	}
@@ -237,12 +237,12 @@ internal struct AesEngine_X86
 	{
 		switch (m_mode)
 		{
-			case Mode.DEC_128: DecryptFour128(m_roundKeys, ref s1, ref s2, ref s3, ref s4); break;
-			case Mode.DEC_192: DecryptFour192(m_roundKeys, ref s1, ref s2, ref s3, ref s4); break;
-			case Mode.DEC_256: DecryptFour256(m_roundKeys, ref s1, ref s2, ref s3, ref s4); break;
-			case Mode.ENC_128: EncryptFour128(m_roundKeys, ref s1, ref s2, ref s3, ref s4); break;
-			case Mode.ENC_192: EncryptFour192(m_roundKeys, ref s1, ref s2, ref s3, ref s4); break;
-			case Mode.ENC_256: EncryptFour256(m_roundKeys, ref s1, ref s2, ref s3, ref s4); break;
+			case Mode.DEC_128: DecryptFour128(m_roundKeys!, ref s1, ref s2, ref s3, ref s4); break;
+			case Mode.DEC_192: DecryptFour192(m_roundKeys!, ref s1, ref s2, ref s3, ref s4); break;
+			case Mode.DEC_256: DecryptFour256(m_roundKeys!, ref s1, ref s2, ref s3, ref s4); break;
+			case Mode.ENC_128: EncryptFour128(m_roundKeys!, ref s1, ref s2, ref s3, ref s4); break;
+			case Mode.ENC_192: EncryptFour192(m_roundKeys!, ref s1, ref s2, ref s3, ref s4); break;
+			case Mode.ENC_256: EncryptFour256(m_roundKeys!, ref s1, ref s2, ref s3, ref s4); break;
 			default: throw new InvalidOperationException(nameof(AesEngine_X86) + " not initialised");
 		}
 	}

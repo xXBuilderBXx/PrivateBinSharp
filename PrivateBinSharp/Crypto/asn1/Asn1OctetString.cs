@@ -30,7 +30,7 @@ internal abstract class Asn1OctetString
          * @param obj the object we want converted.
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static Asn1OctetString GetInstance(object obj)
+	public static Asn1OctetString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;
@@ -130,7 +130,7 @@ internal abstract class Asn1OctetString
 		return Arrays.AreEqual(GetOctets(), other.GetOctets());
 	}
 
-	public override string ToString()
+	public override string? ToString()
 	{
 		return null;
 		// return "#" + Hex.ToHexString(contents);

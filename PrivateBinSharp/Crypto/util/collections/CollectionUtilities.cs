@@ -10,7 +10,7 @@ internal abstract class CollectionUtilities
 		return d.TryGetValue(k, out var v) ? v : k;
 	}
 
-	public static V GetValueOrNull<K, V>(IDictionary<K, V> d, K k)
+	public static V? GetValueOrNull<K, V>(IDictionary<K, V> d, K k)
 		where V : class
 	{
 		return d.TryGetValue(k, out var v) ? v : null;

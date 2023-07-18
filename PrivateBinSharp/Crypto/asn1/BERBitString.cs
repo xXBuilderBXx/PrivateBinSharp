@@ -7,7 +7,7 @@ internal class BerBitString
 {
 	public static BerBitString FromSequence(Asn1Sequence seq)
 	{
-		return new BerBitString(seq.MapElements(GetInstance));
+		return new BerBitString(seq.MapElements(GetInstance)!);
 	}
 
 	internal static byte[] FlattenBitStrings(DerBitString[] bitStrings)
@@ -87,7 +87,7 @@ internal class BerBitString
 	}
 
 	public BerBitString(Asn1Encodable obj)
-		: this(obj.GetDerEncoded(), 0)
+		: this(obj.GetDerEncoded()!, 0)
 	{
 	}
 

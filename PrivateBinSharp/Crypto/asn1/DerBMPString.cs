@@ -27,7 +27,7 @@ internal class DerBmpString
          * @param obj the object we want converted.
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerBmpString GetInstance(object obj)
+	public static DerBmpString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

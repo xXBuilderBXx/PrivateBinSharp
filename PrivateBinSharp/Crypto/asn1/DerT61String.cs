@@ -25,7 +25,7 @@ internal class DerT61String
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerT61String GetInstance(object obj)
+	public static DerT61String? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

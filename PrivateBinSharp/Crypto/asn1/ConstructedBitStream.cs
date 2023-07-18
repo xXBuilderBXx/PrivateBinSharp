@@ -12,7 +12,7 @@ internal class ConstructedBitStream
 	private bool m_first = true;
 	private int m_padBits = 0;
 
-	private Asn1BitStringParser m_currentParser;
+	private Asn1BitStringParser? m_currentParser;
 	private Stream? m_currentStream;
 
 	internal ConstructedBitStream(Asn1StreamParser parser, bool octetAligned)
@@ -66,7 +66,7 @@ internal class ConstructedBitStream
 			}
 			else
 			{
-				m_padBits = m_currentParser.PadBits;
+				m_padBits = m_currentParser!.PadBits;
 				m_currentParser = GetNextParser();
 				if (m_currentParser == null)
 				{
@@ -101,7 +101,7 @@ internal class ConstructedBitStream
 			if (b >= 0)
 				return b;
 
-			m_padBits = m_currentParser.PadBits;
+			m_padBits = m_currentParser!.PadBits;
 			m_currentParser = GetNextParser();
 			if (m_currentParser == null)
 			{
@@ -113,9 +113,9 @@ internal class ConstructedBitStream
 		}
 	}
 
-	private Asn1BitStringParser GetNextParser()
+	private Asn1BitStringParser? GetNextParser()
 	{
-		IAsn1Convertible asn1Obj = m_parser.ReadObject();
+		IAsn1Convertible asn1Obj = m_parser.ReadObject()!;
 		if (asn1Obj == null)
 		{
 			if (m_octetAligned && m_padBits != 0)

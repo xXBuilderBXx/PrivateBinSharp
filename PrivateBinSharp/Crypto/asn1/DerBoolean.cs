@@ -25,7 +25,7 @@ internal class DerBoolean
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerBoolean GetInstance(object obj)
+	public static DerBoolean? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

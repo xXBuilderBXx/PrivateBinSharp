@@ -7,8 +7,8 @@ namespace PrivateBinSharp.Crypto.crypto;
      */
 internal abstract class PbeParametersGenerator
 {
-	protected byte[] mPassword;
-	protected byte[] mSalt;
+	protected byte[]? mPassword;
+	protected byte[]? mSalt;
 	protected int mIterationCount;
 
 	/**
@@ -50,12 +50,12 @@ internal abstract class PbeParametersGenerator
 
 	public virtual byte[] Password
 	{
-		get { return Arrays.Clone(mPassword); }
+		get { return Arrays.Clone(mPassword!)!; }
 	}
 
 	public virtual byte[] Salt
 	{
-		get { return Arrays.Clone(mSalt); }
+		get { return Arrays.Clone(mSalt!)!; }
 	}
 
 	/**

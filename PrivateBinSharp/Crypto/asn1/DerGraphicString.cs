@@ -24,7 +24,7 @@ internal class DerGraphicString
          * @exception IllegalArgumentException if the object cannot be converted.
          * @return a DerGraphicString instance, or null.
          */
-	public static DerGraphicString GetInstance(object obj)
+	public static DerGraphicString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;
@@ -66,7 +66,7 @@ internal class DerGraphicString
 		return (DerGraphicString)Meta.Instance.GetContextInstance(taggedObject, declaredExplicit);
 	}
 
-	private readonly byte[] m_contents;
+	private readonly byte[]? m_contents;
 
 	public DerGraphicString(byte[] contents)
 		: this(contents, true)
@@ -83,44 +83,44 @@ internal class DerGraphicString
 
 	public override string GetString()
 	{
-		return Strings.FromByteArray(m_contents);
+		return Strings.FromByteArray(m_contents!);
 	}
 
 	public byte[] GetOctets()
 	{
-		return Arrays.Clone(m_contents);
+		return Arrays.Clone(m_contents!)!;
 	}
 
 	internal override IAsn1Encoding GetEncoding(int encoding)
 	{
-		return new PrimitiveEncoding(Asn1Tags.Universal, Asn1Tags.GraphicString, m_contents);
+		return new PrimitiveEncoding(Asn1Tags.Universal, Asn1Tags.GraphicString, m_contents!);
 	}
 
 	internal override IAsn1Encoding GetEncodingImplicit(int encoding, int tagClass, int tagNo)
 	{
-		return new PrimitiveEncoding(tagClass, tagNo, m_contents);
+		return new PrimitiveEncoding(tagClass, tagNo, m_contents!);
 	}
 
 	internal sealed override DerEncoding GetEncodingDer()
 	{
-		return new PrimitiveDerEncoding(Asn1Tags.Universal, Asn1Tags.GraphicString, m_contents);
+		return new PrimitiveDerEncoding(Asn1Tags.Universal, Asn1Tags.GraphicString, m_contents!);
 	}
 
 	internal sealed override DerEncoding GetEncodingDerImplicit(int tagClass, int tagNo)
 	{
-		return new PrimitiveDerEncoding(tagClass, tagNo, m_contents);
+		return new PrimitiveDerEncoding(tagClass, tagNo, m_contents!);
 	}
 
 	protected override int Asn1GetHashCode()
 	{
-		return Arrays.GetHashCode(m_contents);
+		return Arrays.GetHashCode(m_contents!);
 	}
 
 	protected override bool Asn1Equals(Asn1Object asn1Object)
 	{
 		DerGraphicString? that = asn1Object as DerGraphicString;
 		return null != that
-			&& Arrays.AreEqual(m_contents, that.m_contents);
+			&& Arrays.AreEqual(m_contents!, that.m_contents!);
 	}
 
 	internal static DerGraphicString CreatePrimitive(byte[] contents)

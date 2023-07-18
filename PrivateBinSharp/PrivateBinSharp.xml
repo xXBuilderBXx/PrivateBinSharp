@@ -4,11 +4,6 @@
         <name>PrivateBinSharp</name>
     </assembly>
     <members>
-        <member name="F:PrivateBinSharp.Base58.ALPHABET">
-            <summary>
-            "Don't want 0OIl characters that look the same in some fonts and"
-            </summary>
-        </member>
         <member name="M:PrivateBinSharp.Base58.EncodePlain(System.Collections.Generic.ICollection{System.Byte})">
             <summary>
             Encodes data in plain Base58, without any checksum
@@ -1432,10 +1427,85 @@
         <member name="T:PrivateBinSharp.Crypto.util.Strings">
             <summary> General string utilities.</summary>
         </member>
+        <member name="T:PrivateBinSharp.Paste">
+            <summary>
+            Paste data created from the PrivateBin host and API.
+            </summary>
+        </member>
+        <member name="P:PrivateBinSharp.Paste.IsSuccess">
+            <summary>
+            Paste was created successfully.
+            </summary>
+        </member>
+        <member name="P:PrivateBinSharp.Paste.Response">
+            <summary>
+            The http response from the PrivateBin host API.
+            </summary>
+        </member>
+        <member name="P:PrivateBinSharp.Paste.Id">
+            <summary>
+            ID of the paste data.
+            </summary>
+        </member>
+        <member name="P:PrivateBinSharp.Paste.Secret">
+            <summary>
+            Secret of the paste data.
+            </summary>
+        </member>
+        <member name="P:PrivateBinSharp.Paste.DeleteToken">
+            <summary>
+            Deletion token of the paste data.
+            </summary>
+        </member>
+        <member name="P:PrivateBinSharp.Paste.HostURL">
+            <summary>
+            The host URL used for the request.
+            </summary>
+        </member>
+        <member name="P:PrivateBinSharp.Paste.ViewURL">
+            <summary>
+            The URL used to view the paste data.
+            </summary>
+        </member>
+        <member name="P:PrivateBinSharp.Paste.DeleteURL">
+            <summary>
+            The URL used to delete the paste data.
+            </summary>
+        </member>
+        <member name="T:PrivateBinSharp.PrivateBinClient">
+            <summary>
+            Interact with a PrivateBin service to automatically create encrypted data with optional password.
+            </summary>
+        </member>
+        <member name="M:PrivateBinSharp.PrivateBinClient.#ctor(System.String)">
+            <summary>
+            Create a new PrivateBin http client to use.
+            </summary>
+            <param name="hostUrl"></param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="P:PrivateBinSharp.PrivateBinClient.HostURL">
+            <summary>
+            The PrivateBin http url to communicate with.
+            </summary>
+        </member>
         <member name="P:PrivateBinSharp.PrivateBinClient.Version">
             <summary>
-            Version of the current PrivateBinClient lib installed.
+            Version of the current PrivateBinSharp lib installed.
             </summary>
+        </member>
+        <member name="M:PrivateBinSharp.PrivateBinClient.CreatePaste(System.String,System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Create a paste that will be encrypted 
+            </summary>
+            <param name="text"></param>
+            <param name="password"></param>
+            <param name="expire"></param>
+            <param name="openDiscussion"></param>
+            <param name="burnAfterReading"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.Exception"></exception>
         </member>
     </members>
 </doc>

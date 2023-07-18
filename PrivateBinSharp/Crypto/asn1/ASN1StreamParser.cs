@@ -32,7 +32,7 @@ internal class Asn1StreamParser
 		this.tmpBuffers = tmpBuffers;
 	}
 
-	public virtual IAsn1Convertible ReadObject()
+	public virtual IAsn1Convertible? ReadObject()
 	{
 		int tagHdr = _in.ReadByte();
 		if (tagHdr < 0)
@@ -187,7 +187,7 @@ internal class Asn1StreamParser
 		}
 	}
 
-	internal IAsn1Convertible ParseObject(int univTagNo)
+	internal IAsn1Convertible? ParseObject(int univTagNo)
 	{
 		if (univTagNo < 0 || univTagNo > 30)
 			throw new ArgumentException("invalid universal tag number: " + univTagNo, "univTagNo");
@@ -202,7 +202,7 @@ internal class Asn1StreamParser
 		return ImplParseObject(tagHdr);
 	}
 
-	internal Asn1TaggedObjectParser ParseTaggedObject()
+	internal Asn1TaggedObjectParser? ParseTaggedObject()
 	{
 		int tagHdr = _in.ReadByte();
 		if (tagHdr < 0)

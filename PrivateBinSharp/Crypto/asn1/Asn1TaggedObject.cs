@@ -16,7 +16,7 @@ internal abstract class Asn1TaggedObject
 	private const int ParsedExplicit = 3;
 	private const int ParsedImplicit = 4;
 
-	public static Asn1TaggedObject GetInstance(object obj)
+	public static Asn1TaggedObject? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

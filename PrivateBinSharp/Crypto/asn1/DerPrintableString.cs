@@ -25,7 +25,7 @@ internal class DerPrintableString
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerPrintableString GetInstance(object obj)
+	public static DerPrintableString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

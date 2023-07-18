@@ -26,7 +26,7 @@ internal class Asn1UtcTime
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static Asn1UtcTime GetInstance(object obj)
+	public static Asn1UtcTime? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

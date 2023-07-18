@@ -17,7 +17,7 @@ internal class DerGeneralString
 		}
 	}
 
-	public static DerGeneralString GetInstance(object obj)
+	public static DerGeneralString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

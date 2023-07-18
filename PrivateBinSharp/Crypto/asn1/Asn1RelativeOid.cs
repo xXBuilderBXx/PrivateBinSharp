@@ -24,7 +24,7 @@ internal class Asn1RelativeOid
 		return CreatePrimitive(contents, true);
 	}
 
-	public static Asn1RelativeOid GetInstance(object obj)
+	public static Asn1RelativeOid? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;
@@ -61,7 +61,7 @@ internal class Asn1RelativeOid
 	private const long LongLimit = (long.MaxValue >> 7) - 0x7F;
 
 	private readonly string identifier;
-	private byte[] contents;
+	private byte[]? contents;
 
 	public Asn1RelativeOid(string identifier)
 	{
@@ -139,7 +139,7 @@ internal class Asn1RelativeOid
 		OidTokenizer tok = new OidTokenizer(identifier);
 		while (tok.HasMoreTokens)
 		{
-			string token = tok.NextToken();
+			string token = tok.NextToken()!;
 			if (token.Length <= 18)
 			{
 				WriteField(bOut, long.Parse(token));

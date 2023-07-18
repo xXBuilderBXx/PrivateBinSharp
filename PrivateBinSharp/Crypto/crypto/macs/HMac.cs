@@ -17,8 +17,8 @@ internal class HMac
 	private readonly IDigest digest;
 	private readonly int digestSize;
 	private readonly int blockLength;
-	private IMemoable ipadState;
-	private IMemoable opadState;
+	private IMemoable? ipadState;
+	private IMemoable? opadState;
 
 	private readonly byte[] inputPad;
 	private readonly byte[] outputBuf;

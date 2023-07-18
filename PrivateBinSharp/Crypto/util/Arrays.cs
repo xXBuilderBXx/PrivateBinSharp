@@ -92,12 +92,12 @@ internal static class Arrays
 		return hc;
 	}
 
-	public static byte[] Clone(byte[] data)
+	public static byte[]? Clone(byte[] data)
 	{
 		return data == null ? null : (byte[])data.Clone();
 	}
 
-	public static uint[] Clone(uint[] data)
+	public static uint[]? Clone(uint[] data)
 	{
 		return data == null ? null : (uint[])data.Clone();
 	}

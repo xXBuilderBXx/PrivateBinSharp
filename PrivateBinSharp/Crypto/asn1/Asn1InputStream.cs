@@ -99,7 +99,7 @@ internal class Asn1InputStream
 		DefiniteLengthInputStream defIn = new DefiniteLengthInputStream(s, length, limit);
 
 		if (0 == (tagHdr & Asn1Tags.Flags))
-			return CreatePrimitiveDerObject(tagNo, defIn, tmpBuffers);
+			return CreatePrimitiveDerObject(tagNo, defIn, tmpBuffers!);
 
 		int tagClass = tagHdr & Asn1Tags.Private;
 		if (0 != tagClass)
@@ -139,7 +139,7 @@ internal class Asn1InputStream
 
 	private Asn1EncodableVector ReadVector()
 	{
-		Asn1Object o = ReadObject();
+		Asn1Object o = ReadObject()!;
 		if (null == o)
 			return new Asn1EncodableVector(0);
 
@@ -148,7 +148,7 @@ internal class Asn1InputStream
 		{
 			v.Add(o);
 		}
-		while ((o = ReadObject()) != null);
+		while ((o = ReadObject()!) != null);
 		return v;
 	}
 
@@ -158,13 +158,13 @@ internal class Asn1InputStream
 		if (remaining < 1)
 			return new Asn1EncodableVector(0);
 
-		using (var sub = new Asn1InputStream(defIn, remaining, leaveOpen: true, tmpBuffers))
+		using (var sub = new Asn1InputStream(defIn, remaining, leaveOpen: true, tmpBuffers!))
 		{
 			return sub.ReadVector();
 		}
 	}
 
-	public Asn1Object ReadObject()
+	public Asn1Object? ReadObject()
 	{
 		int tagHdr = s.ReadByte();
 		if (tagHdr <= 0)
@@ -197,7 +197,7 @@ internal class Asn1InputStream
 			throw new IOException("indefinite-length primitive encoding encountered");
 
 		IndefiniteLengthInputStream indIn = new IndefiniteLengthInputStream(s, limit);
-		Asn1StreamParser sp = new Asn1StreamParser(indIn, limit, tmpBuffers);
+		Asn1StreamParser sp = new Asn1StreamParser(indIn, limit, tmpBuffers!);
 
 		int tagClass = tagHdr & Asn1Tags.Private;
 		if (0 != tagClass)
@@ -221,7 +221,7 @@ internal class Asn1InputStream
 		}
 	}
 
-	private DerBitString BuildConstructedBitString(Asn1EncodableVector contentsElements)
+	private static DerBitString BuildConstructedBitString(Asn1EncodableVector contentsElements)
 	{
 		DerBitString[] bitStrings = new DerBitString[contentsElements.Count];
 
@@ -238,7 +238,7 @@ internal class Asn1InputStream
 		return new DLBitString(BerBitString.FlattenBitStrings(bitStrings), false);
 	}
 
-	private Asn1OctetString BuildConstructedOctetString(Asn1EncodableVector contentsElements)
+	private static Asn1OctetString BuildConstructedOctetString(Asn1EncodableVector contentsElements)
 	{
 		Asn1OctetString[] octetStrings = new Asn1OctetString[contentsElements.Count];
 

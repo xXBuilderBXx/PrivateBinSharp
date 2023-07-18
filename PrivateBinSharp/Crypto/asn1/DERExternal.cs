@@ -20,7 +20,7 @@ internal class DerExternal
 		}
 	}
 
-	public static DerExternal GetInstance(object obj)
+	public static DerExternal? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

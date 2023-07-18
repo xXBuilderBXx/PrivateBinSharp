@@ -25,7 +25,7 @@ internal class DerIA5String
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerIA5String GetInstance(object obj)
+	public static DerIA5String? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

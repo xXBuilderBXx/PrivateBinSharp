@@ -17,7 +17,7 @@ internal class SecureRandom
 	private static readonly SecureRandom MasterRandom = new SecureRandom(new CryptoApiRandomGenerator());
 	internal static readonly SecureRandom ArbitraryRandom = new SecureRandom(new VmpcRandomGenerator(), 16);
 
-	private static DigestRandomGenerator CreatePrng(string digestName, bool autoSeed)
+	private static DigestRandomGenerator? CreatePrng(string digestName, bool autoSeed)
 	{
 		IDigest digest = DigestUtilities.GetDigest(digestName);
 		if (digest == null)
@@ -40,7 +40,7 @@ internal class SecureRandom
 	protected readonly IRandomGenerator generator;
 
 	public SecureRandom()
-		: this(CreatePrng("SHA256", true))
+		: this(CreatePrng("SHA256", true)!)
 	{
 	}
 

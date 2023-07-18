@@ -33,7 +33,7 @@ internal class ConstructedOctetStream
 			if (!m_first)
 				return 0;
 
-			Asn1OctetStringParser next = GetNextParser();
+			Asn1OctetStringParser next = GetNextParser()!;
 			if (next == null)
 				return 0;
 
@@ -56,7 +56,7 @@ internal class ConstructedOctetStream
 			}
 			else
 			{
-				Asn1OctetStringParser next = GetNextParser();
+				Asn1OctetStringParser next = GetNextParser()!;
 				if (next == null)
 				{
 					m_currentStream = null;
@@ -75,7 +75,7 @@ internal class ConstructedOctetStream
 			if (!m_first)
 				return -1;
 
-			Asn1OctetStringParser next = GetNextParser();
+			Asn1OctetStringParser next = GetNextParser()!;
 			if (next == null)
 				return -1;
 
@@ -90,7 +90,7 @@ internal class ConstructedOctetStream
 			if (b >= 0)
 				return b;
 
-			Asn1OctetStringParser next = GetNextParser();
+			Asn1OctetStringParser next = GetNextParser()!;
 			if (next == null)
 			{
 				m_currentStream = null;
@@ -101,9 +101,9 @@ internal class ConstructedOctetStream
 		}
 	}
 
-	private Asn1OctetStringParser GetNextParser()
+	private Asn1OctetStringParser? GetNextParser()
 	{
-		IAsn1Convertible asn1Obj = m_parser.ReadObject();
+		IAsn1Convertible asn1Obj = m_parser.ReadObject()!;
 		if (asn1Obj == null)
 			return null;
 

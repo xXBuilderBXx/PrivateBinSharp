@@ -103,7 +103,7 @@ internal static class ParameterUtilities
 
 		foreach (object alias in aliases)
 		{
-			Algorithms[alias.ToString()] = canonicalName;
+			Algorithms[alias.ToString()!] = canonicalName;
 		}
 	}
 
@@ -117,7 +117,7 @@ internal static class ParameterUtilities
 
 	public static string GetCanonicalAlgorithmName(string algorithm)
 	{
-		return CollectionUtilities.GetValueOrNull(Algorithms, algorithm);
+		return CollectionUtilities.GetValueOrNull(Algorithms, algorithm)!;
 	}
 
 	public static KeyParameter CreateKeyParameter(

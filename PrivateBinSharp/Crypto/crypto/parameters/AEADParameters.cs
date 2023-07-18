@@ -16,7 +16,7 @@ internal class AeadParameters
          * @param nonce nonce to be used
          */
 	public AeadParameters(KeyParameter key, int macSize, byte[] nonce)
-	   : this(key, macSize, nonce, null)
+	   : this(key, macSize, nonce, null!)
 	{
 	}
 

@@ -423,10 +423,10 @@ internal sealed class AesEngine
 	}
 
 	private int ROUNDS;
-	private uint[][] WorkingKey;
+	private uint[][]? WorkingKey;
 	private bool forEncryption;
 
-	private byte[] s;
+	private byte[]? s;
 
 	private const int BLOCK_SIZE = 16;
 
@@ -544,7 +544,7 @@ internal sealed class AesEngine
 		// the final round's table is a simple function of S so we don't use a whole other four tables for it
 
 		kw = KW[r];
-		C0 = S[r0 & 255] ^ (uint)S[r1 >> 8 & 255] << 8 ^ (uint)s[r2 >> 16 & 255] << 16 ^ (uint)s[r3 >> 24 & 255] << 24 ^ kw[0];
+		C0 = S[r0 & 255] ^ (uint)S[r1 >> 8 & 255] << 8 ^ (uint)s![r2 >> 16 & 255] << 16 ^ (uint)s[r3 >> 24 & 255] << 24 ^ kw[0];
 		C1 = s[r1 & 255] ^ (uint)S[r2 >> 8 & 255] << 8 ^ (uint)S[r3 >> 16 & 255] << 16 ^ (uint)s[r0 >> 24 & 255] << 24 ^ kw[1];
 		C2 = s[r2 & 255] ^ (uint)S[r3 >> 8 & 255] << 8 ^ (uint)S[r0 >> 16 & 255] << 16 ^ (uint)S[r1 >> 24 & 255] << 24 ^ kw[2];
 		C3 = s[r3 & 255] ^ (uint)s[r0 >> 8 & 255] << 8 ^ (uint)s[r1 >> 16 & 255] << 16 ^ (uint)S[r2 >> 24 & 255] << 24 ^ kw[3];
@@ -592,7 +592,7 @@ internal sealed class AesEngine
 		// the final round's table is a simple function of Si so we don't use a whole other four tables for it
 
 		kw = KW[0];
-		C0 = Si[r0 & 255] ^ (uint)s[r3 >> 8 & 255] << 8 ^ (uint)s[r2 >> 16 & 255] << 16 ^ (uint)Si[r1 >> 24 & 255] << 24 ^ kw[0];
+		C0 = Si[r0 & 255] ^ (uint)s![r3 >> 8 & 255] << 8 ^ (uint)s[r2 >> 16 & 255] << 16 ^ (uint)Si[r1 >> 24 & 255] << 24 ^ kw[0];
 		C1 = s[r1 & 255] ^ (uint)s[r0 >> 8 & 255] << 8 ^ (uint)Si[r3 >> 16 & 255] << 16 ^ (uint)s[r2 >> 24 & 255] << 24 ^ kw[1];
 		C2 = s[r2 & 255] ^ (uint)Si[r1 >> 8 & 255] << 8 ^ (uint)Si[r0 >> 16 & 255] << 16 ^ (uint)s[r3 >> 24 & 255] << 24 ^ kw[2];
 		C3 = Si[r3 & 255] ^ (uint)s[r2 >> 8 & 255] << 8 ^ (uint)s[r1 >> 16 & 255] << 16 ^ (uint)s[r0 >> 24 & 255] << 24 ^ kw[3];

@@ -141,7 +141,7 @@ internal abstract class Asn1Utilities
 	}
 
 	[Obsolete("Will be removed")]
-	public static Asn1Encodable TryGetExplicitBaseObject(Asn1TaggedObject taggedObject, int tagClass, int tagNo)
+	public static Asn1Encodable? TryGetExplicitBaseObject(Asn1TaggedObject taggedObject, int tagClass, int tagNo)
 	{
 		if (!taggedObject.HasTag(tagClass, tagNo))
 			return null;
@@ -195,7 +195,7 @@ internal abstract class Asn1Utilities
 	}
 
 	[Obsolete("Will be removed")]
-	public static Asn1TaggedObject TryGetExplicitBaseTagged(Asn1TaggedObject taggedObject, int tagClass)
+	public static Asn1TaggedObject? TryGetExplicitBaseTagged(Asn1TaggedObject taggedObject, int tagClass)
 	{
 		if (!taggedObject.HasTagClass(tagClass))
 			return null;
@@ -212,7 +212,7 @@ internal abstract class Asn1Utilities
 	}
 
 	[Obsolete("Will be removed")]
-	public static Asn1TaggedObject TryGetExplicitBaseTagged(Asn1TaggedObject taggedObject, int tagClass, int tagNo)
+	public static Asn1TaggedObject? TryGetExplicitBaseTagged(Asn1TaggedObject taggedObject, int tagClass, int tagNo)
 	{
 		if (!taggedObject.HasTag(tagClass, tagNo))
 			return null;
@@ -270,7 +270,7 @@ internal abstract class Asn1Utilities
 	}
 
 	[Obsolete("Will be removed")]
-	public static Asn1TaggedObject TryGetImplicitBaseTagged(Asn1TaggedObject taggedObject, int tagClass, int tagNo,
+	public static Asn1TaggedObject? TryGetImplicitBaseTagged(Asn1TaggedObject taggedObject, int tagClass, int tagNo,
 		int baseTagClass, int baseTagNo)
 	{
 		if (!taggedObject.HasTag(tagClass, tagNo))
@@ -319,7 +319,7 @@ internal abstract class Asn1Utilities
 	}
 
 	[Obsolete("Will be removed")]
-	public static Asn1Object TryGetBaseUniversal(Asn1TaggedObject taggedObject, int tagClass, int tagNo,
+	public static Asn1Object? TryGetBaseUniversal(Asn1TaggedObject taggedObject, int tagClass, int tagNo,
 		bool declaredExplicit, int baseTagNo)
 	{
 		if (!taggedObject.HasTag(tagClass, tagNo))
@@ -384,7 +384,7 @@ internal abstract class Asn1Utilities
 
 	/// <exception cref="IOException"/>
 	[Obsolete("Will be removed")]
-	public static Asn1TaggedObjectParser TryParseExplicitBaseTagged(Asn1TaggedObjectParser taggedObjectParser,
+	public static Asn1TaggedObjectParser? TryParseExplicitBaseTagged(Asn1TaggedObjectParser taggedObjectParser,
 		int tagClass)
 	{
 		if (taggedObjectParser.TagClass != tagClass)
@@ -404,7 +404,7 @@ internal abstract class Asn1Utilities
 
 	/// <exception cref="IOException"/>
 	[Obsolete("Will be removed")]
-	public static Asn1TaggedObjectParser TryParseExplicitBaseTagged(Asn1TaggedObjectParser taggedObjectParser,
+	public static Asn1TaggedObjectParser? TryParseExplicitBaseTagged(Asn1TaggedObjectParser taggedObjectParser,
 		int tagClass, int tagNo)
 	{
 		if (!taggedObjectParser.HasTag(tagClass, tagNo))
@@ -474,7 +474,7 @@ internal abstract class Asn1Utilities
 
 	/// <exception cref="IOException"/>
 	[Obsolete("Will be removed")]
-	public static Asn1TaggedObjectParser TryParseImplicitBaseTagged(Asn1TaggedObjectParser taggedObjectParser,
+	public static Asn1TaggedObjectParser? TryParseImplicitBaseTagged(Asn1TaggedObjectParser taggedObjectParser,
 		int tagClass, int tagNo, int baseTagClass, int baseTagNo)
 	{
 		if (!taggedObjectParser.HasTag(tagClass, tagNo))
@@ -530,7 +530,7 @@ internal abstract class Asn1Utilities
 
 	/// <exception cref="IOException"/>
 	[Obsolete("Will be removed")]
-	public static IAsn1Convertible TryParseBaseUniversal(Asn1TaggedObjectParser taggedObjectParser, int tagClass,
+	public static IAsn1Convertible? TryParseBaseUniversal(Asn1TaggedObjectParser taggedObjectParser, int tagClass,
 		int tagNo, bool declaredExplicit, int baseTagNo)
 	{
 		if (!taggedObjectParser.HasTag(tagClass, tagNo))
@@ -586,7 +586,7 @@ internal abstract class Asn1Utilities
 
 	/// <exception cref="IOException"/>
 	[Obsolete("Will be removed")]
-	public static IAsn1Convertible TryParseExplicitBaseObject(Asn1TaggedObjectParser taggedObjectParser,
+	public static IAsn1Convertible? TryParseExplicitBaseObject(Asn1TaggedObjectParser taggedObjectParser,
 		int tagClass, int tagNo)
 	{
 		if (!taggedObjectParser.HasTag(tagClass, tagNo))

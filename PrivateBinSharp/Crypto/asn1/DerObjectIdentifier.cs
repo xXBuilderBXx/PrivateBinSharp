@@ -29,7 +29,7 @@ internal class DerObjectIdentifier
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerObjectIdentifier GetInstance(object obj)
+	public static DerObjectIdentifier? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

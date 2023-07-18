@@ -24,12 +24,12 @@ public class PrivateBinClient
 		if (string.IsNullOrEmpty(hostUrl))
 			throw new ArgumentException("Host url can't be empty.");
 
-		HostUrl = hostUrl;
-		if (!HostUrl.EndsWith('/'))
-			HostUrl += '/';
+		HostURL = hostUrl;
+		if (!HostURL.EndsWith('/'))
+			HostURL += '/';
 
 		Http = new HttpClient();
-		if (!Uri.TryCreate(HostUrl, UriKind.Absolute, out Uri? uri))
+		if (!Uri.TryCreate(HostURL, UriKind.Absolute, out Uri? uri))
 			throw new ArgumentException("Host url is invalid.");
 
 		Http.BaseAddress = uri;
@@ -39,11 +39,11 @@ public class PrivateBinClient
 	/// <summary>
 	/// The PrivateBin http url to communicate with.
 	/// </summary>
-	public string HostUrl { get; internal set; }
+	public string HostURL { get; internal set; }
 
 	private bool FirstTimeCheck;
 
-	private HttpClient Http;
+	private readonly HttpClient Http;
 
 	/// <summary>
 	/// Version of the current PrivateBinSharp lib installed.
@@ -71,7 +71,7 @@ public class PrivateBinClient
 			HttpResponseMessage? TestRes = null;
 			try
 			{
-				TestRes = await Http.GetAsync(HostUrl);
+				TestRes = await Http.GetAsync(HostURL);
 				TestRes.EnsureSuccessStatusCode();
 				FirstTimeCheck = false;
 			}
@@ -95,7 +95,7 @@ public class PrivateBinClient
 		}
 
 		string body = Newtonsoft.Json.JsonConvert.SerializeObject(Json.Item1);
-		HttpRequestMessage Req = new HttpRequestMessage(HttpMethod.Post, HostUrl)
+		HttpRequestMessage Req = new HttpRequestMessage(HttpMethod.Post, HostURL)
 		{
 			Content = new StringContent(body, Encoding.UTF8)
 		};
@@ -114,14 +114,18 @@ public class PrivateBinClient
 			};
 		}
 
-		PasteResponse? ResponseJson = null;
+		PasteResponse? ResponseJson;
 		try
 		{
 
 			string response = await Res.Content.ReadAsStringAsync();
 			ResponseJson = Newtonsoft.Json.JsonConvert.DeserializeObject<PasteResponse>(response);
 			if (ResponseJson == null)
-				throw new Exception("Failed to parse response json.");
+				return new Paste
+				{
+					IsSuccess = false,
+					Response = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError) { ReasonPhrase = "Failed to parse json request content to send." }
+				};
 		}
 		catch
 		{
@@ -138,11 +142,11 @@ public class PrivateBinClient
 			Id = ResponseJson.id,
 			Secret = Base58.EncodePlain(Json.Item2),
 			DeleteToken = ResponseJson.deletetoken,
-			HostURL = HostUrl
+			HostURL = HostURL
 		};
 	}
 
-	private Tuple<PasteJson, byte[]> GeneratePasteData(string text, string password, string expire, bool openDiscussion, bool burnAfterReading)
+	private static Tuple<PasteJson, byte[]> GeneratePasteData(string text, string password, string expire, bool openDiscussion, bool burnAfterReading)
 	{
 		SecureRandom rng = new();
 
@@ -164,7 +168,7 @@ public class PrivateBinClient
 		rng.NextBytes(kdfSalt);
 		Pkcs5S2ParametersGenerator pdb = new Pkcs5S2ParametersGenerator(new Sha256Digest());
 		pdb.Init(pastePassphrase, kdfSalt, kdfIterations);
-		byte[] kdfKey = (pdb.GenerateDerivedMacParameters(256) as KeyParameter).GetKey();
+		byte[] kdfKey = (pdb.GenerateDerivedMacParameters(256) as KeyParameter)!.GetKey();
 		int nonceSize = 12;
 		byte[] cipherIv = new byte[nonceSize];
 		rng.NextBytes(cipherIv);

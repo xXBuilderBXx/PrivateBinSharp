@@ -32,7 +32,7 @@ internal class DerBitString
 	 *
 	 * @exception ArgumentException if the object cannot be converted.
 	 */
-	public static DerBitString GetInstance(object obj)
+	public static DerBitString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;
@@ -76,7 +76,7 @@ internal class DerBitString
 
 		if (isExplicit || o is DerBitString)
 		{
-			return GetInstance(o);
+			return GetInstance(o)!;
 		}
 
 		// Not copied because assumed to be a tagged implicit primitive from the parser
@@ -165,7 +165,7 @@ internal class DerBitString
 	}
 
 	public DerBitString(Asn1Encodable obj)
-		: this(obj.GetDerEncoded())
+		: this(obj.GetDerEncoded()!)
 	{
 	}
 
@@ -390,7 +390,7 @@ internal class DerBitString
 
 	public override string GetString()
 	{
-		byte[] str = GetDerEncoded();
+		byte[] str = GetDerEncoded()!;
 
 		StringBuilder buffer = new StringBuilder(1 + str.Length * 2);
 		buffer.Append('#');

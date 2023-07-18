@@ -40,30 +40,30 @@ internal sealed class GcmBlockCipher
 	private bool forEncryption;
 	private bool initialised;
 	private int macSize;
-	private byte[] lastKey;
-	private byte[] nonce;
+	private byte[]? lastKey;
+	private byte[]? nonce;
 	private byte[]? initialAssociatedText;
-	private byte[] H;
-	private Vector128<ulong>[] HPow = null;
-	private byte[] J0;
+	private byte[]? H;
+	private Vector128<ulong>[]? HPow = null;
+	private byte[]? J0;
 
 	// These fields are modified during processing
-	private byte[] bufBlock;
+	private byte[]? bufBlock;
 	private byte[]? macBlock;
-	private byte[] S, S_at, S_atPre;
-	private byte[] counter;
+	private byte[]? S, S_at, S_atPre;
+	private byte[]? counter;
 	private uint counter32;
 	private uint blocksRemaining;
 	private int bufOff;
 	private ulong totalLength;
-	private byte[] atBlock;
+	private byte[]? atBlock;
 	private int atBlockPos;
 	private ulong atLength;
 	private ulong atLengthPre;
 
 	public GcmBlockCipher(
 		IBlockCipher c)
-		: this(c, null)
+		: this(c, null!)
 	{
 	}
 
@@ -207,7 +207,7 @@ internal sealed class GcmBlockCipher
 		atLength = 0;
 		atLengthPre = 0;
 		counter = Arrays.Clone(J0);
-		counter32 = Pack.BE_To_UInt32(counter, 12);
+		counter32 = Pack.BE_To_UInt32(counter!, 12);
 		blocksRemaining = uint.MaxValue - 1; // page 8, len(P) <= 2^39 - 256, 1 block used by tag
 		bufOff = 0;
 		totalLength = 0;
@@ -250,11 +250,11 @@ internal sealed class GcmBlockCipher
 	{
 		CheckStatus();
 
-		atBlock[atBlockPos] = input;
+		atBlock![atBlockPos] = input;
 		if (++atBlockPos == BlockSize)
 		{
 			// Hash each block as it fills
-			gHASHBlock(S_at, atBlock);
+			gHASHBlock(S_at!, atBlock);
 			atBlockPos = 0;
 			atLength += BlockSize;
 		}
@@ -280,7 +280,7 @@ internal sealed class GcmBlockCipher
 			}
 
 			input[..available].CopyTo(atBlock.AsSpan(atBlockPos));
-			gHASHBlock(S_at, atBlock);
+			gHASHBlock(S_at!, atBlock);
 			atLength += BlockSize;
 			input = input[available..];
 			//atBlockPos = 0;
@@ -288,7 +288,7 @@ internal sealed class GcmBlockCipher
 
 		while (input.Length >= BlockSize)
 		{
-			gHASHBlock(S_at, input);
+			gHASHBlock(S_at!, input);
 			atLength += BlockSize;
 			input = input[BlockSize..];
 		}
@@ -301,20 +301,20 @@ internal sealed class GcmBlockCipher
 	{
 		if (atLength > 0)
 		{
-			Array.Copy(S_at, 0, S_atPre, 0, BlockSize);
+			Array.Copy(S_at!, 0, S_atPre!, 0, BlockSize);
 			atLengthPre = atLength;
 		}
 
 		// Finish hash for partial AAD block
 		if (atBlockPos > 0)
 		{
-			gHASHPartial(S_atPre, atBlock, 0, atBlockPos);
+			gHASHPartial(S_atPre!, atBlock!, 0, atBlockPos);
 			atLengthPre += (uint)atBlockPos;
 		}
 
 		if (atLengthPre > 0)
 		{
-			Array.Copy(S_atPre, 0, S, 0, BlockSize);
+			Array.Copy(S_atPre!, 0, S!, 0, BlockSize);
 		}
 	}
 
@@ -322,7 +322,7 @@ internal sealed class GcmBlockCipher
 	{
 		CheckStatus();
 
-		bufBlock[bufOff] = input;
+		bufBlock![bufOff] = input;
 		if (++bufOff == bufBlock.Length)
 		{
 			Check.OutputLength(output, outOff, BlockSize, "output buffer too short");
@@ -359,7 +359,7 @@ internal sealed class GcmBlockCipher
 	{
 		CheckStatus();
 
-		bufBlock[bufOff] = input;
+		bufBlock![bufOff] = input;
 		if (++bufOff == bufBlock.Length)
 		{
 			Check.OutputLength(output, BlockSize, "output buffer too short");
@@ -496,7 +496,7 @@ internal sealed class GcmBlockCipher
 				}
 			}
 
-			int available = bufBlock.Length - bufOff;
+			int available = bufBlock!.Length - bufOff;
 			if (input.Length < available)
 			{
 				input.CopyTo(bufBlock.AsSpan(bufOff));
@@ -625,13 +625,13 @@ internal sealed class GcmBlockCipher
 			// Finish hash for partial AAD block
 			if (atBlockPos > 0)
 			{
-				gHASHPartial(S_at, atBlock, 0, atBlockPos);
+				gHASHPartial(S_at!, atBlock!, 0, atBlockPos);
 			}
 
 			// Find the difference between the AAD hashes
 			if (atLengthPre > 0)
 			{
-				GcmUtilities.Xor(S_at, S_atPre);
+				GcmUtilities.Xor(S_at!, S_atPre!);
 			}
 
 			// Number of cipher-text blocks produced
@@ -642,15 +642,15 @@ internal sealed class GcmBlockCipher
 			if (exp == null)
 			{
 				exp = new BasicGcmExponentiator();
-				exp.Init(H);
+				exp.Init(H!);
 			}
 			exp.ExponentiateX(c, H_c);
 
 			// Carry the difference forward
-			GcmUtilities.Multiply(S_at, H_c);
+			GcmUtilities.Multiply(S_at!, H_c);
 
 			// Adjust the current hash
-			GcmUtilities.Xor(S, S_at);
+			GcmUtilities.Xor(S!, S_at!);
 		}
 
 		// Final gHASH
@@ -658,7 +658,7 @@ internal sealed class GcmBlockCipher
 		Pack.UInt64_To_BE(atLength * 8UL, X);
 		Pack.UInt64_To_BE(totalLength * 8UL, X[8..]);
 
-		gHASHBlock(S, X);
+		gHASHBlock(S!, X);
 
 		// T = MSBt(GCTRk(J0,S))
 		Span<byte> tag = stackalloc byte[BlockSize];
@@ -707,8 +707,8 @@ internal sealed class GcmBlockCipher
 		atBlockPos = 0;
 		atLength = 0;
 		atLengthPre = 0;
-		counter = Arrays.Clone(J0);
-		counter32 = Pack.BE_To_UInt32(counter, 12);
+		counter = Arrays.Clone(J0!);
+		counter32 = Pack.BE_To_UInt32(counter!, 12);
 		blocksRemaining = uint.MaxValue - 1;
 		bufOff = 0;
 		totalLength = 0;
@@ -759,7 +759,7 @@ internal sealed class GcmBlockCipher
 				byte c2 = input[i + 2];
 				byte c3 = input[i + 3];
 
-				S[i + 0] ^= c0;
+				S![i + 0] ^= c0;
 				S[i + 1] ^= c1;
 				S[i + 2] ^= c2;
 				S[i + 3] ^= c3;
@@ -770,7 +770,7 @@ internal sealed class GcmBlockCipher
 				output[i + 3] = (byte)(c3 ^ ctrBlock[i + 3]);
 			}
 		}
-		multiplier.MultiplyH(S);
+		multiplier.MultiplyH(S!);
 	}
 
 	private void DecryptBlocks2(ReadOnlySpan<byte> input, Span<byte> output)
@@ -799,7 +799,7 @@ internal sealed class GcmBlockCipher
 				byte c2 = input[i + 2];
 				byte c3 = input[i + 3];
 
-				S[i + 0] ^= c0;
+				S![i + 0] ^= c0;
 				S[i + 1] ^= c1;
 				S[i + 2] ^= c2;
 				S[i + 3] ^= c3;
@@ -810,7 +810,7 @@ internal sealed class GcmBlockCipher
 				output[i + 3] = (byte)(c3 ^ ctrBlock[i + 3]);
 			}
 		}
-		multiplier.MultiplyH(S);
+		multiplier.MultiplyH(S!);
 
 		input = input[BlockSize..];
 		output = output[BlockSize..];
@@ -837,7 +837,7 @@ internal sealed class GcmBlockCipher
 				byte c2 = input[i + 2];
 				byte c3 = input[i + 3];
 
-				S[i + 0] ^= c0;
+				S![i + 0] ^= c0;
 				S[i + 1] ^= c1;
 				S[i + 2] ^= c2;
 				S[i + 3] ^= c3;
@@ -848,7 +848,7 @@ internal sealed class GcmBlockCipher
 				output[i + 3] = (byte)(c3 ^ ctrBlock[i + 3]);
 			}
 		}
-		multiplier.MultiplyH(S);
+		multiplier.MultiplyH(S!);
 	}
 
 	private void DecryptBlocks4(ref ReadOnlySpan<byte> input, ref Span<byte> output, int limit)
@@ -858,7 +858,7 @@ internal sealed class GcmBlockCipher
 		if (limit < BlockSize * 4)
 			throw new ArgumentOutOfRangeException(nameof(limit));
 
-		var HPowBound = HPow[3];
+		var HPowBound = HPow![3];
 
 		Span<Vector128<byte>> counters = stackalloc Vector128<byte>[4];
 		var ctrBlocks = MemoryMarshal.AsBytes(counters);
@@ -948,7 +948,7 @@ internal sealed class GcmBlockCipher
 				byte c2 = (byte)(ctrBlock[i + 2] ^ input[i + 2]);
 				byte c3 = (byte)(ctrBlock[i + 3] ^ input[i + 3]);
 
-				S[i + 0] ^= c0;
+				S![i + 0] ^= c0;
 				S[i + 1] ^= c1;
 				S[i + 2] ^= c2;
 				S[i + 3] ^= c3;
@@ -959,7 +959,7 @@ internal sealed class GcmBlockCipher
 				output[i + 3] = c3;
 			}
 		}
-		multiplier.MultiplyH(S);
+		multiplier.MultiplyH(S!);
 	}
 
 	private void EncryptBlocks2(ReadOnlySpan<byte> input, Span<byte> output)
@@ -988,7 +988,7 @@ internal sealed class GcmBlockCipher
 				byte c2 = (byte)(ctrBlocks[i + 2] ^ input[i + 2]);
 				byte c3 = (byte)(ctrBlocks[i + 3] ^ input[i + 3]);
 
-				S[i + 0] ^= c0;
+				S![i + 0] ^= c0;
 				S[i + 1] ^= c1;
 				S[i + 2] ^= c2;
 				S[i + 3] ^= c3;
@@ -999,7 +999,7 @@ internal sealed class GcmBlockCipher
 				output[i + 3] = c3;
 			}
 		}
-		multiplier.MultiplyH(S);
+		multiplier.MultiplyH(S!);
 
 		input = input[BlockSize..];
 		output = output[BlockSize..];
@@ -1026,7 +1026,7 @@ internal sealed class GcmBlockCipher
 				byte c2 = (byte)(ctrBlocks[i + 2] ^ input[i + 2]);
 				byte c3 = (byte)(ctrBlocks[i + 3] ^ input[i + 3]);
 
-				S[i + 0] ^= c0;
+				S![i + 0] ^= c0;
 				S[i + 1] ^= c1;
 				S[i + 2] ^= c2;
 				S[i + 3] ^= c3;
@@ -1037,7 +1037,7 @@ internal sealed class GcmBlockCipher
 				output[i + 3] = c3;
 			}
 		}
-		multiplier.MultiplyH(S);
+		multiplier.MultiplyH(S!);
 	}
 
 	private void EncryptBlocks4(ref ReadOnlySpan<byte> input, ref Span<byte> output)
@@ -1045,7 +1045,7 @@ internal sealed class GcmBlockCipher
 		if (!IsFourWaySupported)
 			throw new PlatformNotSupportedException(nameof(EncryptBlocks4));
 
-		var HPowBound = HPow[3];
+		var HPowBound = HPow![3];
 
 		Span<Vector128<byte>> counters = stackalloc Vector128<byte>[4];
 		var ctrBlocks = MemoryMarshal.AsBytes(counters);
@@ -1111,7 +1111,7 @@ internal sealed class GcmBlockCipher
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void GetNextCtrBlock(Span<byte> block)
 	{
-		Pack.UInt32_To_BE(++counter32, counter, 12);
+		Pack.UInt32_To_BE(++counter32, counter!, 12);
 
 		cipher.ProcessBlock(counter, block);
 	}
@@ -1119,10 +1119,10 @@ internal sealed class GcmBlockCipher
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void GetNextCtrBlocks2(Span<byte> blocks)
 	{
-		Pack.UInt32_To_BE(++counter32, counter, 12);
+		Pack.UInt32_To_BE(++counter32, counter!, 12);
 		cipher.ProcessBlock(counter, blocks);
 
-		Pack.UInt32_To_BE(++counter32, counter, 12);
+		Pack.UInt32_To_BE(++counter32, counter!, 12);
 		cipher.ProcessBlock(counter, blocks[BlockSize..]);
 	}
 
@@ -1141,7 +1141,7 @@ internal sealed class GcmBlockCipher
 			counter.CopyTo(blocks);
 			counter.CopyTo(blocks[BlockSize..]);
 			counter.CopyTo(blocks[(BlockSize * 2)..]);
-			Pack.UInt32_To_BE(counter4, counter, 12);
+			Pack.UInt32_To_BE(counter4, counter!, 12);
 			Pack.UInt32_To_BE(counter1, blocks[12..]);
 			Pack.UInt32_To_BE(counter2, blocks[28..]);
 			Pack.UInt32_To_BE(counter3, blocks[44..]);
@@ -1151,16 +1151,16 @@ internal sealed class GcmBlockCipher
 			return;
 		}
 
-		Pack.UInt32_To_BE(counter1, counter, 12);
+		Pack.UInt32_To_BE(counter1, counter!, 12);
 		cipher.ProcessBlock(counter, blocks);
 
-		Pack.UInt32_To_BE(counter2, counter, 12);
+		Pack.UInt32_To_BE(counter2, counter!, 12);
 		cipher.ProcessBlock(counter, blocks[BlockSize..]);
 
-		Pack.UInt32_To_BE(counter3, counter, 12);
+		Pack.UInt32_To_BE(counter3, counter!, 12);
 		cipher.ProcessBlock(counter, blocks[(BlockSize * 2)..]);
 
-		Pack.UInt32_To_BE(counter4, counter, 12);
+		Pack.UInt32_To_BE(counter4, counter!, 12);
 		cipher.ProcessBlock(counter, blocks[(BlockSize * 3)..]);
 	}
 
@@ -1172,11 +1172,11 @@ internal sealed class GcmBlockCipher
 		if (forEncryption)
 		{
 			GcmUtilities.Xor(partialBlock, ctrBlock, partialBlock.Length);
-			gHASHPartial(S, partialBlock);
+			gHASHPartial(S!, partialBlock);
 		}
 		else
 		{
-			gHASHPartial(S, partialBlock);
+			gHASHPartial(S!, partialBlock);
 			GcmUtilities.Xor(partialBlock, ctrBlock, partialBlock.Length);
 		}
 

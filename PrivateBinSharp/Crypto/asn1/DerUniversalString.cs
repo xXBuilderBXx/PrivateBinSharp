@@ -29,7 +29,7 @@ internal class DerUniversalString
          *
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static DerUniversalString GetInstance(object obj)
+	public static DerUniversalString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

@@ -24,7 +24,7 @@ internal class DerVideotexString
          * @exception IllegalArgumentException if the object cannot be converted.
          * @return a DERVideotexString instance, or null.
          */
-	public static DerVideotexString GetInstance(object obj)
+	public static DerVideotexString? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;

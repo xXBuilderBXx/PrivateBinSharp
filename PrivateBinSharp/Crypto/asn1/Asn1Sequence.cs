@@ -24,7 +24,7 @@ internal abstract class Asn1Sequence
          * @param obj the object we want converted.
          * @exception ArgumentException if the object cannot be converted.
          */
-	public static Asn1Sequence GetInstance(object obj)
+	public static Asn1Sequence? GetInstance(object obj)
 	{
 		if (obj == null)
 			return null;
@@ -143,7 +143,7 @@ internal abstract class Asn1Sequence
 			max = outer.Count;
 		}
 
-		public IAsn1Convertible ReadObject()
+		public IAsn1Convertible? ReadObject()
 		{
 			if (index == max)
 				return null;
@@ -248,12 +248,12 @@ internal abstract class Asn1Sequence
 	}
 
 	// TODO[asn1] Preferably return an Asn1BitString[] (doesn't exist yet)
-	internal DerBitString[] GetConstructedBitStrings()
+	internal DerBitString?[] GetConstructedBitStrings()
 	{
 		return MapElements(DerBitString.GetInstance);
 	}
 
-	internal Asn1OctetString[] GetConstructedOctetStrings()
+	internal Asn1OctetString?[] GetConstructedOctetStrings()
 	{
 		return MapElements(Asn1OctetString.GetInstance);
 	}
