@@ -138,7 +138,7 @@ public class PrivateBinClient
 			Id = ResponseJson.id,
 			Secret = Base58.EncodePlain(Json.Item2),
 			DeleteToken = ResponseJson.deletetoken,
-			URL = HostUrl
+			HostURL = HostUrl
 		};
 	}
 

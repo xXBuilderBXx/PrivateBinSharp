@@ -12,11 +12,11 @@ public class Paste
 
 	public string? DeleteToken { get; internal set; }
 
-	public string? URL { get; internal set; }
+	public string? HostURL { get; internal set; }
 
 	public string ViewURL
-		=> URL + "?" + Id + "#" + Secret;
+		=> HostURL + "?" + Id + "#" + Secret;
 
 	public string DeleteURL
-		=> URL + "?pasteid=" + Id + "&deletetoken=" + DeleteToken;
+		=> HostURL + "?pasteid=" + Id + "&deletetoken=" + DeleteToken;
 }
