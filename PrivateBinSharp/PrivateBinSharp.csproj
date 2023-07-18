@@ -7,7 +7,7 @@
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
 	  <DocumentationFile>PrivateBinSharp.xml</DocumentationFile>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>xXBuilderBXx</Authors>
 	<Company>Fluxpoint Development</Company>
     <Description>C# PrivateBin API client for programs and automation!</Description>
