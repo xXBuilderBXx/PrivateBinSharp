@@ -1494,7 +1494,7 @@
             Version of the current PrivateBinSharp lib installed.
             </summary>
         </member>
-        <member name="M:PrivateBinSharp.PrivateBinClient.CreatePaste(System.String,System.String,System.String,System.Boolean,System.Boolean)">
+        <member name="M:PrivateBinSharp.PrivateBinClient.CreatePaste(System.String,System.String,System.String,System.Boolean,System.Boolean,System.String)">
             <summary>
             Create a paste that will be encrypted 
             </summary>
@@ -1503,6 +1503,7 @@
             <param name="expire"></param>
             <param name="openDiscussion"></param>
             <param name="burnAfterReading"></param>
+            <param name="format"></param>
             <returns></returns>
             <exception cref="T:System.ArgumentException"></exception>
             <exception cref="T:System.Exception"></exception>

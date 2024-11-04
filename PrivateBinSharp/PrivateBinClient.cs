@@ -50,18 +50,24 @@ public class PrivateBinClient
 	/// </summary>
 	public static string Version => Assembly.GetExecutingAssembly().GetName().Version!.ToString(3);
 
-	/// <summary>
-	/// Create a paste that will be encrypted 
-	/// </summary>
-	/// <param name="text"></param>
-	/// <param name="password"></param>
-	/// <param name="expire"></param>
-	/// <param name="openDiscussion"></param>
-	/// <param name="burnAfterReading"></param>
-	/// <returns></returns>
-	/// <exception cref="ArgumentException"></exception>
-	/// <exception cref="Exception"></exception>
-	public async Task<Paste> CreatePaste(string text, string password, string expire = "5min", bool openDiscussion = false, bool burnAfterReading = false)
+    /// <summary>
+    /// Create a paste that will be encrypted 
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="password"></param>
+    /// <param name="expire"></param>
+    /// <param name="openDiscussion"></param>
+    /// <param name="burnAfterReading"></param>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="Exception"></exception>
+    public async Task<Paste> CreatePaste(string text, 
+		string password, 
+		string expire = "5min", 
+		bool openDiscussion = false, 
+		bool burnAfterReading = false,
+        string format = "plaintext")
 	{
 		if (string.IsNullOrEmpty(text))
 			throw new ArgumentException("Paste text can't be empty.");
@@ -87,14 +93,14 @@ public class PrivateBinClient
 		Tuple<PasteJson, byte[]> Json;
 		try
 		{
-			Json = GeneratePasteData(text, password, expire, openDiscussion, burnAfterReading);
+            Json = GeneratePasteData(text, password, expire, openDiscussion, burnAfterReading, format);
 		}
 		catch (Exception ex)
 		{
 			throw new Exception("Failed to generate encrypted data, " + ex.Message);
 		}
 
-		string body = Newtonsoft.Json.JsonConvert.SerializeObject(Json.Item1);
+        string body = Newtonsoft.Json.JsonConvert.SerializeObject(Json.Item1);
 		HttpRequestMessage Req = new HttpRequestMessage(HttpMethod.Post, HostURL)
 		{
 			Content = new StringContent(body, Encoding.UTF8)
@@ -146,7 +152,12 @@ public class PrivateBinClient
 		};
 	}
 
-	private static Tuple<PasteJson, byte[]> GeneratePasteData(string text, string password, string expire, bool openDiscussion, bool burnAfterReading)
+	private static Tuple<PasteJson, byte[]> GeneratePasteData(string text, 
+		string password, 
+		string expire, 
+		bool openDiscussion, 
+		bool burnAfterReading,
+		string format)
 	{
 		SecureRandom rng = new();
 
@@ -178,8 +189,11 @@ public class PrivateBinClient
 		string compressionType = "none";
 		int _openDiscussion = openDiscussion ? 1 : 0;
 		int _burnAfterReading = burnAfterReading ? 1 : 0;
+        byte[] _format = Array.Empty<byte>();
+        if (!string.IsNullOrEmpty(format))
+            _format = UTF8Encoding.UTF8.GetBytes(format);
 
-		object[] pasteMetaObj = new object[]
+        object[] pasteMetaObj = new object[]
 		{
 			new object[]
 			{
@@ -192,7 +206,7 @@ public class PrivateBinClient
 				cipherMode,
 				compressionType
 			},
-			"plaintext",
+			format,
 			_openDiscussion,
 			_burnAfterReading
 		};
